@@ -1,4 +1,4 @@
-export const exploreNewTopic = "We are looking for 50 word related to this concept: ";
+export const exploreNewTopic = "We are looking for 5 word related to this concept: ";
 
 export const generalPrinciples = "The words have to contain only english letters and numbers," +
 "should not be a person's name, should not be related to political movements, nor bloody historical events." +

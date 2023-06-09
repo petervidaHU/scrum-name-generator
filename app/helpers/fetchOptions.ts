@@ -1,5 +1,5 @@
 export const post = (data: unknown) => {
-  let JSONdata;
+  let JSONdata: string;
   
   try {
     JSONdata = JSON.stringify(data);

@@ -1,22 +1,12 @@
 import { iResult } from "@/app/types/nameTypes";
 import { generalPrinciples, exploreNewTopic, formatArray, PCCheck, formatYNReaseon } from "@/prompts/newTopic";
+import openAIClient from '../../app/openAIClient';
 
 export default async function handler(req: any, res: any) {
   const { topic, desc } = req.body;
-  let resData: iResult;
-  if (!topic) {
-    resData = {
-      message: 'error',
-      data: ['topic not found'],
-    }
-    return res.status(400).json(resData);
-  }
+  const { openai } = openAIClient();
 
-  const { Configuration, OpenAIApi } = require("openai");
-  const configuration = new Configuration({
-    apiKey: process.env.OPENAI_API_KEY,
-  });
-  const openai = new OpenAIApi(configuration);
+  if (!topic) return res.status(400).json('topic not found');
 
   let textSwear;
   try {
@@ -26,18 +16,15 @@ export default async function handler(req: any, res: any) {
       max_tokens: 100,
       temperature: 0.1,
     });
+
+    if (!swearingPreCheck.data.choices[0].text) throw new Error('No response, we are alone');
     textSwear = JSON.parse(swearingPreCheck.data.choices[0].text);
+
   } catch (err) {
     throw new Error(`Chaos AD, Tanks on the street... ${err}`);
   }
 
-  if (textSwear.a == 'yes') {
-    resData = {
-      message: 'error',
-      data: [textSwear.r],
-    }
-    return res.status(200).json(resData);
-  }
+  if (textSwear.a == 'yes') return res.status(200).json(textSwear.r);
 
   let text;
   try {
@@ -47,14 +34,16 @@ export default async function handler(req: any, res: any) {
       max_tokens: 100,
       temperature: 1,
     });
+
+    if (!response.data.choices[0].text) throw new Error('No response, we are alone');
     text = response.data.choices[0].text;
+
   } catch (err) {
     throw new Error(`Chaos AD, Tanks on the street... ${err}`);
   }
 
-  resData = {
-    message: 'ok',
-    data: text.split(","),
-  }
+  const temp = text.split(",").map((splitted: string): iResult => ({name: splitted}));
+
+  const resData: iResult[] = temp;
   res.status(200).json(resData);
 }

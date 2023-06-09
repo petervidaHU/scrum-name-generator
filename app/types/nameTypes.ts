@@ -1,6 +1,13 @@
-type apiCallResult = 'error' | 'ok';
+type statusType = true | false | 'investigation'; 
 
-export interface iResult {
-  message: apiCallResult | null,
-  data: string[],
+export interface iResult{
+  name: string,
+  tags?: string[],
+  options?: {
+    active: statusType,
+  },
 };
+
+export interface iResultWithTags extends Omit<iResult, 'tags'>, Pick<iResult, 'tags'> {}
+
+export interface iResultComplete extends Required<iResult> {}
