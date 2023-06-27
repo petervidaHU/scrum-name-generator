@@ -1,36 +1,36 @@
-import NameList from "@/app/components/nameList";
-import { iResult, iResultComplete, iResultWithTags } from "@/app/types/nameTypes";
+import '@/styles/globals.css'
+import { iResult, iResultWithTags } from "@/app/types/nameTypes";
 import { FormEventHandler, useState, useCallback } from "react";
 import { post } from '../../app/helpers/fetchOptions';
 import Loader from "@/app/components/Loader";
+import { Button } from "flowbite-react";
+import RootLayout from '@/app/components/layout';
+import { GeneratorForm } from '@/app/components/GeneratorForm';
+import { PageTitle } from '@/app/components/PageTitle';
+import { NameTables } from '@/app/components/NameTables';
+import { createRequestForNames } from './createRequestForNames';
+import { saveNameList } from './saveNameList';
+import { getDescription } from './getDescription';
+import { extendResultListDatabase } from './extendResultListDatabase';
 
 
 export default function Admin() {
   const [loading, setLoading] = useState<boolean>(false);
-  const [result, setResult] = useState<(iResult | iResultWithTags)[] | string>('');
+  const [errorResponse, setErrorResponse] = useState<string>('');
+  const [result, setResult] = useState<(iResult | iResultWithTags)[]>([]);
+  const [tagList, setTagList] = useState<string[]>([]);
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    const endpoint = '/api/form';
     setLoading(true);
-
-    const target = event.target as HTMLFormElement;
-    const data = {
-      topic: target.topic.value,
-      desc: target.desc.value,
-    };
-
-    let tempResult;
-    try {
-      const response = await fetch(endpoint, post(data));
-      tempResult = await response.json();
-    } catch (e) {
-      console.log('error:', e);
+    const { tempResult, tempError } = await createRequestForNames(event);
+    if (!tempError) {
+      setResult(tempResult);
+    } else {
+      setErrorResponse(tempError);
     }
-
-    setResult(tempResult);
     setLoading(false);
-  };
+  }
 
   const handleDelete = useCallback(
     (index: number) => {
@@ -41,12 +41,24 @@ export default function Admin() {
     }, [result]
   );
 
+  const handleDeleteTag = useCallback(
+    (tag: string, index: number) => {
+      if (typeof result === 'string') return;
+      let temp = [...result];
+      temp[index].tags = temp[index].tags?.filter(thisTag => thisTag !== tag);
+      setResult([...temp]);
+    }, [result]
+  );
+
+
+
   const createTagsHandler = async () => {
     setLoading(true);
     const endpoint = '/api/createTags';
-    let tempResult;
+    let tempResult: iResultWithTags[] = [];
     const data = {
       names: result,
+      property: extendResultListDatabase.tags
     }
     try {
       const response = await fetch(endpoint, post(data));
@@ -54,33 +66,57 @@ export default function Admin() {
     } catch (e) {
       console.log('error:', e);
     }
-    console.log('tags:', tempResult);
     setResult(tempResult);
     setLoading(false);
   }
 
+  const createDescriptionHandler = async (name: string) => {
+    const newDesc = await getDescription(name);
+    const tempResult = result.map(n => {
+      if (n.name === name) {
+        n.description = newDesc;
+      };
+      return n;
+    })
+    setResult(tempResult);
+  }
+
+  const getTags = () => {
+    if (typeof result === 'string') return;
+    const tagList = new Set(result.map(object => {
+      return object.tags ? object.tags : [];
+    }).flat());
+    setTagList([...tagList]);
+  }
+
+  const saveList = async () => {
+    setLoading(true);
+    const savedList = saveNameList(result)
+    console.log('saved list: ', savedList)
+    setLoading(false);
+  }
+
   return (
-    <>
-      <Loader loading={loading} />
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="topic">planned topic</label>
-        <input type="text" id="topic" name="topic" required />
+    <RootLayout>
+      <div className="px-20 py-10">
+        <Loader loading={loading} />
+        <PageTitle title="Name Generator" />
+        <GeneratorForm s={handleSubmit} />
+        <div >
+          {result.length > 0 && <NameTables list={result} descriptionWizard={createDescriptionHandler} />}
 
-        <label htmlFor="desc">description</label>
-        <input type="textarea" id="desc" name="desc" />
-
-        <button type="submit">Submit</button>
-      </form>
-
-      <div>{typeof result !== 'string' && (
-        <>
-          <NameList list={result} deleteHandler={handleDelete} />
-          <button onClick={createTagsHandler} disabled={loading}>
+          <Button onClick={createTagsHandler} disabled={loading}>
             create tags
-          </button>
-        </>
-      )}
+          </Button>
+
+          <Button onClick={getTags}>Get tags</Button>
+          {tagList.map(listItem => (<li key={listItem}>{listItem}</li>))}
+          <div>
+            <Button onClick={saveList}>save list</Button>
+            {tagList.map(listItem => (<li key={listItem}>{listItem}</li>))}
+          </div>
+        </div>
       </div>
-    </>
+    </RootLayout >
   );
 }

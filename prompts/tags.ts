@@ -1,0 +1,1 @@
+export const tagGeneration = 'The tags have to be one word, should be quite generic english word, or a proper noun, like name of a country.';

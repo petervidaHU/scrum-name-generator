@@ -4,9 +4,10 @@ import { iResult } from '@/app/types/nameTypes';
 interface iNamesList {
   list: iResult[],
   deleteHandler: (index: number) => void,
+  deleteHandlerTag: (tag: string, index: number) => void,
 }
 
-const NameList: React.FC<iNamesList> = ({ list, deleteHandler }) => {
+const NameList: React.FC<iNamesList> = ({ list, deleteHandler, deleteHandlerTag }) => {
   console.log('list in nameslist componet:', list)
 
 
@@ -23,6 +24,7 @@ const NameList: React.FC<iNamesList> = ({ list, deleteHandler }) => {
             {(tags && tags.length > 0) && tags.map(tag => (
               <div key={tag}>
                 this is a tag for: {name} -- {tag}
+                <button onClick={() => deleteHandlerTag(tag, index)}>del</button>
               </div>))}
           </>
         ))}
