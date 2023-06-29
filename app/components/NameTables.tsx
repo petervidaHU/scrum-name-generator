@@ -9,9 +9,17 @@ interface NameTablesProps {
   descriptionWizard: any,
   proposalHandler: MouseEventHandler<HTMLSpanElement>,
   proposalLabel?: string,
-}
+  tagDeleteHandler?: MouseEventHandler<HTMLSpanElement>
+};
 
-export const NameTables: React.FunctionComponent<NameTablesProps> = ({ title, list, descriptionWizard, proposalHandler, proposalLabel = 'decline' }) => {
+export const NameTables: React.FunctionComponent<NameTablesProps> = ({
+  title,
+  list,
+  descriptionWizard,
+  proposalHandler,
+  proposalLabel = 'decline',
+  tagDeleteHandler,
+}) => {
   return (
     <div className="my-6">
       <h3>{title}</h3>
@@ -30,7 +38,7 @@ export const NameTables: React.FunctionComponent<NameTablesProps> = ({ title, li
           </Table.HeadCell>
         </Table.Head>
         <Table.Body className="divide-y">
-          {list.map(({ name, tags, description }) => {
+          {list.map(({ name, tags, description }, index) => {
             return (
               <React.Fragment key={name}>
                 <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
@@ -49,7 +57,7 @@ export const NameTables: React.FunctionComponent<NameTablesProps> = ({ title, li
                 </Table.Row>
                 {tags && <Table.Row >
                   <Table.Cell className="flex mt-2" colSpan={3}>
-                    <Tags tags={tags} />
+                    <Tags tags={tags} del={tagDeleteHandler} parent={index}/>
                   </Table.Cell>
                 </Table.Row>
                 }

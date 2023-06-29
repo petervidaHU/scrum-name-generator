@@ -12,6 +12,7 @@ import { createRequestForNames } from './createRequestForNames';
 import { saveNameList } from './saveNameList';
 import { getDescription } from './getDescription';
 import { extendResultListDatabase } from './extendResultListDatabase';
+import { extendList } from './extendList';
 
 export default function Admin() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -41,10 +42,13 @@ export default function Admin() {
     }, [proposedList]
   );
 
-  const handleDeleteTag = useCallback(
-    (tag: string, index: number) => {
-      if (typeof proposedList === 'string') return;
+  const handleDeleteTag = useCallback<MouseEventHandler<HTMLSpanElement>>(
+    (event) => {
       let temp = [...proposedList];
+      const tag = event.currentTarget.id;
+      const parent = event.currentTarget.dataset.parent;
+      if (!parent || !tag) throw new Error(`error in deleting tag: ${event.currentTarget}`);
+      const index = +parent;
       temp[index].tags = temp[index].tags?.filter(thisTag => thisTag !== tag);
       setProposedList([...temp]);
     }, [proposedList]
@@ -73,23 +77,7 @@ export default function Admin() {
 
   const extendListHandler = async () => {
     setLoading(true);
-    const nextStep = !proposedList[0]?.description ? extendResultListDatabase.description : extendResultListDatabase.tags;
-    const endpoint = '/api/extendList';
-    let tempResult: iResultWithTags[] = [];
-
-console.log('nextstep: ', nextStep);
-
-    const data = {
-      names: proposedList,
-      property: nextStep,
-    }
-    try {
-      const response = await fetch(endpoint, post(data));
-      tempResult = await response.json();
-    } catch (e) {
-      console.log('error:', e);
-    }
-    console.log('extend list result: ', tempResult);
+    const tempResult = await extendList(proposedList);
     setProposedList(tempResult);
     setLoading(false);
   }
@@ -127,12 +115,14 @@ console.log('nextstep: ', nextStep);
         <PageTitle title="Name Generator" />
         <GeneratorForm s={handleSubmit} />
         <div >
-          {proposedList.length > 0 && <NameTables
-            title='proposed names'
-            list={proposedList}
-            descriptionWizard={createFurtherDescriptionHandler}
-            proposalHandler={handleProposal}
-          />}
+          {proposedList.length > 0 && (
+            <NameTables
+              title='proposed names'
+              list={proposedList}
+              descriptionWizard={createFurtherDescriptionHandler}
+              proposalHandler={handleProposal}
+              tagDeleteHandler={handleDeleteTag}
+            />)}
           <Button onClick={extendListHandler} disabled={loading}>
             {!proposedList[0]?.description ? 'Create Description' : 'Create tags'}
           </Button>
@@ -144,13 +134,14 @@ console.log('nextstep: ', nextStep);
             {tagList.map(listItem => (<li key={listItem}>{listItem}</li>))}
           </div>
         </div>
-        {rejectedList.length > 0 && <NameTables
-          title='rejected names'
-          list={rejectedList}
-          descriptionWizard={createFurtherDescriptionHandler}
-          proposalHandler={handleProposal}
-          proposalLabel='accept'
-        />}
+        {rejectedList.length > 0 && (
+          <NameTables
+            title='rejected names'
+            list={rejectedList}
+            descriptionWizard={createFurtherDescriptionHandler}
+            proposalHandler={handleProposal}
+            proposalLabel='accept'
+          />)}
       </div>
     </RootLayout >
   );
