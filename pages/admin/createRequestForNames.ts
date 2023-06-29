@@ -5,7 +5,7 @@ import { FormEvent } from "react";
 export const createRequestForNames = async (event: FormEvent<HTMLFormElement>): Promise<{tempResult: iResult[], tempError: string}> => {
  
   const fakeresponse: iResult[] = [
-    {name: 'fake name1'}, {name: 'fake name2'}, {name: 'fakdedname3'}, {name: 'fake naffme4'}, {name: 'faffke name5'},
+    {name: 'africa'}, {name: 'asia'}, {name: 'kilimandjaro'}, {name: 'sahara'}, {name: 'jungle'},
   ];
 
   return {

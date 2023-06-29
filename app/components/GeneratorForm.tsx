@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Checkbox, Label, TextInput } from 'flowbite-react';
+import { Button, Checkbox, Label, TextInput, Textarea } from 'flowbite-react';
 
 interface GeneratorFormProps {
   s: (a: any) => any,
@@ -33,10 +33,11 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({ s }) => {
             value="Description"
           />
         </div>
-        <TextInput
+        <Textarea 
           id="description"
+          placeholder="a short description to make it clear. Not mandatory."
+          rows={3}
           shadow
-          type="textarea"
         />
       </div>
 

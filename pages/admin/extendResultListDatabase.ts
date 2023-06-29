@@ -1,29 +1,34 @@
 import { ResultListProperties } from "@/app/types/nameTypes";
 import { tagGeneration } from "@/prompts/tags";
 
-type ExProperties = {
-  prompt: (name: string) => string;
+export type promptPropertiesType = {
   maxToken: number;
   temperature: number;
-  propertyName: ResultListProperties;
+  pName: ResultListProperties;
 };
 
-interface Ex extends Partial<Record<ResultListProperties, ExProperties>> {
-  }
 
+export type promptGenFunction = {
+  [K in ResultListProperties]: (name: string) => string;
+}  
 
-export const extendResultListDatabase: Ex = {
+interface iPropmtProperties extends Partial<Record<ResultListProperties, promptPropertiesType>> {}
+
+export const extendResultListDatabase: iPropmtProperties = {
   tags: {
-    prompt: (name: string) => `Create tags for this topic: ${name}. ${tagGeneration} Answer with a JSON object with this schema: {"answer":["tag1", "tag2", "tag3", "tag4"]}`,
-    propertyName: 'tags',
+    pName: 'tags',
     maxToken: 100,
     temperature: 1,
 
   },
   description: {
-    prompt: (name: string) => `Create a short description for this: ${name}. Answer with a JSON object with this schema: {"answer": "2-3 short sentences"}`,
-    propertyName: 'description',
+    pName: 'description',
     maxToken: 100,
     temperature: 0.8,
   },
+}
+
+export const promtGenerationForExtendList: Partial<promptGenFunction> = {
+  tags: (name: string) => `Create tags for this topic: ${name}. ${tagGeneration} Answer with a JSON object with this schema: {"answer":["tag1", "tag2", "tag3", "tag4"]}`,
+  description: (name: string) => `Create a short description for this: ${name}. Answer with a JSON object with this schema: {"answer": "2-3 short sentences"}`,
 }
