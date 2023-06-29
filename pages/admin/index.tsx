@@ -123,15 +123,14 @@ export default function Admin() {
               proposalHandler={handleProposal}
               tagDeleteHandler={handleDeleteTag}
             />)}
-          <Button onClick={extendListHandler} disabled={loading}>
+          <Button className="my-6" onClick={extendListHandler} disabled={loading}>
             {!proposedList[0]?.description ? 'Create Description' : 'Create tags'}
           </Button>
 
-          <Button onClick={getTags}>Get Tags</Button>
+          <Button className="my-6" onClick={getTags}>Get Tags</Button>
           {tagList.map(listItem => (<li key={listItem}>{listItem}</li>))}
-          <div>
+          <div className="my-6">
             <Button onClick={saveList}>save list</Button>
-            {tagList.map(listItem => (<li key={listItem}>{listItem}</li>))}
           </div>
         </div>
         {rejectedList.length > 0 && (
