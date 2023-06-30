@@ -1,23 +1,22 @@
 import { post } from "@/app/helpers/fetchOptions";
 import { iResult, iResultWithTags, statusType } from "@/app/types/nameTypes";
+import axios from "axios";
 
 export const saveNameList = async (result: string | (iResult | iResultWithTags)[]): Promise<iResult[]> => {
   const endpoint = '/api/saveNames';
 
-  const activ: statusType = true;
-    const data = {
-      names: result,
-      instantActivate: activ,
-    };
+  const data = {
+    names: result,
+  };
 
-    let tempResult: iResult[] = [];
-    try {
-      const response = await fetch(endpoint, post(data));
-      tempResult = await response.json();
-    } catch (e) {
-      console.log('error:', e);
-    }
+  let tempResult: iResult[] = [];
+  try {
+    const response = await axios(endpoint, post(data));
+    tempResult = await response.data;
+  } catch (e) {
+    console.log('error:', e);
+  }
 
-    console.log('save names result: ', tempResult);
-    return tempResult;
+  console.log('save names result: ', tempResult);
+  return tempResult;
 }

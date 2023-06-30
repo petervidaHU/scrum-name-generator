@@ -1,25 +1,33 @@
+import axios from 'axios';
 import { post } from "@/app/helpers/fetchOptions";
-import { iResult, iResultWithTags } from "@/app/types/nameTypes";
+import { centralizedAPICall, iResult, iResultWithTags } from "@/app/types/nameTypes";
 import { extendResultListDatabase } from "./extendResultListDatabase";
+import { axiosWithNotificationInstance } from '@/app/axios/axiosWithNotification';
 
-export const extendList = async (proposedList: (iResult | iResultWithTags)[]): Promise<(iResult | iResultWithTags)[]> => {
+export const extendList = async (proposedList: (iResult | iResultWithTags)[]): centralizedAPICall => {
+  
+  // TODO: refactor with a scalable solution. 
+  // TODO: involve the original topic for generating description, to be sure about the original context cause words could have multiple meanings.
+  
   const nextStep = !proposedList[0]?.description ? extendResultListDatabase.description : extendResultListDatabase.tags;
   const endpoint = '/api/extendList';
+  
   let tempResult: iResultWithTags[] = [];
-
-  console.log('nextstep: ', nextStep);
-
   const data = {
     names: proposedList,
     property: nextStep,
   }
-  try {
-    const response = await fetch(endpoint, post(data));
-    tempResult = await response.json();
-  } catch (e) {
-    console.log('error:', e);
-  }
-  console.log('extend list result: ', tempResult);
 
-  return tempResult;
+  try {
+    const response = await axiosWithNotificationInstance(endpoint, post(data));
+    tempResult = await response.data;
+  } catch (e) {
+    return {
+      error: 'errrrrrrr',
+    };
+  }
+
+  return {
+    result: tempResult,
+  };
 }

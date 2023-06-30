@@ -1,17 +1,7 @@
-export const post = (data: unknown) => {
-  let JSONdata: string;
-  
-  try {
-    JSONdata = JSON.stringify(data);
-  } catch (e) {
-    throw new Error(`Error in stringifying json -- ${e}`)
-  }
-
-  return {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSONdata,
-  };
-}
+export const post = (data: unknown) => ({
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  data,
+});

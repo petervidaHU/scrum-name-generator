@@ -1,8 +1,17 @@
-import { GetItemCommand, ScanCommand, PutItemCommand, DeleteItemCommand } from '@aws-sdk/client-dynamodb';
-import { DatabaseAbstraction, Item, createItemReturnValue, dbClientType, deleteItemReturnValue, getAllItemsReturnValue, getItemReturnValue } from './types/databaseAbstaraction';
+import { GetItemCommand, ScanCommand, PutItemCommand, BatchWriteItemCommand, DeleteItemCommand, AttributeValue } from '@aws-sdk/client-dynamodb';
+import { DatabaseAbstraction, Item, createItemsReturnValue, dbClientType, deleteItemReturnValue, getAllItemsReturnValue, getItemReturnValue } from './types/databaseAbstaraction';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 
-class Database implements DatabaseAbstraction {
-  constructor(private client: dbClientType) {}
+export const dbClient = () => new DynamoDBClient({ region: process.env.AWS_REGION });
+
+class AWWSDynamoDatabase implements DatabaseAbstraction {
+  table: string;
+
+  constructor(
+    private client: dbClientType
+  ) {
+    this.table = process.env.SCRUM_NAMES_TABLE || '';
+  }
 
   async getItem(itemId: string): getItemReturnValue {
     const params = {
@@ -37,23 +46,40 @@ class Database implements DatabaseAbstraction {
     }
   }
 
-  async createItem(item: Item): createItemReturnValue {
-    const params = {
-      TableName: process.env.SCRUM_NAMES_TABLE,
-      Item: {
+  async createItem(items: Item[]): createItemsReturnValue {
+    if (!this.table) return 'no table';
+
+    const putRequests = items.map((item) => {
+      const convertedItem: Record<string, AttributeValue> = {
         name: { S: item.name },
-        tags: { SS: item.tags },
+        description: { S: item.description },
+        status: { S: 'active' },
+      }
+      return ({
+        PutRequest: { Item: convertedItem },
+      })
+    });
+
+    const params = {
+      RequestItems: {
+        [this.table]: putRequests,
       },
+      ReturnConsumedCapacity: 'TOTAL',
+      ReturnItemCollectionMetrics: 'SIZE',
+      ConditionExpression: 'attribute_not_exists(#n)',
+      ExpressionAttributeNames: {
+        '#n': 'name'
+      }
     };
+    const command = new BatchWriteItemCommand(params);
 
     try {
-      const command = new PutItemCommand(params);
-      await this.client.send(command);
-      console.log('Item created successfully');
-      return item;
-    } catch (error) {
-      console.error('Error creating item in DynamoDB:', error);
-      throw error;
+      const response = await this.client.send(command);
+      console.log('Items created successfully:', response);
+      return 'Items created successfully';
+    } catch (err) {
+      console.log('Error creating items:', err);
+      return 'Error creating items';
     }
   }
 
@@ -75,3 +101,5 @@ class Database implements DatabaseAbstraction {
     }
   }
 }
+
+export const database = new AWWSDynamoDatabase(dbClient());

@@ -1,18 +1,9 @@
 import { post } from "@/app/helpers/fetchOptions";
-import { iResult } from "@/app/types/nameTypes";
+import { centralizedAPICall, iResult } from "@/app/types/nameTypes";
+import axios from "axios";
 import { FormEvent } from "react";
 
-export const createRequestForNames = async (event: FormEvent<HTMLFormElement>): Promise<{tempResult: iResult[], tempError: string}> => {
- 
-  const fakeresponse: iResult[] = [
-    {name: 'africa'}, {name: 'asia'}, {name: 'kilimanjaro'}, {name: 'sahara'}, {name: 'jungle'},
-  ];
-
-  return {
-    tempResult: fakeresponse,
-    tempError: '',
-  };
-
+export const createRequestForNames = async (event: FormEvent<HTMLFormElement>): centralizedAPICall => {
   const endpoint = '/api/form';
 
   const target = event.target as HTMLFormElement;
@@ -23,15 +14,17 @@ export const createRequestForNames = async (event: FormEvent<HTMLFormElement>): 
 
   let tempResult: iResult[] = [];
   try {
-    const response = await fetch(endpoint, post(data));
-    tempResult = await response.json();
+    const response = await axios(endpoint, post(data));
+    tempResult = await response.data;
   } catch (e) {
     console.log('error:', e);
+    return {
+      error: 'error catched in client side catch for create names',
+    }
   }
 
-  return  {
-    tempResult: fakeresponse,
-    tempError: '',
-  };
+  return {
+    result: tempResult,
+      };
 
 };

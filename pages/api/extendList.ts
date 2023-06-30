@@ -22,6 +22,7 @@ export default async function handler(req: any, res: any) {
       if (!response.data.choices[0].text) {
         throw new Error('No response, we are alone');
       }
+      // TODO: forget JSON format, use plain object with axios
       const { answer } = JSON.parse(response.data.choices[0].text);
 
       responseFromAI.push({

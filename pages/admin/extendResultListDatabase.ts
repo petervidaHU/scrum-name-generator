@@ -7,7 +7,6 @@ export type promptPropertiesType = {
   pName: ResultListProperties;
 };
 
-
 export type promptGenFunction = {
   [K in ResultListProperties]: (name: string) => string;
 }  

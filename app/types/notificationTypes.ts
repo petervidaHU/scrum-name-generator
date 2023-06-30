@@ -1,6 +1,6 @@
 import { ReactNode } from "react"
 
-export type NotificationTypes = 'success' | 'error' | 'warning' | 'info'
+export type NotificationVariantTypes = 'success' | 'error' | 'warning' | 'info';
 
 export type NotificationType = {
   /**
@@ -23,7 +23,7 @@ export type NotificationType = {
   /**
    * The type of notification to show.
    */
-  type?: NotificationTypes
+  type?: NotificationVariantTypes
 
   /**
    * Optional callback function to run side effects after the notification has closed.

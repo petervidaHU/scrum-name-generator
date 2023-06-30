@@ -2,7 +2,7 @@ import '@/styles/globals.css'
 import type { AppProps } from 'next/app';
 import { Provider } from 'react-redux'
 import { store } from '@/redux/store'
-import { NoteList } from '@/app/components/noteList'
+import { NoteList } from '@/app/components/notificationItems/noteList'
 import Portal from '@/app/portal';
 
 function MyApp({ Component, pageProps }: AppProps) {

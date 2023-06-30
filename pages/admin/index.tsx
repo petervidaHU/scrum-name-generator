@@ -11,8 +11,6 @@ import { createRequestForNames } from './createRequestForNames';
 import { saveNameList } from './saveNameList';
 import { getDescription } from './getDescription';
 import { extendList } from './extendList';
-import { addNotification } from '@/app/features/notifications/notifications.slice'
-import { useAppDispatch } from '@/redux/hooks'
 
 export default function Admin() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,27 +18,19 @@ export default function Admin() {
   const [proposedList, setProposedList] = useState<(iResult | iResultWithTags)[]>([]);
   const [rejectedList, setRejectedList] = useState<(iResult | iResultWithTags)[]>([]);
   const [tagList, setTagList] = useState<string[]>([]);
-  const dispatch = useAppDispatch()
+
+  // TODO: create a centralized loading/spinner handler
+  // TODO: clear the errorResponse
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     setLoading(true);
-    const { tempResult, tempError } = await createRequestForNames(event);
-    if (!tempError) {
-      setProposedList(tempResult);
+    const { result, error } = await createRequestForNames(event);
+    if (result) {
+      setProposedList(result);
     } else {
-      setErrorResponse(tempError);
+      setErrorResponse(error);
     }
-
-    dispatch(
-      addNotification({
-        message: 'New names queried',
-        type: 'info',
-        onClose: () => console.log('I was closed'),
-        autoHideDuration: 6000,
-      })
-    )
-
     setLoading(false);
   }
 
@@ -79,8 +69,12 @@ export default function Admin() {
 
   const extendListHandler = async () => {
     setLoading(true);
-    const tempResult = await extendList(proposedList);
-    setProposedList(tempResult);
+    const { result, error } = await extendList(proposedList);
+    if (result) {
+      setProposedList(result);
+    } else {
+      setErrorResponse(error);
+    }
     setLoading(false);
   }
 
@@ -96,7 +90,6 @@ export default function Admin() {
   }
 
   const getTags = () => {
-    if (typeof proposedList === 'string') return;
     const tagList = new Set(proposedList.map(object => {
       return object.tags ? object.tags : [];
     }).flat());
@@ -116,7 +109,10 @@ export default function Admin() {
         <Loader loading={loading} />
         <PageTitle title="Name Generator" />
         <GeneratorForm s={handleSubmit} />
-        <div className="bg-red-500">
+        <div>
+          {errorResponse ? `we got an error, but we have a notification bar, so this line seems redundant: ${errorResponse}` : null}
+        </div>
+        <div>
           {proposedList.length > 0 && (
             <NameTables
               title='proposed names'
