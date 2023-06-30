@@ -1,7 +1,6 @@
-import '@/styles/globals.css'
+// import '@/styles/globals.css'
 import { iResult, iResultWithTags } from "@/app/types/nameTypes";
 import { FormEventHandler, useState, useCallback, MouseEventHandler } from "react";
-import { post } from '../../app/helpers/fetchOptions';
 import Loader from "@/app/components/Loader";
 import { Button } from "flowbite-react";
 import RootLayout from '@/app/components/layout';
@@ -11,8 +10,9 @@ import { NameTables } from '@/app/components/NameTables';
 import { createRequestForNames } from './createRequestForNames';
 import { saveNameList } from './saveNameList';
 import { getDescription } from './getDescription';
-import { extendResultListDatabase } from './extendResultListDatabase';
 import { extendList } from './extendList';
+import { addNotification } from '@/app/features/notifications/notifications.slice'
+import { useAppDispatch } from '@/redux/hooks'
 
 export default function Admin() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -20,6 +20,7 @@ export default function Admin() {
   const [proposedList, setProposedList] = useState<(iResult | iResultWithTags)[]>([]);
   const [rejectedList, setRejectedList] = useState<(iResult | iResultWithTags)[]>([]);
   const [tagList, setTagList] = useState<string[]>([]);
+  const dispatch = useAppDispatch()
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -30,17 +31,18 @@ export default function Admin() {
     } else {
       setErrorResponse(tempError);
     }
+
+    dispatch(
+      addNotification({
+        message: 'New names queried',
+        type: 'info',
+        onClose: () => console.log('I was closed'),
+        autoHideDuration: 6000,
+      })
+    )
+
     setLoading(false);
   }
-
-  const handleDelete = useCallback(
-    (index: number) => {
-      if (typeof proposedList === 'string') return;
-      let temp = [...proposedList];
-      temp.splice(index, 1);
-      setProposedList([...temp]);
-    }, [proposedList]
-  );
 
   const handleDeleteTag = useCallback<MouseEventHandler<HTMLSpanElement>>(
     (event) => {
