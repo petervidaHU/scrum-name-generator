@@ -3,7 +3,7 @@ import { iResult, iResultWithTags } from "@/app/types/nameTypes";
 import { FormEventHandler, useState, useCallback, MouseEventHandler } from "react";
 import Loader from "@/app/components/Loader";
 import { Button } from "flowbite-react";
-import RootLayout from '@/app/components/layout';
+import AdminLayout from '@/app/components/layouts/adminLayout';
 import { GeneratorForm } from '@/app/components/GeneratorForm';
 import { PageTitle } from '@/app/components/PageTitle';
 import { NameTables } from '@/app/components/NameTables';
@@ -104,7 +104,7 @@ export default function Admin() {
   }
 
   return (
-    <RootLayout>
+    <AdminLayout>
       <div className="px-20 py-10">
         <Loader loading={loading} />
         <PageTitle title="Name Generator" />
@@ -140,6 +140,6 @@ export default function Admin() {
             proposalLabel='accept'
           />)}
       </div>
-    </RootLayout >
+    </AdminLayout >
   );
 }
