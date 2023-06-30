@@ -116,7 +116,7 @@ export default function Admin() {
         <Loader loading={loading} />
         <PageTitle title="Name Generator" />
         <GeneratorForm s={handleSubmit} />
-        <div >
+        <div className="bg-red-500">
           {proposedList.length > 0 && (
             <NameTables
               title='proposed names'

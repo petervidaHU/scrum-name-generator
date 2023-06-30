@@ -1,8 +1,8 @@
 import { Toast } from 'flowbite-react';
-import { NotificationType } from '../types/notificationTypes';
+import { NotificationType } from '../../types/notificationTypes';
 import { FunctionComponent, useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks'
-import { dismissNotification } from '../features/notifications/notifications.slice';
+import { dismissNotification } from '../../features/notifications/notifications.slice';
 
 type NotificationProps = {
   notif: NotificationType,
@@ -23,7 +23,7 @@ export const Notification: FunctionComponent<NotificationProps> = ({ notif }): J
   }, [dispatch, notif.autoHideDuration, notif.id])
 
   return (
-    <Toast>
+    <Toast className="bg-red-500">
       <div>
         {notif.message}
       </div>

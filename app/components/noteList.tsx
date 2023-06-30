@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNotifications } from '@/app/features/notifications/notifications.slice'
-import { Notification } from './notification';
+import { Notification } from './notificationItems/notification';
 
 export const NoteList = () => {
   const notifications = useNotifications()
