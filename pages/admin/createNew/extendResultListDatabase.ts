@@ -1,17 +1,17 @@
-import { ResultListProperties } from "@/app/types/nameTypes";
+import { NameItemProperties } from "@/app/types/nameTypes";
 import { tagGeneration } from "@/prompts/tags";
 
 export type promptPropertiesType = {
   maxToken: number;
   temperature: number;
-  pName: ResultListProperties;
+  pName: NameItemProperties;
 };
 
 export type promptGenFunction = {
-  [K in ResultListProperties]: (name: string) => string;
+  [K in NameItemProperties]: (name: string) => string;
 }  
 
-interface iPropmtProperties extends Partial<Record<ResultListProperties, promptPropertiesType>> {}
+interface iPropmtProperties extends Partial<Record<NameItemProperties, promptPropertiesType>> {}
 
 export const extendResultListDatabase: iPropmtProperties = {
   tags: {

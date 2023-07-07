@@ -1,6 +1,7 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { openAIClient } from '../../app/openAIClient';
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const name = req.body;
   if (!name) return res.status(400).json('no name');
   

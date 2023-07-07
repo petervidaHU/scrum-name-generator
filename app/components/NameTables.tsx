@@ -1,11 +1,11 @@
 import React, { MouseEventHandler } from 'react'
 import { Button, Table, ToggleSwitch } from 'flowbite-react';
-import { iResult, iResultWithTags } from '../types/nameTypes';
+import { iNameItem, iNameItemWithTags } from '../types/nameTypes';
 import { Tags } from './tags';
 
 interface NameTablesProps {
   title: string,
-  list: iResult[] | iResultWithTags[];
+  list: iNameItem[] | iNameItemWithTags[];
   descriptionWizard: any,
   proposalHandler: MouseEventHandler<HTMLSpanElement>,
   proposalLabel?: string,

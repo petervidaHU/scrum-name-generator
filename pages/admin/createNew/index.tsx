@@ -1,5 +1,4 @@
-// import '@/styles/globals.css'
-import { iResult, iResultWithTags } from "@/app/types/nameTypes";
+import { iNameItem, iNameItemWithTags } from "@/app/types/nameTypes";
 import { FormEventHandler, useState, useCallback, MouseEventHandler } from "react";
 import Loader from "@/app/components/Loader";
 import { Button } from "flowbite-react";
@@ -15,8 +14,8 @@ import { extendList } from './extendList';
 export default function Admin() {
   const [loading, setLoading] = useState<boolean>(false);
   const [errorResponse, setErrorResponse] = useState<string>('');
-  const [proposedList, setProposedList] = useState<(iResult | iResultWithTags)[]>([]);
-  const [rejectedList, setRejectedList] = useState<(iResult | iResultWithTags)[]>([]);
+  const [proposedList, setProposedList] = useState<(iNameItem | iNameItemWithTags)[]>([]);
+  const [rejectedList, setRejectedList] = useState<(iNameItem | iNameItemWithTags)[]>([]);
   const [tagList, setTagList] = useState<string[]>([]);
 
   // TODO: create a centralized loading/spinner handler

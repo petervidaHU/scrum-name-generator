@@ -1,16 +1,16 @@
 export type statusType = 'active' | 'deactivated' | 'investigation';
 
-export interface iResult {
+export interface iNameItem {
   name: string,
   description?: string,
   tags?: string[],
   status: statusType,
 };
 
-export interface iResultWithTags extends Omit<iResult, 'tags'>, Required<Pick<iResult, 'tags'>> { }
+export interface iNameItemWithTags extends Omit<iNameItem, 'tags'>, Required<Pick<iNameItem, 'tags'>> { }
 
-export interface iResultComplete extends Required<iResult> { }
+export interface iNameItemComplete extends Required<iNameItem> { }
 
-export type ResultListProperties = keyof iResult;
+export type NameItemProperties = keyof iNameItem;
 
-export type centralizedAPICall = Promise<{ result: iResult[]; error?: never; } | { result?: never; error: string; }>;
+export type centralizedAPICall = Promise<{ result: iNameItem[]; error?: never; } | { result?: never; error: string; }>;

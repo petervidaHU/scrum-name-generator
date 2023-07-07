@@ -1,8 +1,8 @@
 import React from 'react';
-import { iResult } from '@/app/types/nameTypes';
+import { iNameItem } from '@/app/types/nameTypes';
 
 interface iNamesList {
-  list: iResult[],
+  list: iNameItem[],
   deleteHandler: (index: number) => void,
   deleteHandlerTag: (tag: string, index: number) => void,
 }

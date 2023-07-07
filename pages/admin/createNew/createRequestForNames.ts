@@ -1,5 +1,5 @@
 import { post } from "@/app/helpers/fetchOptions";
-import { centralizedAPICall, iResult } from "@/app/types/nameTypes";
+import { centralizedAPICall, iNameItem } from "@/app/types/nameTypes";
 import axios from "axios";
 import { FormEvent } from "react";
 
@@ -12,7 +12,7 @@ export const createRequestForNames = async (event: FormEvent<HTMLFormElement>): 
     desc: target.description.value,
   };
 
-  let tempResult: iResult[] = [];
+  let tempResult: iNameItem[] = [];
   try {
     const response = await axios(endpoint, post(data));
     tempResult = await response.data;

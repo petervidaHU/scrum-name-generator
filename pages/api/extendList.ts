@@ -1,12 +1,13 @@
+import { NextApiRequest, NextApiResponse } from 'next';
 import { openAIClient } from "@/app/openAIClient";
-import { iResult } from "@/app/types/nameTypes";
-import { promptPropertiesType, promtGenerationForExtendList } from "../admin/extendResultListDatabase";
+import { iNameItem } from "@/app/types/nameTypes";
+import { promptPropertiesType, promtGenerationForExtendList } from '../admin/createNew/extendResultListDatabase';
 
-export default async function handler(req: any, res: any) {
-   const { names, property: {maxToken, temperature, pName} }: {names: iResult[], property: promptPropertiesType} = req.body;
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+   const { names, property: {maxToken, temperature, pName} }: {names: iNameItem[], property: promptPropertiesType} = req.body;
    const openai = openAIClient();
 
-  let responseFromAI: iResult[] = [];
+  let responseFromAI: iNameItem[] = [];
   for (const nameObject of names) {
     const promptFunc = promtGenerationForExtendList[pName];
     if (!promptFunc) throw new Error('Can not create prompt, missing function');

@@ -2,7 +2,7 @@ import { AttributeValue, DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { statusType } from "./nameTypes";
 
 export type getItemReturnValue = Promise<Record<string, AttributeValue> | undefined>;
-export type getAllItemsReturnValue = Promise<Record<string, AttributeValue>[] | undefined>;
+export type getAllItemsReturnValue = Promise<Record<string, AttributeValue>[]>;
 export type createItemsReturnValue = Promise<string>;
 export type deleteItemReturnValue = Promise<Record<string, AttributeValue> | undefined>;
 

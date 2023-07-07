@@ -1,8 +1,9 @@
-import { iResult } from "@/app/types/nameTypes";
+import { NextApiRequest, NextApiResponse } from 'next';
+import { iNameItem } from "@/app/types/nameTypes";
 import { generalPrinciples, exploreNewTopic, formatArray, PCCheck, formatYNReaseon } from "@/prompts/newTopic";
 import { openAIClient } from '../../app/openAIClient';
 
-export default async function handler(req: any, res: any) {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { topic, desc } = req.body;
   const openai = openAIClient();
 
@@ -42,8 +43,8 @@ export default async function handler(req: any, res: any) {
     throw new Error(`Chaos AD, Tanks on the street... ${err}`);
   }
 
-  const temp = text.split(",").map((splitted: string): iResult => ({name: splitted}));
+  const temp = text.split(",").map((splitted: string): iNameItem => ({name: splitted}));
 
-  const resData: iResult[] = temp;
+  const resData: iNameItem[] = temp;
   res.status(200).json(resData);
 }

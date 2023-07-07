@@ -1,15 +1,15 @@
 import { post } from "@/app/helpers/fetchOptions";
-import { iResult, iResultWithTags, statusType } from "@/app/types/nameTypes";
+import { iNameItem, iNameItemWithTags, statusType } from "@/app/types/nameTypes";
 import axios from "axios";
 
-export const saveNameList = async (result: string | (iResult | iResultWithTags)[]): Promise<iResult[]> => {
+export const saveNameList = async (result: string | (iNameItem | iNameItemWithTags)[]): Promise<iNameItem[]> => {
   const endpoint = '/api/saveNames';
 
   const data = {
     names: result,
   };
 
-  let tempResult: iResult[] = [];
+  let tempResult: iNameItem[] = [];
   try {
     const response = await axios(endpoint, post(data));
     tempResult = await response.data;
