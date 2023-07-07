@@ -4,7 +4,7 @@ export interface iNameItem {
   name: string,
   description?: string,
   tags?: string[],
-  status: statusType,
+  status?: statusType,
 };
 
 export interface iNameItemWithTags extends Omit<iNameItem, 'tags'>, Required<Pick<iNameItem, 'tags'>> { }

@@ -43,8 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     throw new Error(`Chaos AD, Tanks on the street... ${err}`);
   }
 
-  const temp = text.split(",").map((splitted: string): iNameItem => ({name: splitted}));
+  const resData: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({name: splitted.trim()}));
 
-  const resData: iNameItem[] = temp;
   res.status(200).json(resData);
 }
