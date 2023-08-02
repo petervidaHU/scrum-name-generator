@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       max_tokens: 100,
       temperature: 0.1,
     });
-
+    console.log('checking', swearingPreCheck);
     if (!swearingPreCheck.data.choices[0].text) throw new Error('No response, we are alone');
     textSwear = JSON.parse(swearingPreCheck.data.choices[0].text);
 
@@ -43,7 +43,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     throw new Error(`Chaos AD, Tanks on the street... ${err}`);
   }
 
-  const resData: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({name: splitted.trim()}));
+  const resData: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
 
   res.status(200).json(resData);
 }
