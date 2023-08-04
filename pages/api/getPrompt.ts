@@ -4,10 +4,12 @@ import { PVersion } from '../../pVersioning/versioner';
 const v = new PVersion();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { newName, newDesc } = req.body;
-  
-  const result = v.initializePromp(newName, newDesc);
-  
-  console.log('inAPOI: ' + result);
-  res.status(200).json(result);
+  const { prompt } = req.query;
+
+  if (typeof prompt !== 'string') {
+    res.status(400).json({ message: 'no prompt id' })
+  } else {
+    const result = await v.getOnePromp(prompt);
+    res.status(200).json(result);
   }
+}

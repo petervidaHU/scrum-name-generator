@@ -1,7 +1,7 @@
 import { iNameItem, iNameItemWithTags } from "@/app/types/nameTypes";
 import { FormEventHandler, useState, useCallback, MouseEventHandler } from "react";
 import Loader from "@/app/components/Loader";
-import { Button } from "flowbite-react";
+import { Button } from "@mui/material";
 import AdminLayout from '@/app/components/layouts/adminLayout';
 import { GeneratorForm } from '@/app/components/GeneratorForm';
 import { PageTitle } from '@/app/components/PageTitle';

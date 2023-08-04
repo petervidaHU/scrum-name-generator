@@ -1,4 +1,4 @@
-import { Toast } from 'flowbite-react';
+import { Snackbar } from '@mui/material';
 import { NotificationType, NotificationVariantTypes } from '../../types/notificationTypes';
 import { FunctionComponent, useEffect } from 'react';
 import { useAppDispatch } from '@/redux/hooks'
@@ -37,11 +37,10 @@ export const Notification: FunctionComponent<NotificationProps> = ({
   }, [dispatch, autoHideDuration, id])
 
   return (
-    <Toast className={notificationVariants[type]}>
+    <Snackbar className={notificationVariants[type]}>
       <div>
         {message}
       </div>
-      <Toast.Toggle />
-    </Toast>
+    </Snackbar>
   )
 }
