@@ -1,0 +1,86 @@
+{
+  "id": "47a1820a-3cec-40e4-bd38-8685e8117ffc",
+  "name": "subprompt",
+  "description": "for inject",
+  "created": "2023-08-07T13:48:09.287Z",
+  "versions": [
+    {
+      "id": "780bc76f-27cd-4fe2-8a18-e617cdd42074",
+      "description": "sub1 desc",
+      "created": "2023-08-07T13:49:04.246Z",
+      "promptObject": [
+        "sub1"
+      ],
+      "promptText": "sub1"
+    },
+    {
+      "id": "50375ce8-0c3a-4506-a7de-e843853b5dfe",
+      "description": "sub2 desc",
+      "created": "2023-08-07T13:49:12.157Z",
+      "promptObject": [
+        "sub2"
+      ],
+      "promptText": "sub2"
+    },
+    {
+      "id": "719b4ada-789d-4ccd-acba-6000350e43e8",
+      "description": "",
+      "created": "2023-08-09T11:44:53.052Z",
+      "promptObject": [
+        "fff,se,[object Object],cond string,third fff"
+      ],
+      "promptText": "fff,se,[object Object],cond string,third fff"
+    },
+    {
+      "id": "b491e681-bdcd-4889-8335-251dee52beb1",
+      "description": "",
+      "created": "2023-08-09T11:50:04.978Z",
+      "promptObject": [
+        "fff,se,[object Object],cond string,[object Object],cond string,third fff"
+      ],
+      "promptText": "fff,se,[object Object],cond string,[object Object],cond string,third fff"
+    },
+    {
+      "id": "e98cb79b-38a8-407f-b90f-ed04354e77fe",
+      "description": "",
+      "created": "2023-08-09T11:51:36.956Z",
+      "promptObject": [
+        "fff",
+        "se",
+        {
+          "collectionId": "7d0472fe-f1ea-4def-a549-1f5b6c21b372",
+          "versionId": 1
+        },
+        "cond string",
+        {
+          "collectionId": "7d0472fe-f1ea-4def-a549-1f5b6c21b372",
+          "versionId": 1
+        },
+        "cond string",
+        "third fff"
+      ],
+      "promptText": "not implemented yet"
+    },
+    {
+      "id": "fe3516c6-baf4-4bb7-b892-885d370b664d",
+      "description": "",
+      "created": "2023-08-09T12:07:21.338Z",
+      "promptObject": [
+        "fff",
+        "se",
+        {
+          "collectionId": "7d0472fe-f1ea-4def-a549-1f5b6c21b372",
+          "versionId": 1
+        },
+        "cond string",
+        {
+          "collectionId": "7d0472fe-f1ea-4def-a549-1f5b6c21b372",
+          "versionId": 1
+        },
+        "cond string",
+        "third fff"
+      ],
+      "promptText": "not implemented yet"
+    }
+  ]
+}

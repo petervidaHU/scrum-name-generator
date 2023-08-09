@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { promptType } from './versionTypes';
+import { promptCollectionType, promptVersionType } from './versionTypes';
 
 const defaultDB = 'mockDatabase'
 
@@ -12,17 +12,17 @@ export class DB {
   }
 
   async getList() {
-    let f;
+    let list;
     try {
       const files = await fs.readdir(this.db);
-      f = files.map(file => path.parse(file).name)
+      list = files.map(file => path.parse(file).name)
     } catch (err) {
       console.error('Error reading directory:', err);
     }
-    return f;
+    return list;
   }
 
-  async getOnePrompt(id: string) {
+  async getOnePromptCollection(id: string) {
     const filePath = path.join(this.db, `${id}.json`);
     let content = {};
     try {
@@ -35,50 +35,34 @@ export class DB {
 
   }
 
-  initializePrompt(p: any): void {
+  initializePrompt(p: promptCollectionType): void {
     const id = p.id;
-
     const filePath = path.join(this.db, `${id}.json`);
-    const directoryPath = path.dirname(filePath);
 
     try {
       const jsonData = JSON.stringify(p, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
-      console.error('Error saving data to file:', error);
+      console.error('Error saving init. prompt collection:', error);
     }
   }
 
-  async saveDataToFile(d: promptType): Promise<any> {
-    const id = Object.keys(d)[0];
-    const filePath = path.join(this.db, `${id}.json`);
-    const directoryPath = path.dirname(filePath);
-    /* 
-        let existingData: promptType = {};
+  async savePromptVersion(collectionId: string, p: promptVersionType): Promise<any> {
+    const filePath = path.join(this.db, `${collectionId}.json`);
     
-        if (await fs.access(filePath)) {
-          try {
-            const existingDataContent = await fs.readFile(filePath, 'utf-8');
-            existingData = JSON.parse(existingDataContent);
-            console.log('existing data: ', existingData)
-          } catch (error) {
-            console.error('Error reading existing data:', error);
-            return;
-          }
-        }
-    
-        const mergedData = { ...existingData, ...d };
-    
-        if (!fs.existsSync(directoryPath)) {
-          fs.mkdirSync(directoryPath, { recursive: true });
-        }
-    
-        try {
-          const jsonData = JSON.stringify(mergedData, null, 2);
-          fs.writeFileSync(filePath, jsonData, 'utf-8');
-        } catch (error) {
-          console.error('Error saving data to file:', error);
-        } */
+    try {
+    const existingContent = await fs.readFile(filePath, 'utf-8');
+    const content = JSON.parse(existingContent);
+
+    console.log('existing con: ', content)
+    content.versions.push(p)
+
+    await fs.writeFile(filePath, JSON.stringify(content, null, 2));
+  } catch (error) {
+    console.error('Error saving prompt version:', error);
   }
+
+  return collectionId;
+}
 
 }

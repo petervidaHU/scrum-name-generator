@@ -1,57 +1,44 @@
 import { v4 as uuid } from 'uuid';
-import { promptType } from './versionTypes';
+import { promptCollectionType, promptVersionType } from './versionTypes';
 import { DB } from './DB';
+import { parseJsonText } from 'typescript';
 
 const db = new DB();
 
-
 export class PVersion {
-  constructor() { }
+  private db;
+  constructor() {
+    this.db = db;
+   }
 
   async getList(): Promise<any> {
-    const getListFromDB = await db.getList();
+    const getListFromDB = await this.db.getList();
     return getListFromDB;
-
   }
 
-  async getOnePromp(id: string): Promise<promptType> {
-    const res = await db.getOnePrompt(id);
+  async getOnePromptCollection(id: string): Promise<promptCollectionType | {}> {
+    const res = await this.db.getOnePromptCollection(id);
     return res;
   }
 
   initializePromp(name: string, description: string): string {
     const id = uuid();
-    const newPrompt = {
+    const newPromptCollection = {
       id,
       name,
       description,
       created: new Date(),
-      prompts: {},
+      versions: [],
     }
 
-    db.initializePrompt(newPrompt)
+    this.db.initializePrompt(newPromptCollection)
 
     return id;
   }
-
-  createNewPrompt(pID: string, newText: string, newDesc: string): promptType {
-    const vID = uuid();
-
-    // db.getPrompt(pID)
-
-    const newData = {
-      [vID]: {
-        pText: newText,
-        v: 1,
-        created: new Date(),
-        description: newDesc,
-      }
-    }
-    db.saveDataToFile(newData)
-
-    return newData;
-
+  
+  async savePromptVersion(collectionId: string, newPrompt: promptVersionType) {
+    const result = await this.db.savePromptVersion(collectionId, newPrompt)
+    return result;
   }
-
 
 }

@@ -4,9 +4,10 @@ import { PVersion } from '../../pVersioning/versioner';
 const v = new PVersion();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { newName, newDesc } = req.body;
+  const { id, newPrompt } = req.body;
   
-  const result = v.initializePromp(newName, newDesc);
+  const result = await v.savePromptVersion(id, newPrompt);
   
+  console.log('in save prompt API: ', result);
   res.status(200).json(result);
   }

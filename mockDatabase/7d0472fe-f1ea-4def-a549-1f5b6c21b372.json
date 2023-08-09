@@ -1,0 +1,35 @@
+{
+  "id": "7d0472fe-f1ea-4def-a549-1f5b6c21b372",
+  "name": "mondayFirstPromptCollection",
+  "description": "descrofj slsfjk monfs",
+  "created": "2023-08-07T13:47:47.451Z",
+  "versions": [
+    {
+      "id": "1d9956a6-1b97-47bd-a21d-0f90bb5dda8a",
+      "description": "basic first desc",
+      "created": "2023-08-07T13:48:44.976Z",
+      "promptObject": [
+        "basic first version"
+      ],
+      "promptText": "basic first version"
+    },
+    {
+      "id": "2debcd07-4fcd-40a2-94d3-8df84aa3e62d",
+      "description": "seconf",
+      "created": "2023-08-09T10:40:34.322Z",
+      "promptObject": [
+        "fff,second string,thi,[object Object],rd fff"
+      ],
+      "promptText": "fff,second string,thi,[object Object],rd fff"
+    },
+    {
+      "id": "190aac9d-8ea2-454a-a922-d0f7ed530373",
+      "description": "thidrd ",
+      "created": "2023-08-09T10:40:58.788Z",
+      "promptObject": [
+        "fff,second string,third fff"
+      ],
+      "promptText": "fff,second string,third fff"
+    }
+  ]
+}

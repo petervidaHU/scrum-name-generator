@@ -104,7 +104,7 @@ export default function Admin() {
 
   return (
     <AdminLayout>
-      <div className="px-20 py-10">
+      <div>
         <Loader loading={loading} />
         <PageTitle title="Name Generator" />
         <GeneratorForm s={handleSubmit} />
@@ -120,11 +120,11 @@ export default function Admin() {
               proposalHandler={handleProposal}
               tagDeleteHandler={handleDeleteTag}
             />)}
-          <Button className="my-6" onClick={extendListHandler} disabled={loading}>
+          <Button onClick={extendListHandler} disabled={loading}>
             {!proposedList[0]?.description ? 'Create Description' : 'Create tags'}
           </Button>
 
-          <Button className="my-6" onClick={getTags}>Get Tags</Button>
+          <Button onClick={getTags}>Get Tags</Button>
           {tagList.map(listItem => (<li key={listItem}>{listItem}</li>))}
           <div className="my-6">
             <Button onClick={saveList}>save list</Button>

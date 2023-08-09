@@ -1,18 +1,20 @@
-import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper } from '@mui/material';
+import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper, Box } from '@mui/material';
 import React, { FormEventHandler, useState, useEffect, ChangeEventHandler, ChangeEvent } from 'react'
 import axios from 'axios';
-import { promptProperties, promptType } from '@/pVersioning/versionTypes';
+import { promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
 import PromptEditor from '@/app/components/PromptEditor';
+import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
+
+const createNewPromptAPI = '/api/newPrompt'
+const getPromptListAPI = '/api/getList'
+const getPrompt = '/api/getPrompt'
+const savePrompt = '/api/savePrompt'
 
 const ManagePrompts = () => {
-  const [prompt, setPrompt] = useState<React.JSX.Element[]>([]);
+  const [prompt, setPrompt] = useState<promptCollectionType | null>(null);
   const [list, setList] = useState([]);
   const [id, setId] = useState<string>('');
-  const [newPrompt, setNewPrompt] = useState<promptType | null>(null);
-
-  const createNewPromptAPI = '/api/newPrompt'
-  const getPromptListAPI = '/api/getList'
-  const getPrompt = '/api/getPrompt'
+  const [newPrompt, setNewPrompt] = useState<promptCollectionType | null>(null);
 
   useEffect(() => {
     const getList = async () => {
@@ -23,19 +25,7 @@ const ManagePrompts = () => {
     getList();
   }, [])
 
-  useEffect(() => {
-    if (newPrompt) {
-      console.log('Object.keys(p)', Object.keys(newPrompt))
-      const id: string = Object.keys(newPrompt)[0];
-      const obj = newPrompt[id];
-      for (let key in obj) {
-        console.log(key, ': ', obj[key as keyof promptProperties])
-      }
-    }
-
-  }, [newPrompt])
-
-  const handleSubmitNewPrompt: FormEventHandler<HTMLFormElement> = async (event) => {
+  const handleNewPrompt: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     const { newName, newDesc } = event.target as any;
 
@@ -49,8 +39,24 @@ const ManagePrompts = () => {
         newDesc: newDesc.value,
       },
     })
+    console.log('new prompt rsult data:', result.data)
     setNewPrompt(result.data);
   }
+
+  const saveNewPromptVersion = async (newPrompt: promptVersionType | undefined) => {
+    if (newPrompt) {
+      const result = await axios(savePrompt, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        data: {
+          id,
+          newPrompt,
+        },
+      });
+    }
+  };
 
   const handleSelect = async (event: SelectChangeEvent) => {
     event.preventDefault();
@@ -65,68 +71,56 @@ const ManagePrompts = () => {
         prompt: value,
       },
     })
-    const output = Object.keys(data).map(p => (
-      <p key={p}>
-        <strong>
-          {p}
-        </strong>
-        :
-        <span>
-          {typeof data[p] === 'string' ? data[p] : JSON.stringify(data[p])}
-        </span>
-      </p>
-    ))
-    setId(data.id);
-    setPrompt(output);
-  }
 
-  console.log('lis1', prompt)
+    setId(data.id);
+    setPrompt(data);
+  }
+  console.log('list: ', list);
 
   return (
     <>
-      <Typography variant='h2'>manage prompts</Typography>
-      <Paper elevation={3} sx={{margin: 3, padding: 3}}>
-        <Typography variant='h4'>NEW prompt container initializing:</Typography>
-        <h2></h2>
-        <form onSubmit={handleSubmitNewPrompt}>
-          <label htmlFor="newName" >
-            name of new managed Prompt
-          </label>
-          <TextField
-            id="newName"
-            multiline
-            type="text"
-          />
-
-          <label htmlFor="newDesc">
-            new description
-          </label>
-
-          <TextField
-            id="newDesc"
-            multiline
-            type="text"
-          />
-          <Button type="submit">
-            Submit prompt
-          </Button>
+      <Typography variant='h1'>manage prompts</Typography>
+      <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
+        <Typography variant='h4'>NEW prompt collection initializing:</Typography>
+        <Box>
+          <form onSubmit={handleNewPrompt}>
+            <TextField
+              id="newName"
+              label="Name"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              id="newDesc"
+              label="Description"
+              variant="outlined"
+              fullWidth
+              multiline
+              rows={3}
+              margin="normal"
+            />
+            <Button variant="contained" color="primary" type="submit">
+              Submit
+            </Button>
+          </form>
 
           {newPrompt && (
             <div>
-              <p>{Object.keys(newPrompt)}</p>
+              <Typography variant='h6'>{JSON.stringify(newPrompt)}</Typography>
             </div>
           )}
-        </form>
+        </Box>
       </Paper>
-<hr/>
-      <Paper elevation={3} sx={{margin: 3, padding: 3}}>
-        <Typography variant='h4'>Work with existing container</Typography>
+
+      <hr />
+      <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
+        <Typography variant='h4'>Work with existing collection</Typography>
         <form >
           <div
-            className="max-w-md"
             id="select"
           >
-            <div className="mb-2 block">
+            <div >
               <label
                 htmlFor="countries"
               >
@@ -145,18 +139,17 @@ const ManagePrompts = () => {
               ))}
             </Select>
           </div>
-          <div>
-            {prompt.length > 0 && (<div>{prompt}</div>)}
-          </div>
+          {/*prompt.length > 0 && (<div>{prompt}</div>)*/}
+          {prompt && <PromptCollectionCard p={prompt} />}
         </form>
 
-        <div className="mt-5">
-          {id && (
-            <p>selected prompt: {id}</p>
-          )}
-        </div>
+        <PromptEditor save={saveNewPromptVersion} />
+      </Paper>
 
-        <PromptEditor id={id} />
+      <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
+        <Typography variant='h4'>List of existing container - to be done</Typography>
+
+
       </Paper>
 
     </>

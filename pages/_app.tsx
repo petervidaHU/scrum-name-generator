@@ -4,16 +4,20 @@ import { Provider } from 'react-redux'
 import { store } from '@/redux/store'
 import { NoteList } from '@/app/components/notificationItems/noteList'
 import Portal from '@/app/portal';
+import { ThemeProvider } from '@mui/material';
+import theme from '@/styles/theme';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      <Provider store={store}>
-        <Component {...pageProps} />
-        <Portal>
-          <NoteList />
-        </Portal>
-      </Provider>
+      <ThemeProvider theme={theme}>
+        <Provider store={store}>
+          <Component {...pageProps} />
+          <Portal>
+            <NoteList />
+          </Portal>
+        </Provider>
+      </ThemeProvider>
     </>
   )
 }
