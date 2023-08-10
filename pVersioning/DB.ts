@@ -1,10 +1,11 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { DBInterface } from './dbInterface';
 
 const defaultDB = 'mockDatabase'
 
-export class DB {
+export class DB implements DBInterface {
   private db: string;
   private dbParams: string;
 
@@ -13,8 +14,8 @@ export class DB {
     this.dbParams = `${this.db}/params`;
   }
 
-  async getList() {
-    let list;
+  async getList(): Promise<promptCollectionType[]> {
+    let list: promptCollectionType[] = [];
     try {
       const files = await fs.readdir(this.db);
       list = await Promise.all(files.map(async file => {
@@ -22,10 +23,10 @@ export class DB {
         const content = await fs.readFile(filePath, 'utf-8')
         return JSON.parse(content);
       }));
-      return list;
     } catch (err) {
       console.error('Error reading directory:', err);
     }
+    return list;
   }
 
   async getOnePromptCollection(id: string) {

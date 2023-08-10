@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
 import { DB } from './DB';
-import { parseJsonText } from 'typescript';
+import { DBInterface } from './dbInterface';
 
-const db = new DB();
+const db: DBInterface = new DB();
 
 export class PVersion {
   private db;
