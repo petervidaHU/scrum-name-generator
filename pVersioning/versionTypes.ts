@@ -31,3 +31,28 @@ export interface cursorPositionType {
  subPromptId: number,
 }
 
+
+// parameters
+
+export interface paraType {
+  temperature: number,
+  max_tokens: number,
+  top_p: number,
+  frequency_penalty: number,
+  presence_penalty: number,
+  model: models,
+  stop: string[]
+}
+
+export interface parameterListType {
+  name: string,
+  description: string,
+  created: Date,
+  parameters: paraType,
+}
+
+export enum models {
+  gpt35 = 'gpt-3.5-turbo',
+  gpt35_16 = 'gpt-3.5-turbo-16k',
+  gpt4 = 'gpt-4'
+}

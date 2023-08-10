@@ -4,6 +4,7 @@ import axios from 'axios';
 import { promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
 import PromptEditor from '@/app/components/PromptEditor';
 import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
+import PromptFullList from '@/app/components/prompt-manager/PromptFullList';
 
 const createNewPromptAPI = '/api/newPrompt'
 const getPromptListAPI = '/api/getList'
@@ -154,7 +155,8 @@ const ManagePrompts = () => {
       </Paper>
 
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
-        <Typography variant='h4'>List of existing container - to be done</Typography>
+        <Typography variant='h4'>List of existing containers</Typography>
+        <PromptFullList list={list} />
 
 
       </Paper>
