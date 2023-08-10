@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { openAIClient } from "@/app/openAIClient";
 import { iNameItem } from "@/app/types/nameTypes";
-import { promptPropertiesType, promtGenerationForExtendList } from '../admin/createNew/extendResultListDatabase';
+import { promptPropertiesType, promtGenerationForExtendList } from '../admin/create-new/extendResultListDatabase';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
    const { names, property: {maxToken, temperature, pName} }: {names: iNameItem[], property: promptPropertiesType} = req.body;

@@ -5,7 +5,7 @@ import { DBInterface } from './dbInterface';
 
 const defaultDB = 'mockDatabase'
 
-export class DB implements DBInterface {
+export class DBfilesystem implements DBInterface {
   private db: string;
   private dbParams: string;
 

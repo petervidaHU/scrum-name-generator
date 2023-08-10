@@ -1,9 +1,9 @@
 import { v4 as uuid } from 'uuid';
 import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
-import { DB } from './DB';
+import { DBfilesystem } from './DB';
 import { DBInterface } from './dbInterface';
 
-const db: DBInterface = new DB();
+const db: DBInterface = new DBfilesystem();
 
 export class PVersion {
   private db;
@@ -11,14 +11,14 @@ export class PVersion {
     this.db = db;
    }
 
-  async getList(): Promise<any> {
-    const getListFromDB = await this.db.getList();
-    return getListFromDB;
+  async getList(): Promise<promptCollectionType[]> {
+    const result = await this.db.getList();
+    return result;
   }
 
   async getOnePromptCollection(id: string): Promise<promptCollectionType | {}> {
-    const res = await this.db.getOnePromptCollection(id);
-    return res;
+    const result = await this.db.getOnePromptCollection(id);
+    return result;
   }
 
   initializePromp(name: string, description: string): string {

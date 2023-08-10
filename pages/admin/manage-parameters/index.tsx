@@ -1,3 +1,4 @@
+import AdminLayout from '@/app/components/layouts/adminLayout';
 import ParameterList from '@/app/components/prompt-manager/ParameterList';
 import { createNewParameter } from '@/pVersioning/promptVersionerUtils';
 import { models, parameterType } from '@/pVersioning/versionTypes';
@@ -39,7 +40,7 @@ const Index = () => {
       presencePenaltyValue,
       modelValue,
       stopSeq: stopSeq.value,
-  })
+    })
 
     const result = await axios(saveOneParameterAPI, {
       method: 'POST',
@@ -65,7 +66,7 @@ const Index = () => {
   console.log('paramter list: ', list)
 
   return (
-    <>
+    <AdminLayout>
       <Typography variant='h1'>manage parameters</Typography>
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>NEW parameters:</Typography>
@@ -177,7 +178,7 @@ const Index = () => {
         <Typography variant='h4'>parameters list : - to be done</Typography>
         <ParameterList params={list} />
       </Paper>
-    </>
+    </AdminLayout>
   );
 
 }
