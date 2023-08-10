@@ -4,10 +4,10 @@ import { promptCollectionType } from '@/pVersioning/versionTypes';
 
 interface PromptCollectionCardProps {
   p: promptCollectionType;
+  selectVersion: (k: number) => void,
 }
 
-const PromptCollectionCard: React.FC<PromptCollectionCardProps> = ({ p: { name, description, created, id, versions } }) => {
-  // console.log('name: ', versions)
+const PromptCollectionCard: React.FC<PromptCollectionCardProps> = ({ p: { name, description, created, id, versions }, selectVersion }) => {
   return (
     <Card>
       <CardContent>
@@ -22,15 +22,15 @@ const PromptCollectionCard: React.FC<PromptCollectionCardProps> = ({ p: { name, 
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>version id</TableCell>
+                <TableCell>version</TableCell>
                 <TableCell>prompt text</TableCell>
                 <TableCell>description</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {versions.map((version) => (
-                <TableRow key={version.id}>
-                  <TableCell>{version.id}</TableCell>
+              {versions.map((version, index) => (
+                <TableRow key={version.id} onClick={() => selectVersion(index)}>
+                  <TableCell>{index}</TableCell>
                   <TableCell>{version.promptText}</TableCell>
                   <TableCell>{version.description}</TableCell>
                 </TableRow>

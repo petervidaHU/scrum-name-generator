@@ -32,7 +32,6 @@ export class PVersion {
     }
 
     this.db.initializePrompt(newPromptCollection)
-
     return id;
   }
   

@@ -23,7 +23,7 @@ const EditableObject: React.FC<EditableObjectProps> = ({ content, onDelete, onEd
         marginRight: '8px',
       }}
     >
-      <span style={{ marginRight: '8px' }}>{content.collectionId}</span>
+      <span style={{ marginRight: '8px' }}>{content.promptText}</span>
       <IconButton onClick={() => onEdit(position)} size="small">
         <Tooltip title="Edit">
           <Edit />

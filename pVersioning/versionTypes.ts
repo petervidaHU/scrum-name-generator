@@ -22,6 +22,7 @@ export interface promptCollectionType {
 export interface promptVersionSelection {
   collectionId: string,
   versionId: number,
+  promptText: string,
 }
 
 export interface cursorPositionType {

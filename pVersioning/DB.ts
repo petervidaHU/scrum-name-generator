@@ -15,11 +15,15 @@ export class DB {
     let list;
     try {
       const files = await fs.readdir(this.db);
-      list = files.map(file => path.parse(file).name)
+      list = await Promise.all(files.map(async file => {
+        const filePath = path.join(this.db, file);
+        const content = await fs.readFile(filePath, 'utf-8')
+        return JSON.parse(content);
+      }));
+      return list;
     } catch (err) {
       console.error('Error reading directory:', err);
     }
-    return list;
   }
 
   async getOnePromptCollection(id: string) {
@@ -49,20 +53,20 @@ export class DB {
 
   async savePromptVersion(collectionId: string, p: promptVersionType): Promise<any> {
     const filePath = path.join(this.db, `${collectionId}.json`);
-    
+
     try {
-    const existingContent = await fs.readFile(filePath, 'utf-8');
-    const content = JSON.parse(existingContent);
+      const existingContent = await fs.readFile(filePath, 'utf-8');
+      const content = JSON.parse(existingContent);
 
-    console.log('existing con: ', content)
-    content.versions.push(p)
+      console.log('existing con: ', content)
+      content.versions.push(p)
 
-    await fs.writeFile(filePath, JSON.stringify(content, null, 2));
-  } catch (error) {
-    console.error('Error saving prompt version:', error);
+      await fs.writeFile(filePath, JSON.stringify(content, null, 2));
+    } catch (error) {
+      console.error('Error saving prompt version:', error);
+    }
+
+    return collectionId;
   }
-
-  return collectionId;
-}
 
 }

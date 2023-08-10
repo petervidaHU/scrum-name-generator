@@ -12,20 +12,21 @@ const savePrompt = '/api/savePrompt'
 
 const ManagePrompts = () => {
   const [prompt, setPrompt] = useState<promptCollectionType | null>(null);
-  const [list, setList] = useState([]);
-  const [id, setId] = useState<string>('');
+  const [list, setList] = useState<promptCollectionType[]>([]);
+  const [selectedVersion, setSelectedVersion] = useState<number>(0);
   const [newPrompt, setNewPrompt] = useState<promptCollectionType | null>(null);
-
+  
+  const s = prompt?.versions[selectedVersion].promptObject;
+  
   useEffect(() => {
     const getList = async () => {
       const { data } = await axios(getPromptListAPI);
-      console.log('data in useeffe', data);
       setList(data);
     }
     getList();
   }, [])
 
-  const handleNewPrompt: FormEventHandler<HTMLFormElement> = async (event) => {
+  const handleCreateNewPrompt: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     const { newName, newDesc } = event.target as any;
 
@@ -39,19 +40,18 @@ const ManagePrompts = () => {
         newDesc: newDesc.value,
       },
     })
-    console.log('new prompt rsult data:', result.data)
     setNewPrompt(result.data);
   }
 
-  const saveNewPromptVersion = async (newPrompt: promptVersionType | undefined) => {
-    if (newPrompt) {
+  const handleSaveNewPromptVersion = async (newPrompt: promptVersionType | undefined) => {
+    if (newPrompt && prompt) {
       const result = await axios(savePrompt, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         data: {
-          id,
+          id: prompt.id,
           newPrompt,
         },
       });
@@ -72,7 +72,6 @@ const ManagePrompts = () => {
       },
     })
 
-    setId(data.id);
     setPrompt(data);
   }
   console.log('list: ', list);
@@ -83,7 +82,7 @@ const ManagePrompts = () => {
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>NEW prompt collection initializing:</Typography>
         <Box>
-          <form onSubmit={handleNewPrompt}>
+          <form onSubmit={handleCreateNewPrompt}>
             <TextField
               id="newName"
               label="Name"
@@ -132,18 +131,26 @@ const ManagePrompts = () => {
               required
               onChange={handleSelect}
             >
-              {list.length > 0 && list.map(l => (
-                <MenuItem key={l} value={l}>
-                  {l}
+              {list.length > 0 && list.map(promptCollection => (
+                <MenuItem key={promptCollection.id} value={promptCollection.id}>
+                  {promptCollection.name}
                 </MenuItem>
               ))}
             </Select>
           </div>
-          {/*prompt.length > 0 && (<div>{prompt}</div>)*/}
-          {prompt && <PromptCollectionCard p={prompt} />}
+          {prompt && (
+            <PromptCollectionCard
+              p={prompt}
+              selectVersion={(a) => { setSelectedVersion(+a) }}
+            />
+          )}
         </form>
 
-        <PromptEditor save={saveNewPromptVersion} />
+        <PromptEditor
+          list={list}
+          save={handleSaveNewPromptVersion}
+          starterPrompt={s || []}
+        />
       </Paper>
 
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
