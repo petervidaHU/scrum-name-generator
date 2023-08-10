@@ -79,7 +79,7 @@ export class DB implements DBInterface {
     try {
       const files = await fs.readdir(this.dbParams);
       list = await Promise.all(files.map(async file => {
-        const filePath = path.join(this.db, file);
+        const filePath = path.join(this.dbParams, file);
         const content = await fs.readFile(filePath, 'utf-8')
         return JSON.parse(content);
       }));

@@ -1,3 +1,4 @@
+import ParameterList from '@/app/components/prompt-manager/ParameterList';
 import { createNewParameter } from '@/pVersioning/promptVersionerUtils';
 import { models, parameterType } from '@/pVersioning/versionTypes';
 import { Box, Button, FormControl, FormLabel, InputLabel, MenuItem, Paper, Select, Slider, TextField, Typography } from '@mui/material'
@@ -174,7 +175,7 @@ const Index = () => {
 
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>parameters list : - to be done</Typography>
-
+        <ParameterList params={list} />
       </Paper>
     </>
   );
