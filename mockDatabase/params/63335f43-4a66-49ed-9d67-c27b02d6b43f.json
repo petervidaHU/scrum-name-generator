@@ -1,0 +1,17 @@
+{
+  "id": "63335f43-4a66-49ed-9d67-c27b02d6b43f",
+  "name": "rttttttttttt",
+  "description": "ooo",
+  "created": "2023-08-10T11:53:19.505Z",
+  "parameters": {
+    "max_tokens": "",
+    "temperature": 0.63,
+    "top_p": 0.43,
+    "frequency_penalty": 1.05,
+    "presence_penalty": 0.25,
+    "model": "gpt-3.5-turbo",
+    "stop": [
+      "d"
+    ]
+  }
+}

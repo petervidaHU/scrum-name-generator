@@ -34,7 +34,7 @@ export interface cursorPositionType {
 
 // parameters
 
-export interface paraType {
+export interface parameterPropertiesType {
   temperature: number,
   max_tokens: number,
   top_p: number,
@@ -44,11 +44,12 @@ export interface paraType {
   stop: string[]
 }
 
-export interface parameterListType {
+export interface parameterType {
+  id: string
   name: string,
   description: string,
   created: Date,
-  parameters: paraType,
+  parameters: parameterPropertiesType,
 }
 
 export enum models {

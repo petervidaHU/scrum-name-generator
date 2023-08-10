@@ -1,4 +1,5 @@
-import { models, parameterListType } from '@/pVersioning/versionTypes';
+import { createNewParameter } from '@/pVersioning/promptVersionerUtils';
+import { models, parameterType } from '@/pVersioning/versionTypes';
 import { Box, Button, FormControl, FormLabel, InputLabel, MenuItem, Paper, Select, Slider, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
@@ -8,22 +9,48 @@ const saveOneParameterAPI = '/api/saveParameter'
 
 const Index = () => {
   const [toppValue, setToppValue] = useState<number>(0)
+  const [frequencyPenaltyValue, setFrequencyPenaltyValue] = useState<number>(0)
+  const [presencePenaltyValue, setPresencePenaltyValue] = useState<number>(0)
   const [modelValue, setModelValue] = useState<models>(models.gpt35)
   const [temperatureValue, setTemperatureValue] = useState<number>(0)
-  const [list, setList] = useState<parameterListType[]>([]);
+  const [list, setList] = useState<parameterType[]>([]);
 
   useEffect(() => {
     const getList = async () => {
       const { data } = await axios(getParametersListAPI);
       setList(data);
     }
-    // getList();
+    getList();
   }, [])
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (e) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (e) => {
     e.preventDefault()
     const { nameOfParam, description, maxtokens, stopSeq } = e.currentTarget;
     console.log('submit:', nameOfParam.value, description.value, maxtokens.value, temperatureValue, modelValue, toppValue, stopSeq)
+
+    const newParameter: parameterType = createNewParameter({
+      nameOfParam: nameOfParam.value,
+      description: description.value,
+      maxtokens: maxtokens.value,
+      temperatureValue,
+      toppValue,
+      frequencyPenaltyValue,
+      presencePenaltyValue,
+      modelValue,
+      stopSeq: stopSeq.value,
+  })
+
+    const result = await axios(saveOneParameterAPI, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      data: {
+        newParameter,
+      }
+    })
+
+    console.log('save result: ', result.data);
   }
 
   const handleSliderChange = (setter: React.Dispatch<React.SetStateAction<number>>) => (
@@ -33,6 +60,8 @@ const Index = () => {
     console.log('newValue: ', newValue),
       setter(newValue as number);
   };
+
+  console.log('paramter list: ', list)
 
   return (
     <>
@@ -92,6 +121,32 @@ const Index = () => {
               step={0.01}
             />
             <Typography variant="caption">{temperatureValue.toFixed(2)}</Typography>
+          </FormControl>
+
+          <FormControl fullWidth margin="normal">
+            <FormLabel>Frequency penalty</FormLabel>
+            <Slider
+              id="frequency"
+              value={frequencyPenaltyValue}
+              onChange={handleSliderChange(setFrequencyPenaltyValue)}
+              min={0}
+              max={2}
+              step={0.01}
+            />
+            <Typography variant="caption">{frequencyPenaltyValue.toFixed(2)}</Typography>
+          </FormControl>
+
+          <FormControl fullWidth margin="normal">
+            <FormLabel>Presence penalty</FormLabel>
+            <Slider
+              id="presence"
+              value={presencePenaltyValue}
+              onChange={handleSliderChange(setPresencePenaltyValue)}
+              min={0}
+              max={2}
+              step={0.01}
+            />
+            <Typography variant="caption">{presencePenaltyValue.toFixed(2)}</Typography>
           </FormControl>
 
           <FormControl fullWidth margin="normal">

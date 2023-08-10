@@ -1,14 +1,16 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { promptCollectionType, promptVersionType } from './versionTypes';
+import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
 
 const defaultDB = 'mockDatabase'
 
 export class DB {
   private db: string;
+  private dbParams: string;
 
   constructor() {
     this.db = defaultDB;
+    this.dbParams = `${this.db}/params`;
   }
 
   async getList() {
@@ -67,6 +69,36 @@ export class DB {
     }
 
     return collectionId;
+  }
+
+  // parameters
+
+  async getParametersList() {
+    let list: parameterType[] = [];
+    try {
+      const files = await fs.readdir(this.dbParams);
+      list = await Promise.all(files.map(async file => {
+        const filePath = path.join(this.db, file);
+        const content = await fs.readFile(filePath, 'utf-8')
+        return JSON.parse(content);
+      }));
+    } catch (err) {
+      console.error('Error reading directory:', err);
+    }
+    return list;
+  }
+
+  async saveOneParameter(newParameter: parameterType) {
+    console.log('in db: ', newParameter)
+    const id = newParameter.id;
+    const filePath = path.join(this.dbParams, `${id}.json`);
+
+    try {
+      const jsonData = JSON.stringify(newParameter, null, 2);
+      fs.writeFile(filePath, jsonData, 'utf-8');
+    } catch (error) {
+      console.error('Error saving init. prompt collection:', error);
+    }
   }
 
 }

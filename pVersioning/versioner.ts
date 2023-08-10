@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { promptCollectionType, promptVersionType } from './versionTypes';
+import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
 import { DB } from './DB';
 import { parseJsonText } from 'typescript';
 
@@ -38,6 +38,16 @@ export class PVersion {
   async savePromptVersion(collectionId: string, newPrompt: promptVersionType) {
     const result = await this.db.savePromptVersion(collectionId, newPrompt)
     return result;
+  }
+
+  // parameters -- rather in a standalone class?
+
+  async getParametersList(): Promise<parameterType[]>{
+    return await db.getParametersList();
+  }
+
+  async saveOneParameter(newParameter: parameterType) {
+    return await db.saveOneParameter(newParameter);
   }
 
 }
