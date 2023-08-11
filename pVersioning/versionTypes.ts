@@ -6,10 +6,8 @@ export interface promptVersionType {
   promptObject: promptObjectArray, 
   created: Date,
   description: string,
+  params: parameterType,
 }
-/*  export interface promptType {
-  [k: string]: promptPieceType,
-}  */
 
 export interface promptCollectionType {
   id: string, 

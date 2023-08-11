@@ -1,16 +1,16 @@
-import React, { MouseEventHandler } from 'react'
-import { Button, Table, ToggleSwitch } from 'flowbite-react';
-import { iNameItem, iNameItemWithTags } from '../types/nameTypes';
+import React, { MouseEventHandler } from 'react';
+import { Button, Table, TableCell, TableContainer, TableHead, TableRow, TableBody, Typography } from '@mui/material';
 import { Tags } from './tags';
+import { iNameItem, iNameItemWithTags } from '../types/nameTypes';
 
 interface NameTablesProps {
-  title: string,
+  title: string;
   list: iNameItem[] | iNameItemWithTags[];
-  descriptionWizard: any,
-  proposalHandler: MouseEventHandler<HTMLSpanElement>,
-  proposalLabel?: string,
-  tagDeleteHandler?: MouseEventHandler<HTMLSpanElement>
-};
+  descriptionWizard: (name: string) => void;
+  proposalHandler: MouseEventHandler<HTMLSpanElement>;
+  proposalLabel?: string;
+  tagDeleteHandler?: MouseEventHandler<HTMLSpanElement>;
+}
 
 export const NameTables: React.FunctionComponent<NameTablesProps> = ({
   title,
@@ -21,52 +21,46 @@ export const NameTables: React.FunctionComponent<NameTablesProps> = ({
   tagDeleteHandler,
 }) => {
   return (
-    <div className="my-6">
-      <h3>{title}</h3>
-      <Table className="my-6" striped>
-        <Table.Head>
-          <Table.HeadCell>
-            Suggested Name
-          </Table.HeadCell>
-          <Table.HeadCell>
-            Description
-          </Table.HeadCell>
-          <Table.HeadCell>
-            <span className="sr-only">
-              Edit
-            </span>
-          </Table.HeadCell>
-        </Table.Head>
-        <Table.Body className="divide-y">
-          {list.map(({ name, tags, description }, index) => {
-            return (
+    <div >
+      <Typography variant="h3">{title}</Typography>
+      <TableContainer>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Suggested Name</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>
+                <span className="sr-only">Edit</span>
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {list.map(({ name, tags, description }, index) => (
               <React.Fragment key={name}>
-                <Table.Row className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <Table.Cell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
+                  <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
                     {name}
-                  </Table.Cell>
-                  <Table.Cell>
-                    {description ? description : 'No Description!'}
-                  </Table.Cell>
-                  <Table.Cell className="flex">
+                  </TableCell>
+                  <TableCell>{description ? description : 'No Description!'}</TableCell>
+                  <TableCell className="flex">
                     <span data-name={name} onClick={proposalHandler} className="mx-4">
                       {proposalLabel.toUpperCase()}
                     </span>
                     <Button onClick={() => descriptionWizard(name)}>Get Further Desc.</Button>
-                  </Table.Cell>
-                </Table.Row>
-                {tags && <Table.Row >
-                  <Table.Cell className="flex mt-2" colSpan={3}>
-                    <Tags tags={tags} del={tagDeleteHandler} parent={index}/>
-                  </Table.Cell>
-                </Table.Row>
-                }
-              </ React.Fragment>
-            )
-          })}
-
-        </Table.Body>
-      </Table>
+                  </TableCell>
+                </TableRow>
+                {tags && (
+                  <TableRow>
+                    <TableCell className="flex mt-2" colSpan={3}>
+                      <Tags tags={tags} del={tagDeleteHandler} parent={index} />
+                    </TableCell>
+                  </TableRow>
+                )}
+              </React.Fragment>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </div>
-  )
-}
+  );
+};

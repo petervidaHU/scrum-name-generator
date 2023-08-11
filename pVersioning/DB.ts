@@ -15,20 +15,29 @@ export class DBfilesystem implements DBInterface {
   }
 
   async getList(): Promise<promptCollectionType[]> {
-    let list: promptCollectionType[] = [];
     try {
       const files = await fs.readdir(this.db);
-      list = await Promise.all(files.map(async file => {
+  
+      const list = await files.reduce(async (accumulatorPromise, file) => {
+        const accumulator = await accumulatorPromise;
         const filePath = path.join(this.db, file);
-        const content = await fs.readFile(filePath, 'utf-8')
-        return JSON.parse(content);
-      }));
+        const stats = await fs.stat(filePath);
+  
+        if (stats.isFile()) {
+          const content = await fs.readFile(filePath, 'utf-8');
+          return [...accumulator, JSON.parse(content)];
+        }
+  
+        return accumulator;
+      }, Promise.resolve([] as promptCollectionType[]));
+  
+      return list;
     } catch (err) {
-      console.error('Error reading directory:', err);
+      console.error('Error reading directory in getList:', err);
+      return [];
     }
-    return list;
   }
-
+  
   async getOnePromptCollection(id: string) {
     const filePath = path.join(this.db, `${id}.json`);
     let content = {};
@@ -100,6 +109,10 @@ export class DBfilesystem implements DBInterface {
     } catch (error) {
       console.error('Error saving init. prompt collection:', error);
     }
+  }
+
+  async getOneParameter(id: number) {
+    
   }
 
 }

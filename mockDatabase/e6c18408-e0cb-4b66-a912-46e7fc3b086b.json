@@ -1,0 +1,36 @@
+{
+  "id": "e6c18408-e0cb-4b66-a912-46e7fc3b086b",
+  "name": "friday poromp",
+  "description": "descriptionfor frdiaypromnfhef",
+  "created": "2023-08-11T08:16:20.345Z",
+  "versions": [
+    {
+      "id": "1a5cc73d-21b1-4c63-9c0e-418c3d6bd878",
+      "description": "",
+      "created": "2023-08-11T08:19:03.450Z",
+      "promptObject": [],
+      "promptText": "",
+      "params": "63335f43-4a66-49ed-9d67-c27b02d6b43f"
+    },
+    {
+      "id": "997f3ebb-48ea-4bab-8615-c0fe5947a86a",
+      "description": "wwwww",
+      "created": "2023-08-11T08:19:20.710Z",
+      "promptObject": [
+        "add sowme textwwwww"
+      ],
+      "promptText": "add sowme textwwwww",
+      "params": "63335f43-4a66-49ed-9d67-c27b02d6b43f"
+    },
+    {
+      "id": "fc2190e8-1147-4525-b85e-6412381ef3a2",
+      "description": "wwwww",
+      "created": "2023-08-11T08:19:22.415Z",
+      "promptObject": [
+        "add sowme textwwwww"
+      ],
+      "promptText": "add sowme textwwwww",
+      "params": "63335f43-4a66-49ed-9d67-c27b02d6b43f"
+    }
+  ]
+}

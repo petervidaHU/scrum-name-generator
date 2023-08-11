@@ -1,12 +1,13 @@
-import { Box, Button, TextField, Typography, Modal } from '@mui/material';
+import { Box, Button, TextField, Typography, Modal, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import { promptVersionSelection, promptVersionType, cursorPositionType, promptObjectArray, promptCollectionType } from '@/pVersioning/versionTypes';
+import { promptVersionSelection, promptVersionType, cursorPositionType, promptObjectArray, promptCollectionType, parameterType } from '@/pVersioning/versionTypes';
 import { createNewPromptVersion } from '@/pVersioning/promptVersionerUtils';
 import { EditableSpan } from './prompt-manager/EditableSpan';
 import EditableObject from './prompt-manager/EditableSubPrompt';
 import AddObjectButton from './prompt-manager/AddSubprompt';
 import CustomModal from './prompt-manager/CustomModal';
 import SelectPrompt from './prompt-manager/SelectPrompt';
+import axios from 'axios';
 
 interface promptEditorProps {
   starterPrompt: promptObjectArray,
@@ -31,17 +32,29 @@ const temporaryNewItem = {
   promptText: 'please edit!!',
 };
 
+const getParametersListAPI = '/api/getParameters'
+
 const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }) => {
   const [content, setContent] = useState<promptObjectArray>([]);
   const [cursorPosition, setCursorPosition] = useState<cursorPositionType>(initCursorPos);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [selectedSubPromptIndex, setSelectedSubpromptIndex] = useState<number | null>(null)
+  const [selectedSubPromptIndex, setSelectedSubpromptIndex] = useState<number | null>(null);
+  const [parameters, setParameters] = useState<parameterType[]>([]);
+  const [selectedParameter, setSelectedParameter] = useState<parameterType | null>(null);
 
   useEffect(() => {
     if (starterPrompt) {
       setContent(starterPrompt);
     }
   }, [starterPrompt]);
+
+  useEffect(() => {
+    const getList = async () => {
+      const { data } = await axios(getParametersListAPI);
+      setParameters(data);
+    }
+    getList();
+  }, [])
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
@@ -50,8 +63,11 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
   const handleNewVersion = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const { desc } = event.currentTarget;
-    const newVersion = createNewPromptVersion(content, desc.value);
-    save(newVersion);
+
+    if (selectedParameter) {
+      const newVersion = createNewPromptVersion(content, desc.value, selectedParameter);
+      save(newVersion);
+    }
   }
 
   const setContentSimplify = (content: promptObjectArray): void => {
@@ -165,7 +181,9 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       setContent(newContent);
     }
   }
+
   console.log('------------editor content---------: ', content)
+
   return (
     <>
       <Typography variant='h5'>
@@ -216,6 +234,22 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
           rows={3}
           margin="normal"
         />
+        <FormControl fullWidth margin="normal">
+          <InputLabel htmlFor="selectedParameter">select parameter</InputLabel>
+          <Select
+            id="selectedParameter"
+            value={selectedParameter}
+            required
+            onChange={(e) => { setSelectedParameter(e.target.value as parameterType) }}
+          >
+            {parameters.length > 0 && parameters.map(parameter => (
+              <MenuItem key={parameter.id} value={parameter.id}>
+                {`name: ${parameter.name} / id: ${parameter.id}`}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
         <Button
           variant="contained"
           color="primary"

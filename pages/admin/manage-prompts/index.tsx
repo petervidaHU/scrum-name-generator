@@ -18,7 +18,7 @@ const ManagePrompts = () => {
   const [selectedVersion, setSelectedVersion] = useState<number>(0);
   const [newPrompt, setNewPrompt] = useState<promptCollectionType | null>(null);
 
-  const s = prompt?.versions[selectedVersion].promptObject;
+  const s = prompt?.versions[selectedVersion]?.promptObject || [];
 
   useEffect(() => {
     const getList = async () => {

@@ -1,15 +1,17 @@
 import { v4 as uuid } from 'uuid';
-import { models, promptVersionSelection, promptVersionType } from './versionTypes';
+import { models, parameterType, promptVersionSelection, promptVersionType } from './versionTypes';
 
 export const createNewPromptVersion = (
   content: (string | promptVersionSelection)[],
   desc: string = 'empty description',
+  selectedParameter: parameterType,
 ): promptVersionType => ({
   id: uuid(),
   description: desc,
   created: new Date(),
   promptObject: content,
   promptText: content.reduce((acc: string, item) => acc + (typeof item === 'string' ? item : item.promptText), ''),
+  params: selectedParameter,
 });
 
 export const createNewParameter = ({

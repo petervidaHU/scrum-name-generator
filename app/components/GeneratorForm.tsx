@@ -1,60 +1,47 @@
-import React from 'react'
-import { Button, Checkbox, Label, TextInput, Textarea } from 'flowbite-react';
+import React from 'react';
+import { Button, Checkbox, FormControlLabel, TextField, TextareaAutosize } from '@mui/material';
 
 interface GeneratorFormProps {
-  s: (a: any) => any,
+  onSubmit: (event: React.FormEvent) => void;
 }
 
-export const GeneratorForm: React.FC<GeneratorFormProps> = ({ s }) => {
+export const GeneratorForm: React.FC<GeneratorFormProps> = ({ onSubmit }) => {
   return (
     <form
       className="flex max-w-md flex-col gap-4"
-      onSubmit={s}
+      onSubmit={onSubmit}
     >
       <div>
         <div className="mb-2 block">
-          <Label
-            htmlFor="topic"
-            value="Planned Topic"
-          />
+          <label htmlFor="topic">Planned Topic</label>
         </div>
-        <TextInput
+        <TextField
           id="topic"
           placeholder="... something fancy"
           required
-          shadow
-          type="input"
+          variant="outlined"
+          fullWidth
         />
       </div>
       <div>
         <div className="mb-2 block">
-          <Label
-            htmlFor="description"
-            value="Description"
-          />
+          <label htmlFor="description">Description</label>
         </div>
-        <Textarea 
+        <TextareaAutosize
           id="description"
           placeholder="a short description to make it clear. Not mandatory."
-          rows={3}
-          shadow
+          
         />
       </div>
 
-      <div className="flex items-center gap-2">
-        <Checkbox id="filter" />
-        <Label
-          className="flex"
-          htmlFor="filter"
-        >
-          <p>
-            filter
-          </p>
-        </Label>
-      </div>
-      <Button type="submit">
+      <FormControlLabel
+        control={<Checkbox id="filter" />}
+        label="filter"
+        className="flex"
+      />
+      <Button type="submit" variant="contained" color="primary">
         Submit topic
       </Button>
     </form>
-  )
-}
+  );
+};
