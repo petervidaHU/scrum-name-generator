@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { errorResponse, parameterType, promptCollectionType, promptVersionType } from './versionTypes';
 import { DBInterface } from './dbInterface';
 
 const defaultDB = 'mockDatabase'
@@ -17,27 +17,27 @@ export class DBfilesystem implements DBInterface {
   async getList(): Promise<promptCollectionType[]> {
     try {
       const files = await fs.readdir(this.db);
-  
+
       const list = await files.reduce(async (accumulatorPromise, file) => {
         const accumulator = await accumulatorPromise;
         const filePath = path.join(this.db, file);
         const stats = await fs.stat(filePath);
-  
+
         if (stats.isFile()) {
           const content = await fs.readFile(filePath, 'utf-8');
           return [...accumulator, JSON.parse(content)];
         }
-  
+
         return accumulator;
       }, Promise.resolve([] as promptCollectionType[]));
-  
+
       return list;
     } catch (err) {
       console.error('Error reading directory in getList:', err);
       return [];
     }
   }
-  
+
   async getOnePromptCollection(id: string) {
     const filePath = path.join(this.db, `${id}.json`);
     let content = {};
@@ -99,7 +99,6 @@ export class DBfilesystem implements DBInterface {
   }
 
   async saveOneParameter(newParameter: parameterType) {
-    console.log('in db: ', newParameter)
     const id = newParameter.id;
     const filePath = path.join(this.dbParams, `${id}.json`);
 
@@ -107,12 +106,21 @@ export class DBfilesystem implements DBInterface {
       const jsonData = JSON.stringify(newParameter, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
-      console.error('Error saving init. prompt collection:', error);
+      console.error('Error saving one parameter in DB:', error);
     }
   }
 
-  async getOneParameter(id: number) {
-    
+  async getOneParameter(id: string): Promise<parameterType> {
+    console.log('in db get one param: ', id);
+    const filePath = path.join(this.dbParams, `${id}.json`);
+
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(fileContent);
+    } catch (error) {
+      throw new Error('Error get one parameter in DB')
+    }
+
   }
 
 }

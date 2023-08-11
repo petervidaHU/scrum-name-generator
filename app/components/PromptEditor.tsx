@@ -64,10 +64,8 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     event.preventDefault();
     const { desc } = event.currentTarget;
 
-    if (selectedParameter) {
       const newVersion = createNewPromptVersion(content, desc.value, selectedParameter);
       save(newVersion);
-    }
   }
 
   const setContentSimplify = (content: promptObjectArray): void => {
@@ -239,7 +237,6 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
           <Select
             id="selectedParameter"
             value={selectedParameter}
-            required
             onChange={(e) => { setSelectedParameter(e.target.value as parameterType) }}
           >
             {parameters.length > 0 && parameters.map(parameter => (

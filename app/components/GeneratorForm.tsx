@@ -1,47 +1,84 @@
-import React from 'react';
-import { Button, Checkbox, FormControlLabel, TextField, TextareaAutosize } from '@mui/material';
+import React, { FormEventHandler, useEffect, useState } from 'react';
+import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
+import axios from 'axios';
+import { promptVersionType } from '@/pVersioning/versionTypes';
 
 interface GeneratorFormProps {
-  onSubmit: (event: React.FormEvent) => void;
+  submitHandler: FormEventHandler<HTMLFormElement>,
+  promptVersions: promptVersionType[],
+  versionSelector: any,
+  version: promptVersionType | null,
 }
 
-export const GeneratorForm: React.FC<GeneratorFormProps> = ({ onSubmit }) => {
-  return (
-    <form
-      className="flex max-w-md flex-col gap-4"
-      onSubmit={onSubmit}
-    >
-      <div>
-        <div className="mb-2 block">
-          <label htmlFor="topic">Planned Topic</label>
-        </div>
-        <TextField
-          id="topic"
-          placeholder="... something fancy"
-          required
-          variant="outlined"
-          fullWidth
-        />
-      </div>
-      <div>
-        <div className="mb-2 block">
-          <label htmlFor="description">Description</label>
-        </div>
-        <TextareaAutosize
-          id="description"
-          placeholder="a short description to make it clear. Not mandatory."
-          
-        />
-      </div>
+export const GeneratorForm: React.FC<GeneratorFormProps> = ({
+  submitHandler,
+  versionSelector,
+  promptVersions,
+  version,
+}) => {
 
-      <FormControlLabel
-        control={<Checkbox id="filter" />}
-        label="filter"
-        className="flex"
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Submit topic
-      </Button>
-    </form>
+  console.log('generatorform promptVersions: ', promptVersions)
+  console.log('generatorform version: ', version)
+
+  return (
+    <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
+      <form
+        onSubmit={submitHandler}
+      >
+        <div>
+          <div>
+            <label htmlFor="topic">Planned Topic</label>
+          </div>
+          <TextField
+            id="topic"
+            required
+            variant="outlined"
+            fullWidth
+            label="topic"
+          />
+        </div>
+        <div>
+          <div>
+            <label htmlFor="description">Description</label>
+          </div>
+          <TextField
+            rows={3}
+            fullWidth
+            multiline
+            id="description"
+            placeholder="a short description to make it clear. Not mandatory."
+
+          />
+        </div>
+
+        <FormControlLabel
+          control={<Checkbox id="filter" />}
+          label="filter"
+        />
+
+        <FormControl fullWidth margin="normal">
+          <InputLabel htmlFor="selectedversion">select prompt version</InputLabel>
+          <Select
+            id="selectedversion"
+            value={version?.id}
+            required
+            onChange={(e) => { versionSelector(e.target.value as unknown as promptVersionType) }}
+          >
+            {promptVersions.length > 0 && promptVersions.map(v => (
+              <MenuItem
+                key={v.id}
+                value={v}
+              >
+                {`name: ${v.promptText} / id: ${v.id}`}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+        <Button type="submit" variant="contained" color="primary">
+          Submit topic
+        </Button>
+      </form>
+    </Paper>
   );
 };

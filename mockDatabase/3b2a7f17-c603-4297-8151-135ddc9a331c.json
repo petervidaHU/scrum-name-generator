@@ -1,0 +1,18 @@
+{
+  "id": "3b2a7f17-c603-4297-8151-135ddc9a331c",
+  "name": "prefer noun",
+  "description": "subprompt for filtering out verbs and adjectives",
+  "created": "2023-08-11T09:51:30.953Z",
+  "versions": [
+    {
+      "id": "82d96a07-98fd-4742-88d5-16c04f328199",
+      "description": "",
+      "created": "2023-08-11T10:12:31.235Z",
+      "promptObject": [
+        "Do not use verbs or general nouns, or general adjectives. Prefer proper noun, if possible. "
+      ],
+      "promptText": "Do not use verbs or general nouns, or general adjectives. Prefer proper noun, if possible. ",
+      "params": null
+    }
+  ]
+}

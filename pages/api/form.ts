@@ -2,12 +2,18 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { iNameItem } from "@/app/types/nameTypes";
 import { generalPrinciples, exploreNewTopic, formatArray, PCCheck, formatYNReaseon } from "@/prompts/newTopic";
 import { openAIClient } from '../../app/openAIClient';
+import { mergeVariablesIntoPrompt } from '@/pVersioning/promptVersionerUtils';
+import { PVersion } from '@/pVersioning/versioner';
+import { promptVersionType } from '@/pVersioning/versionTypes';
+
+const v = new PVersion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { topic, desc } = req.body;
+  const { topic, desc, prompt }: {topic: string, desc: string, prompt: promptVersionType} = req.body;
   const openai = openAIClient();
 
   if (!topic) return res.status(400).json('topic not found');
+  if (!prompt.params) return res.status(400).json('parameters of prompt not found');
 
   let textSwear;
   try {
@@ -26,6 +32,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   if (textSwear.a == 'yes') return res.status(200).json(textSwear.r);
+
+  const vari = {
+    NUM_OF_ANSWERS: '4',
+    TOPIC: topic,
+  };
+
+  const finalPromptText = mergeVariablesIntoPrompt(prompt.promptText, vari);
+  const parameters = await v.getParameter(prompt.params)
+  console.log('parameters::::::::::::::::::::::::::::::::::', parameters);
+
+  console.log('finalPromptText::::::::::::::::::::::::::::::::::::::::', finalPromptText);
 
   let text;
   try {

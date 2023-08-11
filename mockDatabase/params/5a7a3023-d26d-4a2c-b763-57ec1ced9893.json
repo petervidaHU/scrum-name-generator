@@ -1,0 +1,17 @@
+{
+  "id": "5a7a3023-d26d-4a2c-b763-57ec1ced9893",
+  "name": "create new topic",
+  "description": "default for the collection",
+  "created": "2023-08-11T10:14:08.891Z",
+  "parameters": {
+    "max_tokens": "199",
+    "temperature": 1.02,
+    "top_p": 0.02,
+    "frequency_penalty": 0.76,
+    "presence_penalty": 0.05,
+    "model": "gpt-3.5-turbo",
+    "stop": [
+      ""
+    ]
+  }
+}

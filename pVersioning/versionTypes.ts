@@ -6,7 +6,7 @@ export interface promptVersionType {
   promptObject: promptObjectArray, 
   created: Date,
   description: string,
-  params: parameterType,
+  params: string | null,
 }
 
 export interface promptCollectionType {
@@ -54,4 +54,14 @@ export enum models {
   gpt35 = 'gpt-3.5-turbo',
   gpt35_16 = 'gpt-3.5-turbo-16k',
   gpt4 = 'gpt-4'
+}
+
+export interface StringTemplate {
+  template: string;
+  factory: string[];
+}
+
+export interface errorResponse {
+  errorMessage : string,
+  error: unknown,
 }

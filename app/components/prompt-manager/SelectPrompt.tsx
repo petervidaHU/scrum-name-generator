@@ -17,7 +17,7 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
   const [selectedVersion, setSelectedVersion] = useState<number>(initialPrompt?.versionId || 0);
 
   const saveNewSelection = () => {
-    if (selectedPrompt?.id && selectedPrompt?.id !== null && selectedVersion) {
+    if (selectedPrompt?.id && selectedPrompt?.id !== null ) {
       onSave({
         collectionId: selectedPrompt.id,
         versionId: selectedVersion,
@@ -54,14 +54,6 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
     setSelectedPrompt(list.find(p => p.id === selectedPromptId) || null)
   }
 
-  const handleVersionChange = (event: SelectChangeEvent) => {
-    const selectedVersionId = +event.target.value;
-    setSelectedVersion(selectedVersionId);
-  };
-  console.log('selected prompt  ', selectedPrompt)
-  console.log('selectedVersionId  ', selectedVersion)
-  console.log('seleect list  ', list)
-  console.log('initial promt   ', initialPrompt)
   return (
     <div>
       <Typography variant="h4">{selectedPrompt?.name}</Typography>
@@ -93,8 +85,8 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
               id='select-version'
               labelId='select-version-label'
               label='version'
-              value={`${selectedVersion}`}
-              onChange={handleVersionChange}
+              value={selectedVersion}
+              onChange={(event) => setSelectedVersion(+event.target.value)}
             >
               {selectedPrompt.versions.map((version, index) => (
                 <MenuItem key={version.id} value={index}>

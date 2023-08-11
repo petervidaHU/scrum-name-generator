@@ -1,0 +1,18 @@
+{
+  "id": "143e963d-68d1-4036-bf3c-e5e73fa48d3d",
+  "name": "response format - string",
+  "description": "target: 'word1,word2,word3'",
+  "created": "2023-08-11T10:17:27.156Z",
+  "versions": [
+    {
+      "id": "377ef096-61f5-44f0-b2db-0b5082fd8b3a",
+      "description": "",
+      "created": "2023-08-11T10:17:57.319Z",
+      "promptObject": [
+        "Please provide your answer like this:'word1,word2,word3' "
+      ],
+      "promptText": "Please provide your answer like this:'word1,word2,word3' ",
+      "params": null
+    }
+  ]
+}

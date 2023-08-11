@@ -1,10 +1,10 @@
 import { v4 as uuid } from 'uuid';
-import { models, parameterType, promptVersionSelection, promptVersionType } from './versionTypes';
+import { StringTemplate, models, parameterType, promptVersionSelection, promptVersionType } from './versionTypes';
 
 export const createNewPromptVersion = (
   content: (string | promptVersionSelection)[],
   desc: string = 'empty description',
-  selectedParameter: parameterType,
+  selectedParameter: string | null,
 ): promptVersionType => ({
   id: uuid(),
   description: desc,
@@ -50,4 +50,21 @@ export const createNewParameter = ({
       stop: [stopSeq],
     }
   };
+}
+
+export const mergeVariablesIntoPrompt = (
+  prompt: string,
+  variables: Record<string, string>
+): string => {
+  let filledTemplate = prompt;
+
+  Object.keys(variables).forEach((variable) => {
+    const placeholder = `{_{${variable}}_}`;
+    filledTemplate = filledTemplate.replace(
+      new RegExp(placeholder, "g"),
+      variables[variable]
+    );
+  });
+
+  return filledTemplate;
 }

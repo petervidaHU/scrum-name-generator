@@ -1,0 +1,101 @@
+{
+  "id": "17ca47a8-345b-49d5-bb88-4136db02a6d7",
+  "name": "create new topic",
+  "description": "first request to create plain scrum names according to the given topic",
+  "created": "2023-08-11T09:40:46.408Z",
+  "versions": [
+    {
+      "id": "fb5b7e89-f4b5-4299-9308-b661a9af9c7e",
+      "description": "copy of original prompt",
+      "created": "2023-08-11T11:28:46.993Z",
+      "promptObject": [
+        {
+          "collectionId": "163f17d2-09c0-4044-b1e6-80116fd9ed27",
+          "versionId": 1,
+          "promptText": "Only use English letters and numbers. "
+        },
+        {
+          "collectionId": "12be72c5-0675-48a4-9c25-4ec4869df052",
+          "versionId": 0,
+          "promptText": "Should not be a person's name, should not be related to political movements, nor bloody historical events. "
+        },
+        {
+          "collectionId": "de99ab3a-1ca9-4a2b-a4fd-fcb1ca012a91",
+          "versionId": 0,
+          "promptText": "Do not use strong words, swearing, name of disgusting, occult, embarrassing things. "
+        },
+        {
+          "collectionId": "15e3a737-8685-4cd3-8abe-648e78413d24",
+          "versionId": 0,
+          "promptText": "Do not use strongly related word to religiousness. "
+        },
+        {
+          "collectionId": "6b723785-b728-4a9b-89ee-ad84749f2b3d",
+          "versionId": 0,
+          "promptText": "Do not use too typical, general words. "
+        },
+        {
+          "collectionId": "3b2a7f17-c603-4297-8151-135ddc9a331c",
+          "versionId": 0,
+          "promptText": "Do not use verbs or general nouns, or general adjectives. Prefer proper noun, if possible. "
+        },
+        {
+          "collectionId": "143e963d-68d1-4036-bf3c-e5e73fa48d3d",
+          "versionId": 0,
+          "promptText": "Please provide your answer like this:'word1,word2,word3' "
+        }
+      ],
+      "promptText": "Only use English letters and numbers. Should not be a person's name, should not be related to political movements, nor bloody historical events. Do not use strong words, swearing, name of disgusting, occult, embarrassing things. Do not use strongly related word to religiousness. Do not use too typical, general words. Do not use verbs or general nouns, or general adjectives. Prefer proper noun, if possible. Please provide your answer like this:'word1,word2,word3' ",
+      "params": "5a7a3023-d26d-4a2c-b763-57ec1ced9893"
+    },
+    {
+      "id": "073141e2-b192-4d9a-bb11-4b9d953d19e1",
+      "description": "with variables: NUM_OF_ANSWERS, TOPIC",
+      "created": "2023-08-11T12:20:05.337Z",
+      "promptObject": [
+        {
+          "collectionId": "64fe92b3-369f-45f0-ab22-03d2d803c5dc",
+          "versionId": 0,
+          "promptText": "We are looking for {_{NUM_OF_ANSWERS}_} word related to this concept: {_{TOPIC}_}"
+        },
+        {
+          "collectionId": "163f17d2-09c0-4044-b1e6-80116fd9ed27",
+          "versionId": 1,
+          "promptText": "Only use English letters and numbers. "
+        },
+        {
+          "collectionId": "12be72c5-0675-48a4-9c25-4ec4869df052",
+          "versionId": 0,
+          "promptText": "Should not be a person's name, should not be related to political movements, nor bloody historical events. "
+        },
+        {
+          "collectionId": "de99ab3a-1ca9-4a2b-a4fd-fcb1ca012a91",
+          "versionId": 0,
+          "promptText": "Do not use strong words, swearing, name of disgusting, occult, embarrassing things. "
+        },
+        {
+          "collectionId": "15e3a737-8685-4cd3-8abe-648e78413d24",
+          "versionId": 0,
+          "promptText": "Do not use strongly related word to religiousness. "
+        },
+        {
+          "collectionId": "6b723785-b728-4a9b-89ee-ad84749f2b3d",
+          "versionId": 0,
+          "promptText": "Do not use too typical, general words. "
+        },
+        {
+          "collectionId": "3b2a7f17-c603-4297-8151-135ddc9a331c",
+          "versionId": 0,
+          "promptText": "Do not use verbs or general nouns, or general adjectives. Prefer proper noun, if possible. "
+        },
+        {
+          "collectionId": "143e963d-68d1-4036-bf3c-e5e73fa48d3d",
+          "versionId": 0,
+          "promptText": "Please provide your answer like this:'word1,word2,word3' "
+        }
+      ],
+      "promptText": "We are looking for {_{NUM_OF_ANSWERS}_} word related to this concept: {_{TOPIC}_}Only use English letters and numbers. Should not be a person's name, should not be related to political movements, nor bloody historical events. Do not use strong words, swearing, name of disgusting, occult, embarrassing things. Do not use strongly related word to religiousness. Do not use too typical, general words. Do not use verbs or general nouns, or general adjectives. Prefer proper noun, if possible. Please provide your answer like this:'word1,word2,word3' ",
+      "params": "5a7a3023-d26d-4a2c-b763-57ec1ced9893"
+    }
+  ]
+}

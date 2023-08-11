@@ -1,4 +1,4 @@
-import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper, Box } from '@mui/material';
+import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper, Box, FormControl, InputLabel } from '@mui/material';
 import React, { FormEventHandler, useState, useEffect, ChangeEventHandler, ChangeEvent } from 'react'
 import axios from 'axios';
 import { promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
@@ -101,6 +101,26 @@ const ManagePrompts = () => {
               rows={3}
               margin="normal"
             />
+
+            {/* TODO default parameter for a prompt collection */}
+
+            <FormControl fullWidth margin="normal">
+              <InputLabel htmlFor="selectedParameter">select default parameter</InputLabel>
+              <Select
+                id="selectedParameter"
+                value={0}
+                onChange={(e) => { console.log('to be done') }}
+              >
+                {/*
+                {parameters.length > 0 && parameters.map(parameter => (
+                  <MenuItem key={parameter.id} value={parameter.id}>
+                    {`name: ${parameter.name} / id: ${parameter.id}`}
+                  </MenuItem>
+                ))}
+                */}
+              </Select>
+            </FormControl>
+
             <Button variant="contained" color="primary" type="submit">
               Submit
             </Button>

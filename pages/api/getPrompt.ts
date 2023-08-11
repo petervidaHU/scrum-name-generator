@@ -4,6 +4,7 @@ import { PVersion } from '../../pVersioning/versioner';
 const v = new PVersion();
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('in API getPrompt')
   const { prompt } = req.query;
 
   if (typeof prompt !== 'string') {

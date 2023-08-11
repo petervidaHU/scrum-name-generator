@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { errorResponse, parameterType, promptCollectionType, promptVersionType } from './versionTypes';
 import { DBfilesystem } from './DB';
 import { DBInterface } from './dbInterface';
 
@@ -9,7 +9,7 @@ export class PVersion {
   private db;
   constructor() {
     this.db = db;
-   }
+  }
 
   async getList(): Promise<promptCollectionType[]> {
     const result = await this.db.getList();
@@ -34,7 +34,7 @@ export class PVersion {
     this.db.initializePrompt(newPromptCollection)
     return id;
   }
-  
+
   async savePromptVersion(collectionId: string, newPrompt: promptVersionType) {
     const result = await this.db.savePromptVersion(collectionId, newPrompt)
     return result;
@@ -42,12 +42,30 @@ export class PVersion {
 
   // parameters -- rather in a standalone class?
 
-  async getParametersList(): Promise<parameterType[]>{
+  async getParametersList(): Promise<parameterType[]> {
     return await db.getParametersList();
   }
 
   async saveOneParameter(newParameter: parameterType) {
-    return await db.saveOneParameter(newParameter);
+    try {
+      return await db.saveOneParameter(newParameter);
+    } catch (error) {
+      return {
+        error,
+        errorMessage: `error in PVersioner / getParameter; id: ${newParameter}`,
+      }
+    }
+  }
+
+  async getParameter(parameterId: string): Promise<parameterType | errorResponse> {
+    try {
+      return await db.getOneParameter(parameterId);
+    } catch (error) {
+      return {
+        error,
+        errorMessage: `error in PVersioner / getParameter; id: ${parameterId}`,
+      }
+    }
   }
 
 }
