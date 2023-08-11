@@ -4,16 +4,22 @@ import { generalPrinciples, exploreNewTopic, formatArray, PCCheck, formatYNRease
 import { openAIClient } from '../../app/openAIClient';
 import { mergeVariablesIntoPrompt } from '@/pVersioning/promptVersionerUtils';
 import { PVersion } from '@/pVersioning/versioner';
-import { promptVersionType } from '@/pVersioning/versionTypes';
+import { parameterPropertiesType, parameterType, promptVersionType } from '@/pVersioning/versionTypes';
 
 const v = new PVersion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { topic, desc, prompt }: {topic: string, desc: string, prompt: promptVersionType} = req.body;
+  const { topic, desc, prompt }: { topic: string, desc: string, prompt: promptVersionType } = req.body;
   const openai = openAIClient();
 
   if (!topic) return res.status(400).json('topic not found');
   if (!prompt.params) return res.status(400).json('parameters of prompt not found');
+  let p: parameterType;
+  try {
+    p = await v.getParameter(prompt.params)
+  } catch {
+    return res.status(400).json('parameters of prompt could not fetched');
+  }
 
   let textSwear;
   try {
@@ -23,41 +29,38 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       max_tokens: 100,
       temperature: 0.1,
     });
-    console.log('checking', swearingPreCheck);
+    // console.log('checking', swearingPreCheck);
     if (!swearingPreCheck.data.choices[0].text) throw new Error('No response, we are alone');
     textSwear = JSON.parse(swearingPreCheck.data.choices[0].text);
 
   } catch (err) {
-    throw new Error(`Chaos AD, Tanks on the street... ${err}`);
+    throw new Error(`Error in SWEARCHECK ${err}`);
   }
 
   if (textSwear.a == 'yes') return res.status(200).json(textSwear.r);
 
-  const vari = {
+  const variables = {
     NUM_OF_ANSWERS: '4',
     TOPIC: topic,
   };
 
-  const finalPromptText = mergeVariablesIntoPrompt(prompt.promptText, vari);
-  const parameters = await v.getParameter(prompt.params)
-  console.log('parameters::::::::::::::::::::::::::::::::::', parameters);
-
-  console.log('finalPromptText::::::::::::::::::::::::::::::::::::::::', finalPromptText);
-
+  const finalPromptText = mergeVariablesIntoPrompt(prompt.promptText, variables);
+console.log('p.parameters: ', p.parameters)
   let text;
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: `${exploreNewTopic} ${topic}. ${generalPrinciples} ${formatArray}`,
-      max_tokens: 100,
-      temperature: 1,
+      prompt: finalPromptText,
+      max_tokens: 2,
+      // max_tokens: p.parameters.max_tokens,
+      temperature: p.parameters.temperature,
     });
 
     if (!response.data.choices[0].text) throw new Error('No response, we are alone');
     text = response.data.choices[0].text;
 
   } catch (err) {
-    throw new Error(`Chaos AD, Tanks on the street... ${err}`);
+    throw new Error(`Error in CREATE TOPIC ${err}`);
   }
 
   const resData: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));

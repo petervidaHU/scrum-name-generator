@@ -57,14 +57,11 @@ export class PVersion {
     }
   }
 
-  async getParameter(parameterId: string): Promise<parameterType | errorResponse> {
+  async getParameter(parameterId: string): Promise<parameterType> {
     try {
       return await db.getOneParameter(parameterId);
     } catch (error) {
-      return {
-        error,
-        errorMessage: `error in PVersioner / getParameter; id: ${parameterId}`,
-      }
+     throw new Error('error in versioner / getparameter')
     }
   }
 

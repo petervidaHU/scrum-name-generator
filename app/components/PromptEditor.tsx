@@ -40,7 +40,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedSubPromptIndex, setSelectedSubpromptIndex] = useState<number | null>(null);
   const [parameters, setParameters] = useState<parameterType[]>([]);
-  const [selectedParameter, setSelectedParameter] = useState<parameterType | null>(null);
+  const [selectedParameter, setSelectedParameter] = useState<string>('');
 
   useEffect(() => {
     if (starterPrompt) {
@@ -237,7 +237,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
           <Select
             id="selectedParameter"
             value={selectedParameter}
-            onChange={(e) => { setSelectedParameter(e.target.value as parameterType) }}
+            onChange={(e) => { setSelectedParameter(e.target.value) }}
           >
             {parameters.length > 0 && parameters.map(parameter => (
               <MenuItem key={parameter.id} value={parameter.id}>
