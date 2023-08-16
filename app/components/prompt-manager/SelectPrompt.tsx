@@ -31,7 +31,7 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
     if (selectedPrompt) {
       getVersions();
     }
-  }, [selectedVersionId])
+  }, [selectedVersionId, selectedPrompt])
 
   const saveNewSelection = () => {
     if (selectedPrompt?.id && selectedPrompt?.id !== null && selectedVersionId && versions && versions.length) {
@@ -71,6 +71,8 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
     const selectedPromptId = event.target.value;
     setSelectedPrompt(list.find(p => p.id === selectedPromptId) || null)
   }
+  console.log('versions:', versions)
+  console.log('selected versions:', selectedVersionId)
 
   return (
     <div>
