@@ -16,6 +16,7 @@ export interface promptCollectionType {
   description: string,
   created: Date,
   versions: promptVersionType[],
+  defaultParametersId: string,
 }
 
 export interface promptVersionSelection {

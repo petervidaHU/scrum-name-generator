@@ -1,28 +1,30 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { errorResponse, parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
 import { DBInterface } from './dbInterface';
 
-const defaultDB = 'mockDatabase'
+const defaultDB = 'mockDatabase';
 
 export class DBfilesystem implements DBInterface {
   private db: string;
+  private dbPrompts: string;
   private dbParams: string;
   private dbVersions: string;
 
   constructor() {
     this.db = defaultDB;
+    this.dbPrompts = `${this.db}/prompts`;
     this.dbParams = `${this.db}/params`;
     this.dbVersions = `${this.db}/versions`;
   }
 
   async getList(): Promise<promptCollectionType[]> {
     try {
-      const files = await fs.readdir(this.db);
+      const files = await fs.readdir(this.dbPrompts);
 
       const list = await files.reduce(async (accumulatorPromise, file) => {
         const accumulator = await accumulatorPromise;
-        const filePath = path.join(this.db, file);
+        const filePath = path.join(this.dbPrompts, file);
         const stats = await fs.stat(filePath);
 
         if (stats.isFile()) {
@@ -35,39 +37,39 @@ export class DBfilesystem implements DBInterface {
 
       return list;
     } catch (err) {
-      console.error('Error reading directory in getList:', err);
+      console.error('Error getList in DB', err);
       return [];
     }
   }
 
   async getOnePromptCollection(id: string) {
-    const filePath = path.join(this.db, `${id}.json`);
+    const filePath = path.join(this.dbPrompts, `${id}.json`);
     let content = {};
     try {
       const res = await fs.readFile(filePath, 'utf-8');
       content = JSON.parse(res);
     } catch (error) {
-      console.error('Error reading file:', error);
+      console.error('Error getOnePromptCollection in DB', error);
     }
     return content;
 
   }
 
-  initializePrompt(p: promptCollectionType): void {
-    const id = p.id;
-    const filePath = path.join(this.db, `${id}.json`);
+  initializePrompt(promptCollectionObject: promptCollectionType): void {
+    const id = promptCollectionObject.id;
+    const filePath = path.join(this.dbPrompts, `${id}.json`);
 
     try {
-      const jsonData = JSON.stringify(p, null, 2);
+      const jsonData = JSON.stringify(promptCollectionObject, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
-      console.error('Error saving init. prompt collection:', error);
+      console.error('Error in initializePrompt in DB', error);
     }
   }
 
   async savePromptVersion(collectionId: string, version: promptVersionType): Promise<any> {
     // connect new version id to collection   
-    const filePathCollection = path.join(this.db, `${collectionId}.json`);
+    const filePathCollection = path.join(this.dbPrompts, `${collectionId}.json`);
 
     try {
       const existingContent = await fs.readFile(filePathCollection, 'utf-8');
@@ -90,11 +92,9 @@ export class DBfilesystem implements DBInterface {
       console.error('Error in savePromptVersion in DB - saving version:', error);
     }
 
-
-
     return collectionId;
   }
- 
+
   async getParametersList() {
     let list: parameterType[] = [];
     try {
@@ -123,7 +123,6 @@ export class DBfilesystem implements DBInterface {
   }
 
   async getOneParameter(id: string): Promise<parameterType> {
-    console.log('in db get one param: ', id);
     const filePath = path.join(this.dbParams, `${id}.json`);
 
     try {
@@ -134,12 +133,13 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  /*  async createResult(promptId, resultId) {
- 
-   } */
+  async createResult(promptId: string, resultId: string) {
+    console.log('create result in DB: ', promptId, resultId)
+    return;
+  }
 
   async updateVersion(versionId: string, updatedData: Partial<promptVersionType>): Promise<void> {
-    const filePath = path.join(this.db, `${versionId}.json`);
+    const filePath = path.join(this.dbVersions, `${versionId}.json`);
 
     try {
       const existingContent = await fs.readFile(filePath, 'utf-8');

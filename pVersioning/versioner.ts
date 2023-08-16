@@ -21,7 +21,7 @@ export class PVersion {
     return result;
   }
 
-  initializePromp(name: string, description: string): string {
+  initializePromp(name: string, description: string, defaultParametersId: string): string {
     const id = uuid();
     const newPromptCollection = {
       id,
@@ -29,6 +29,7 @@ export class PVersion {
       description,
       created: new Date(),
       versions: [],
+      defaultParametersId,
     }
 
     this.db.initializePrompt(newPromptCollection)

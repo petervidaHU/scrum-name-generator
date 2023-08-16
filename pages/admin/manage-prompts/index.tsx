@@ -1,21 +1,25 @@
 import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper, Box, FormControl, InputLabel } from '@mui/material';
 import React, { FormEventHandler, useState, useEffect, ChangeEventHandler, ChangeEvent } from 'react'
 import axios from 'axios';
-import { promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
+import { parameterType, promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
 import PromptEditor from '@/app/components/PromptEditor';
 import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
 import PromptFullList from '@/app/components/prompt-manager/PromptFullList';
 import AdminLayout from '@/app/components/layouts/adminLayout';
+import { getJSDocParameterTags } from 'typescript';
 
 const createNewPromptAPI = '/api/newPrompt'
 const getPromptListAPI = '/api/getList'
+const getParametersListAPI = '/api/getParameters'
 const getPrompt = '/api/getPrompt'
 const savePrompt = '/api/savePrompt'
 
 const ManagePrompts = () => {
   const [prompt, setPrompt] = useState<promptCollectionType | null>(null);
   const [list, setList] = useState<promptCollectionType[]>([]);
+  const [parameters, setParameters] = useState<parameterType[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<number>(0);
+  const [selectedParameter, setSelectedParameter] = useState<string>('');
   const [newPrompt, setNewPrompt] = useState<promptCollectionType | null>(null);
 
   const s = prompt?.versions[selectedVersion]?.promptObject || [];
@@ -25,7 +29,13 @@ const ManagePrompts = () => {
       const { data } = await axios(getPromptListAPI);
       setList(data);
     }
+
+    const getParameters = async () => {
+      const { data } = await axios(getParametersListAPI);
+      setParameters(data);
+    }
     getList();
+    getParameters();
   }, [])
 
   const handleCreateNewPrompt: FormEventHandler<HTMLFormElement> = async (event) => {
@@ -40,6 +50,7 @@ const ManagePrompts = () => {
       data: {
         newName: newName.value,
         newDesc: newDesc.value,
+        defaultParametersId: selectedParameter,
       },
     })
     setNewPrompt(result.data);
@@ -102,22 +113,19 @@ const ManagePrompts = () => {
               margin="normal"
             />
 
-            {/* TODO default parameter for a prompt collection */}
-
             <FormControl fullWidth margin="normal">
               <InputLabel htmlFor="selectedParameter">select default parameter</InputLabel>
               <Select
                 id="selectedParameter"
-                value={0}
-                onChange={(e) => { console.log('to be done') }}
+                value={selectedParameter}
+                required
+                onChange={(e) => { setSelectedParameter(e.target.value) }}
               >
-                {/*
                 {parameters.length > 0 && parameters.map(parameter => (
                   <MenuItem key={parameter.id} value={parameter.id}>
                     {`name: ${parameter.name} / id: ${parameter.id}`}
                   </MenuItem>
                 ))}
-                */}
               </Select>
             </FormControl>
 
@@ -138,16 +146,8 @@ const ManagePrompts = () => {
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>Work with existing collection</Typography>
         <form >
-          <div
-            id="select"
-          >
-            <div >
-              <label
-                htmlFor="countries"
-              >
-                Select your existing Prompt
-              </label>
-            </div>
+          <FormControl fullWidth margin="normal">
+            <InputLabel htmlFor="selectedP">Select your existing Prompt</InputLabel>
             <Select
               id="selectedP"
               required
@@ -159,7 +159,7 @@ const ManagePrompts = () => {
                 </MenuItem>
               ))}
             </Select>
-          </div>
+          </FormControl>
           {prompt && (
             <PromptCollectionCard
               p={prompt}
