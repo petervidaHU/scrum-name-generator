@@ -1,13 +1,15 @@
 import React from 'react';
 import { Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { promptCollectionType } from '@/pVersioning/versionTypes';
+import { promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
 
 interface PromptCollectionCardProps {
-  p: promptCollectionType;
+  prompt: promptCollectionType,
+  versions: promptVersionType[],
   selectVersion: (k: number) => void,
 }
 
-const PromptCollectionCard: React.FC<PromptCollectionCardProps> = ({ p: { name, description, created, id, versions }, selectVersion }) => {
+const PromptCollectionCard: React.FC<PromptCollectionCardProps> = ({ prompt: { name, description, created, id }, versions, selectVersion }) => {
+  
   return (
     <Card>
       <CardContent>
@@ -29,7 +31,9 @@ const PromptCollectionCard: React.FC<PromptCollectionCardProps> = ({ p: { name, 
             </TableHead>
             <TableBody>
               {versions.map((version, index) => (
-                <TableRow key={version.id} onClick={() => selectVersion(index)}>
+                <TableRow key={version.id} onClick={() => {
+                  selectVersion(index)
+                  }}>
                   <TableCell>{index}</TableCell>
                   <TableCell>{version.promptText}</TableCell>
                   <TableCell>{version.description}</TableCell>

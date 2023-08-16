@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Select, MenuItem, Typography, SelectChangeEvent, FormControl, Button, InputLabel, Box } from '@mui/material';
-import { promptCollectionType, promptVersionSelection } from '@/pVersioning/versionTypes';
+import { promptCollectionType, promptVersionSelection, promptVersionType } from '@/pVersioning/versionTypes';
 
 const getPrompt = '/api/getPrompt'
+const getVersionListAPI = '/api/getVersionList'
 
 interface SelectPromptProps {
   list: promptCollectionType[],
@@ -14,14 +15,31 @@ interface SelectPromptProps {
 
 const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onSave, list }) => {
   const [selectedPrompt, setSelectedPrompt] = useState<promptCollectionType | null>(null);
-  const [selectedVersion, setSelectedVersion] = useState<number>(initialPrompt?.versionId || 0);
+  const [selectedVersionId, setSelectedVersionId] = useState<string>(initialPrompt?.versionId || '');
+  const [versions, setVersions] = useState<promptVersionType[]>([]);
+
+  useEffect(() => {
+    const getVersions = async () => {
+      const { data } = await axios(getVersionListAPI, {
+        method: 'POST',
+        data: {
+          versionIds: selectedPrompt?.versions,
+        }
+      });
+      setVersions(data)
+    }
+    if (selectedPrompt) {
+      getVersions();
+    }
+  }, [selectedVersionId])
 
   const saveNewSelection = () => {
-    if (selectedPrompt?.id && selectedPrompt?.id !== null ) {
+    if (selectedPrompt?.id && selectedPrompt?.id !== null && selectedVersionId && versions && versions.length) {
+      const text = versions.find(version => version?.id === selectedVersionId)?.promptText as string;
       onSave({
         collectionId: selectedPrompt.id,
-        versionId: selectedVersion,
-        promptText: selectedPrompt.versions[selectedVersion].promptText,
+        versionId: selectedVersionId,
+        promptText: text,
       });
       onClose();
     }
@@ -56,11 +74,18 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
 
   return (
     <div>
-      <Typography variant="h4">{selectedPrompt?.name}</Typography>
-      <Typography variant="body1">{selectedPrompt?.description}</Typography>
+      <Typography variant="h4">
+        {selectedPrompt?.name}
+      </Typography>
+      <Typography variant="body1">
+        {selectedPrompt?.description}
+      </Typography>
+
       <Box>
         <FormControl>
-          <InputLabel id="select-prompt-label">select prompt collection</InputLabel>
+          <InputLabel id="select-prompt-label">
+            select prompt collection
+          </InputLabel>
           <Select
             value={`${selectedPrompt?.id}`}
             onChange={handlePromptChange}
@@ -68,28 +93,38 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
             id='select-prompt'
             labelId='select-prompt-label'
           >
-            {list.map(p => (
-              <MenuItem key={p.id} value={p.id}>
-                {p.name}
+            {list.map(prompt => (
+              <MenuItem
+                key={prompt.id}
+                value={prompt.id}
+              >
+                {prompt.name}
               </MenuItem>
             ))}
           </Select>
         </FormControl>
       </Box>
 
-      {selectedPrompt && selectedPrompt.id ? (
+      {selectedPrompt
+        && selectedPrompt.id ? (
         <Box>
           <FormControl>
-            <InputLabel id="select-version-label">select version</InputLabel>
+            <InputLabel
+              id="select-version-label">
+              select version
+            </InputLabel>
             <Select
               id='select-version'
               labelId='select-version-label'
               label='version'
-              value={selectedVersion}
-              onChange={(event) => setSelectedVersion(+event.target.value)}
+              value={selectedVersionId}
+              onChange={(event) => setSelectedVersionId(event.target.value)}
             >
-              {selectedPrompt.versions.map((version, index) => (
-                <MenuItem key={version.id} value={index}>
+              {versions.map(version => (
+                <MenuItem
+                  key={version.id}
+                  value={version.id}
+                >
                   {version.promptText}
                 </MenuItem>
               ))}
@@ -97,10 +132,18 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
           </FormControl>
         </Box>
       ) : (
-        <Typography>Loading...</Typography>
+        <Typography>
+          Loading...
+        </Typography>
       )}
-      <Button onClick={onClose}>Cancel</Button>
-      <Button onClick={saveNewSelection}>Save</Button>
+
+      <Button onClick={onClose}>
+        Cancel
+      </Button>
+      <Button onClick={saveNewSelection}>
+        Save
+      </Button>
+
     </div>
   );
 };

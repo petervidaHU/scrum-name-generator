@@ -1,15 +1,15 @@
 import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper, Box, FormControl, InputLabel } from '@mui/material';
-import React, { FormEventHandler, useState, useEffect, ChangeEventHandler, ChangeEvent } from 'react'
+import React, { FormEventHandler, useState, useEffect } from 'react'
 import axios from 'axios';
 import { parameterType, promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
 import PromptEditor from '@/app/components/PromptEditor';
 import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
 import PromptFullList from '@/app/components/prompt-manager/PromptFullList';
 import AdminLayout from '@/app/components/layouts/adminLayout';
-import { getJSDocParameterTags } from 'typescript';
 
 const createNewPromptAPI = '/api/newPrompt'
 const getPromptListAPI = '/api/getList'
+const getVersionListAPI = '/api/getVersionList'
 const getParametersListAPI = '/api/getParameters'
 const getPrompt = '/api/getPrompt'
 const savePrompt = '/api/savePrompt'
@@ -17,26 +17,40 @@ const savePrompt = '/api/savePrompt'
 const ManagePrompts = () => {
   const [prompt, setPrompt] = useState<promptCollectionType | null>(null);
   const [list, setList] = useState<promptCollectionType[]>([]);
+  const [versionList, setVersionList] = useState<promptVersionType[]>([]);
   const [parameters, setParameters] = useState<parameterType[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<number>(0);
   const [selectedParameter, setSelectedParameter] = useState<string>('');
   const [newPrompt, setNewPrompt] = useState<promptCollectionType | null>(null);
-
-  const s = prompt?.versions[selectedVersion]?.promptObject || [];
 
   useEffect(() => {
     const getList = async () => {
       const { data } = await axios(getPromptListAPI);
       setList(data);
     }
-
     const getParameters = async () => {
       const { data } = await axios(getParametersListAPI);
       setParameters(data);
     }
+
     getList();
     getParameters();
   }, [])
+
+  useEffect(() => {
+    const getVersions = async () => {
+      const { data } = await axios(getVersionListAPI, {
+        method: 'POST',
+        data: {
+          versionIds: prompt?.versions,
+        }
+      });
+      setVersionList(data)
+    }
+    if (prompt) {
+      getVersions();
+    }
+  }, [prompt])
 
   const handleCreateNewPrompt: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
@@ -87,7 +101,7 @@ const ManagePrompts = () => {
 
     setPrompt(data);
   }
-  console.log('list: ', list);
+  console.log('selected version:', selectedVersion);
 
   return (
     <AdminLayout>
@@ -162,7 +176,8 @@ const ManagePrompts = () => {
           </FormControl>
           {prompt && (
             <PromptCollectionCard
-              p={prompt}
+              prompt={prompt}
+              versions={versionList}
               selectVersion={(a) => { setSelectedVersion(+a) }}
             />
           )}
@@ -171,7 +186,7 @@ const ManagePrompts = () => {
         <PromptEditor
           list={list}
           save={handleSaveNewPromptVersion}
-          starterPrompt={s || []}
+          starterPrompt={versionList[selectedVersion]?.promptObject || []}
         />
       </Paper>
 

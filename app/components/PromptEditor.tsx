@@ -28,7 +28,7 @@ const initCursorPos = {
 
 const temporaryNewItem = {
   collectionId: '',
-  versionId: 0,
+  versionId: '',
   promptText: 'please edit!!',
 };
 

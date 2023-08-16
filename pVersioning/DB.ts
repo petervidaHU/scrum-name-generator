@@ -95,6 +95,20 @@ export class DBfilesystem implements DBInterface {
     return collectionId;
   }
 
+  async getVersions(ids: string[]): Promise<promptVersionType[]> {
+    let list: promptVersionType[] = [];
+    try {
+      list = await Promise.all(ids.map(async file => {
+        const filePath = path.join(this.dbVersions, `${file}.json`);
+        const content = await fs.readFile(filePath, 'utf-8')
+        return JSON.parse(content);
+      }));
+    } catch (err) {
+      console.error('Error getParameterList in DB', err);
+    }
+    return list;
+  }
+
   async getParametersList() {
     let list: parameterType[] = [];
     try {

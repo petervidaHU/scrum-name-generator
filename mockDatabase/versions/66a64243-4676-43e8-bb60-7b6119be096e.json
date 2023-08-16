@@ -1,0 +1,11 @@
+{
+  "id": "66a64243-4676-43e8-bb60-7b6119be096e",
+  "description": "rsponse",
+  "created": "2023-08-16T10:14:49.575Z",
+  "promptObject": [
+    "Please provide your answer like this:'word1,word2,word3' "
+  ],
+  "promptText": "Please provide your answer like this:'word1,word2,word3' ",
+  "params": "",
+  "result": []
+}

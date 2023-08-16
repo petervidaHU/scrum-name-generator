@@ -1,0 +1,11 @@
+{
+  "id": "55c2903e-05c4-4f15-802a-8af54b085103",
+  "description": "",
+  "created": "2023-08-16T10:05:49.988Z",
+  "promptObject": [
+    "We are looking for {_{NUM_OF_ANSWERS}_} word related to this concept: {_{TOPIC}_} "
+  ],
+  "promptText": "We are looking for {_{NUM_OF_ANSWERS}_} word related to this concept: {_{TOPIC}_} ",
+  "params": "",
+  "result": []
+}

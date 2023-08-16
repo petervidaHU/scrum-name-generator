@@ -21,7 +21,7 @@ export interface promptCollectionType {
 
 export interface promptVersionSelection {
   collectionId: string,
-  versionId: number,
+  versionId: string,
   promptText: string,
 }
 

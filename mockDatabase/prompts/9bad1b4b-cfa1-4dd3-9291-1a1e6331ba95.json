@@ -1,0 +1,12 @@
+{
+  "id": "9bad1b4b-cfa1-4dd3-9291-1a1e6331ba95",
+  "name": "NEW TOPIC initialization",
+  "description": "variable: NUM_Of_ANSWERS",
+  "created": "2023-08-16T09:05:56.527Z",
+  "versions": [
+    "550622ba-ba50-4dc0-8a9c-d19f17c6aa7e",
+    "0f3056b5-4794-4038-8fbf-52fa5f8bcbad",
+    "55c2903e-05c4-4f15-802a-8af54b085103"
+  ],
+  "defaultParametersId": "5a7a3023-d26d-4a2c-b763-57ec1ced9893"
+}

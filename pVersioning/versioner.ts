@@ -16,6 +16,12 @@ export class PVersion {
     return result;
   }
 
+
+  async getVersions(versionIds: string[]): Promise<promptVersionType[]> {
+    const result = await this.db.getVersions(versionIds);
+    return result;
+  }
+
   async getOnePromptCollection(id: string): Promise<promptCollectionType | {}> {
     const result = await this.db.getOnePromptCollection(id);
     return result;
