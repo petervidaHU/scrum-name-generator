@@ -7,6 +7,7 @@ export interface promptVersionType {
   created: Date,
   description: string,
   params: string | null,
+  result: any[],
 }
 
 export interface promptCollectionType {
@@ -64,4 +65,9 @@ export interface StringTemplate {
 export interface errorResponse {
   errorMessage : string,
   error: unknown,
+}
+
+export interface resultConnectionType {
+  requestId: string,
+    resultId: string,
 }

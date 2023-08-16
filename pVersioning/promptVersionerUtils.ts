@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { StringTemplate, models, parameterType, promptVersionSelection, promptVersionType } from './versionTypes';
+import { models, promptVersionSelection, promptVersionType, resultConnectionType } from './versionTypes';
 
 export const createNewPromptVersion = (
   content: (string | promptVersionSelection)[],
@@ -12,6 +12,7 @@ export const createNewPromptVersion = (
   promptObject: content,
   promptText: content.reduce((acc: string, item) => acc + (typeof item === 'string' ? item : item.promptText), ''),
   params: selectedParameter,
+  result: [],
 });
 
 export const createNewParameter = ({
@@ -67,4 +68,12 @@ export const mergeVariablesIntoPrompt = (
   });
 
   return filledTemplate;
+}
+
+export const createResult = (reqId: string): resultConnectionType => {
+  const id = uuid();
+  return {
+    requestId: reqId,
+    resultId: id,
+  }
 }

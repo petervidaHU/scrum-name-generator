@@ -24,9 +24,8 @@ export const createRequestForNames = async (event: FormEvent<HTMLFormElement>, p
       error: 'error catched in client side catch for create names',
     }
   }
-
   return {
     result: tempResult,
-      };
+  };
 
 };

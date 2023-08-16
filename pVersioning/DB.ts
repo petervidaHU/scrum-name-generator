@@ -8,10 +8,12 @@ const defaultDB = 'mockDatabase'
 export class DBfilesystem implements DBInterface {
   private db: string;
   private dbParams: string;
+  private dbVersions: string;
 
   constructor() {
     this.db = defaultDB;
     this.dbParams = `${this.db}/params`;
+    this.dbVersions = `${this.db}/versions`;
   }
 
   async getList(): Promise<promptCollectionType[]> {
@@ -63,26 +65,36 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  async savePromptVersion(collectionId: string, p: promptVersionType): Promise<any> {
-    const filePath = path.join(this.db, `${collectionId}.json`);
+  async savePromptVersion(collectionId: string, version: promptVersionType): Promise<any> {
+    // connect new version id to collection   
+    const filePathCollection = path.join(this.db, `${collectionId}.json`);
 
     try {
-      const existingContent = await fs.readFile(filePath, 'utf-8');
+      const existingContent = await fs.readFile(filePathCollection, 'utf-8');
       const content = JSON.parse(existingContent);
 
       console.log('existing con: ', content)
-      content.versions.push(p)
+      content.versions.push(version.id)
 
-      await fs.writeFile(filePath, JSON.stringify(content, null, 2));
+      await fs.writeFile(filePathCollection, JSON.stringify(content, null, 2));
     } catch (error) {
-      console.error('Error saving prompt version:', error);
+      console.error('Error in savePromptVersion in DB - updating new version of prompt collection:', error);
     }
+
+    // save version file
+    const filePathVersion = path.join(this.dbVersions, `${version.id}.json`);
+
+    try {
+      await fs.writeFile(filePathVersion, JSON.stringify(version, null, 2));
+    } catch (error) {
+      console.error('Error in savePromptVersion in DB - saving version:', error);
+    }
+
+
 
     return collectionId;
   }
-
-  // parameters
-
+ 
   async getParametersList() {
     let list: parameterType[] = [];
     try {
@@ -93,7 +105,7 @@ export class DBfilesystem implements DBInterface {
         return JSON.parse(content);
       }));
     } catch (err) {
-      console.error('Error reading directory:', err);
+      console.error('Error getParameterList in DB', err);
     }
     return list;
   }
@@ -106,7 +118,7 @@ export class DBfilesystem implements DBInterface {
       const jsonData = JSON.stringify(newParameter, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
-      console.error('Error saving one parameter in DB:', error);
+      console.error('Error saveOneParameter in DB', error);
     }
   }
 
@@ -118,9 +130,31 @@ export class DBfilesystem implements DBInterface {
       const fileContent = await fs.readFile(filePath, 'utf-8');
       return JSON.parse(fileContent);
     } catch (error) {
-      throw new Error('Error get one parameter in DB')
+      throw new Error('Error in getOneParameter in DB')
     }
+  }
 
+  /*  async createResult(promptId, resultId) {
+ 
+   } */
+
+  async updateVersion(versionId: string, updatedData: Partial<promptVersionType>): Promise<void> {
+    const filePath = path.join(this.db, `${versionId}.json`);
+
+    try {
+      const existingContent = await fs.readFile(filePath, 'utf-8');
+      const content: promptVersionType = JSON.parse(existingContent);
+
+      const updatedContent: promptVersionType = {
+        ...content,
+        ...updatedData,
+      };
+
+      await fs.writeFile(filePath, JSON.stringify(updatedContent, null, 2), 'utf-8');
+    } catch (error) {
+      console.error('Error updating prompt version:', error);
+      throw error;
+    }
   }
 
 }

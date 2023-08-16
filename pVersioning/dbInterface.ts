@@ -8,5 +8,6 @@ export interface DBInterface {
   getParametersList(): Promise<parameterType[]>,
   saveOneParameter(newParameter: parameterType): void,
   getOneParameter(parameterId: string): Promise<parameterType>,
+  createResult(promptId: string, resultId: string): void,
 }
 

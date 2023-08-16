@@ -40,8 +40,6 @@ export class PVersion {
     return result;
   }
 
-  // parameters -- rather in a standalone class?
-
   async getParametersList(): Promise<parameterType[]> {
     return await db.getParametersList();
   }
@@ -63,6 +61,13 @@ export class PVersion {
     } catch (error) {
      throw new Error('error in versioner / getparameter')
     }
+  }
+
+  async createConnection(promptId: string): Promise<string> {
+    const resultId = uuid();
+    db.createResult(promptId, resultId)
+
+    return resultId;
   }
 
 }

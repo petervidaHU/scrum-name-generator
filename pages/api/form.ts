@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { iNameItem } from "@/app/types/nameTypes";
 import { generalPrinciples, exploreNewTopic, formatArray, PCCheck, formatYNReaseon } from "@/prompts/newTopic";
 import { openAIClient } from '../../app/openAIClient';
-import { mergeVariablesIntoPrompt } from '@/pVersioning/promptVersionerUtils';
+import { createResult, mergeVariablesIntoPrompt } from '@/pVersioning/promptVersionerUtils';
 import { PVersion } from '@/pVersioning/versioner';
 import { parameterPropertiesType, parameterType, promptVersionType } from '@/pVersioning/versionTypes';
 
@@ -45,25 +45,30 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   };
 
   const finalPromptText = mergeVariablesIntoPrompt(prompt.promptText, variables);
-console.log('p.parameters: ', p.parameters)
+
   let text;
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
       prompt: finalPromptText,
-      max_tokens: 2,
+      max_tokens: 200,
       // max_tokens: p.parameters.max_tokens,
       temperature: p.parameters.temperature,
     });
 
     if (!response.data.choices[0].text) throw new Error('No response, we are alone');
     text = response.data.choices[0].text;
-
+    
   } catch (err) {
     throw new Error(`Error in CREATE TOPIC ${err}`);
   }
-
-  const resData: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
-
-  res.status(200).json(resData);
+  
+  const resultConnection = await v.createConnection(prompt.id);
+  const resText: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
+  const resultData = {
+    resText,
+    resultId: resultConnection, 
+  }
+console.log('in forms:', resultData)
+  res.status(200).json(resultData);
 }
