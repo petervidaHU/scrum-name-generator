@@ -21,14 +21,15 @@ export default function Admin() {
   const [proposedList, setProposedList] = useState<(iNameItem | iNameItemWithTags)[]>([]);
   const [rejectedList, setRejectedList] = useState<(iNameItem | iNameItemWithTags)[]>([]);
   const [tagList, setTagList] = useState<string[]>([]);
-  const [promptVersions, setPromptVersions] = useState<promptVersionType[] | null>(null);
+  const [paramId, setParamId] = useState<string>('');
+  const [promptVersions, setPromptVersions] = useState<string[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<promptVersionType | null>(null);
 
   // TODO: create a centralized loading/spinner handler
   // TODO: clear the errorResponse
 
-  const prompt = '17ca47a8-345b-49d5-bb88-4136db02a6d7'
-
+  const prompt = 'cf7dcaa0-a3a7-4fdb-be18-da2beb41d3ac'
+  
   useEffect(() => {
     const getOnePrompt = async () => {
       const { data } = await axios(getPromptAPI, {
@@ -36,6 +37,7 @@ export default function Admin() {
         params: { prompt }
       });
       setPromptVersions(data.versions);
+      setParamId(data.defaultParametersId);
     }
     getOnePrompt();
   }, [prompt])
@@ -46,9 +48,10 @@ export default function Admin() {
     if (!selectedVersion) return;
 
     setLoading(true);
-    const { result, error } = await createRequestForNames(event, selectedVersion);
+    const { result, error } = await createRequestForNames(event, selectedVersion, paramId);
     if (result) {
-      setProposedList(result);
+      console.log('result: ', result);
+      setProposedList(result.resultText);
     } else {
       setErrorResponse(error);
     }

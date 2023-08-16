@@ -5,10 +5,12 @@ import { promptVersionType } from '@/pVersioning/versionTypes';
 
 interface GeneratorFormProps {
   submitHandler: FormEventHandler<HTMLFormElement>,
-  promptVersions: promptVersionType[],
+  promptVersions: string[],
   versionSelector: any,
   version: promptVersionType | null,
 }
+
+const getVersionListAPI = '/api/getVersionList'
 
 export const GeneratorForm: React.FC<GeneratorFormProps> = ({
   submitHandler,
@@ -16,9 +18,22 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
   promptVersions,
   version,
 }) => {
+  const [versions, setVersions] = useState<promptVersionType[]>([]);
 
-  console.log('generatorform promptVersions: ', promptVersions)
-  console.log('generatorform version: ', version)
+  useEffect(() => {
+    const getVersions = async () => {
+      const { data } = await axios(getVersionListAPI, {
+        method: 'POST',
+        data: {
+          versionIds: promptVersions,
+        }
+      });
+      setVersions(data)
+    }
+    if (promptVersions.length) {
+      getVersions();
+    }
+  }, [promptVersions])
 
   return (
     <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
@@ -62,14 +77,14 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
             id="selectedversion"
             value={version?.id}
             required
-            onChange={(e) => { versionSelector(e.target.value as unknown as promptVersionType) }}
+            onChange={(e) => { versionSelector(versions[+e.target.value]) }}
           >
-            {promptVersions.length > 0 && promptVersions.map(v => (
+            {versions.length > 0 && versions.map((version, index) => (
               <MenuItem
-                key={v.id}
-                value={v}
+                key={version.id}
+                value={index}
               >
-                {`name: ${v.promptText} / id: ${v.id}`}
+                {`name: ${version.promptText} / id: ${version.id}`}
               </MenuItem>
             ))}
           </Select>

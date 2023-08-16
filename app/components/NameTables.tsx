@@ -4,12 +4,12 @@ import { Tags } from './tags';
 import { iNameItem, iNameItemWithTags } from '../types/nameTypes';
 
 interface NameTablesProps {
-  title: string;
-  list: iNameItem[] | iNameItemWithTags[];
-  descriptionWizard: (name: string) => void;
-  proposalHandler: MouseEventHandler<HTMLSpanElement>;
-  proposalLabel?: string;
-  tagDeleteHandler?: MouseEventHandler<HTMLSpanElement>;
+  title: string,
+  list: (iNameItem | iNameItemWithTags)[],
+  descriptionWizard: (name: string) => void,
+  proposalHandler: MouseEventHandler<HTMLSpanElement>,
+  proposalLabel?: string,
+  tagDeleteHandler?: MouseEventHandler<HTMLSpanElement>,
 }
 
 export const NameTables: React.FunctionComponent<NameTablesProps> = ({

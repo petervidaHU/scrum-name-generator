@@ -9,18 +9,19 @@ import { parameterPropertiesType, parameterType, promptVersionType } from '@/pVe
 const v = new PVersion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { topic, desc, prompt }: { topic: string, desc: string, prompt: promptVersionType } = req.body;
+  const { topic, desc, prompt, paramId }: { topic: string, desc: string, prompt: promptVersionType, paramId: string } = req.body;
   const openai = openAIClient();
 
+  
   if (!topic) return res.status(400).json('topic not found');
-  if (!prompt.params) return res.status(400).json('parameters of prompt not found');
+  if (paramId === '') return res.status(400).json('parameters of prompt not found');
   let p: parameterType;
   try {
-    p = await v.getParameter(prompt.params)
+    p = await v.getParameter(paramId)
   } catch {
     return res.status(400).json('parameters of prompt could not fetched');
   }
-
+  
   let textSwear;
   try {
     const swearingPreCheck = await openai.createCompletion({
@@ -32,21 +33,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     // console.log('checking', swearingPreCheck);
     if (!swearingPreCheck.data.choices[0].text) throw new Error('No response, we are alone');
     textSwear = JSON.parse(swearingPreCheck.data.choices[0].text);
-
+    
   } catch (err) {
     throw new Error(`Error in SWEARCHECK ${err}`);
   }
-
+  
   if (textSwear.a == 'yes') return res.status(200).json(textSwear.r);
-
+  
   const variables = {
     NUM_OF_ANSWERS: '4',
     TOPIC: topic,
   };
-
+  
   const finalPromptText = mergeVariablesIntoPrompt(prompt.promptText, variables);
-
   let text;
+
   try {
     const response = await openai.createCompletion({
       model: "text-davinci-003",
@@ -64,9 +65,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   
   const resultConnection = await v.createConnection(prompt.id);
-  const resText: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
+  const resultText: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
   const resultData = {
-    resText,
+    resultText,
     resultId: resultConnection, 
   }
 console.log('in forms:', resultData)

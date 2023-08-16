@@ -4,17 +4,19 @@ import { promptVersionType } from "@/pVersioning/versionTypes";
 import axios from "axios";
 import { FormEvent } from "react";
 
-export const createRequestForNames = async (event: FormEvent<HTMLFormElement>, prompt: promptVersionType): centralizedAPICall => {
+export const createRequestForNames = async (event: FormEvent<HTMLFormElement>, prompt: promptVersionType, paramId: string): /* centralizedAPICall */Promise<any> => {
   const endpoint = '/api/form';
-
   const target = event.target as HTMLFormElement;
   const data = {
     topic: target.topic.value,
     desc: target.description.value,
+    paramId,
     prompt,
   };
 
-  let tempResult: iNameItem[] = [];
+  console.log('paramId: ', paramId);
+
+  let tempResult: any;
   try {
     const response = await axios(endpoint, post(data));
     tempResult = await response.data;
