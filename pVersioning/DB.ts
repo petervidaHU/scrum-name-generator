@@ -11,6 +11,7 @@ export class DBfilesystem implements DBInterface {
   private dbParams: string;
   private dbVersions: string;
   private dbResults: string;
+  private dbResultCollections: string;
 
   constructor() {
     this.db = defaultDB;
@@ -18,6 +19,7 @@ export class DBfilesystem implements DBInterface {
     this.dbParams = `${this.db}/params`;
     this.dbVersions = `${this.db}/versions`;
     this.dbResults = `${this.db}/results`;
+    this.dbResultCollections = `${this.db}/result-collections`;
   }
 
   async getList(): Promise<promptCollectionType[]> {
@@ -149,17 +151,45 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  async createResult(requestId: string, content: any) {
+  async initializeResultCollection(requestId: string, content: any) {
     const filePath = path.join(this.dbResults, `${requestId}.json`);
-
+    
     try {
       const jsonData = JSON.stringify(content, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
       console.error('Error createResult in DB', error);
     }
-
+    
     return;
+  }
+  async createResult(requestId: string, content: any) {
+    const filePath = path.join(this.dbResults, `${requestId}.json`);
+    
+    try {
+      const jsonData = JSON.stringify(content, null, 2);
+      fs.writeFile(filePath, jsonData, 'utf-8');
+    } catch (error) {
+      console.error('Error createResult in DB', error);
+    }
+    
+    return;
+  }
+  
+  async getResultCollection(promptId: string, paramId: string): Promise<string | null> {
+    const filePath = path.join(this.dbResultCollections, `${promptId}.json`);
+    try {
+      const collectionFound = await fs.readFile(filePath, 'utf-8');
+      console.log('collectionFound::', collectionFound);
+      return JSON.parse(collectionFound);
+    } catch (error) {
+      return null;
+    }
+  }
+
+  async createResultId(collection: string): Promise<string> {
+
+    return 'newresultid';
   }
 
   async updateVersion(versionId: string, updatedData: Partial<promptVersionType>): Promise<void> {

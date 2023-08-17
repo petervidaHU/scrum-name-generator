@@ -12,6 +12,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { topic, desc, prompt, paramId }: { topic: string, desc: string, prompt: promptVersionType, paramId: string } = req.body;
   const openai = openAIClient();
 
+  console.log('in create topic API::::', topic);
+
   
   if (!topic) return res.status(400).json('topic not found');
   if (paramId === '') return res.status(400).json('parameters of prompt not found');
@@ -64,12 +66,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     throw new Error(`Error in CREATE TOPIC ${err}`);
   }
   
-  const resultConnection = await v.createConnection(prompt.id, paramId);
+  const resultConnection = await v.createNewResult(prompt.id, paramId);
   const resultText: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
   const resultData = {
     resultText,
     resultId: resultConnection, 
   }
 console.log('in forms:', resultData)
+console.log('in forms:', prompt.id, paramId)
   res.status(200).json(resultData);
 }

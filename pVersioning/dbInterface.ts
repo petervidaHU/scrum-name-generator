@@ -10,5 +10,8 @@ export interface DBInterface {
   getOneParameter(parameterId: string): Promise<parameterType>,
   createResult(promptId: string, resultId: string): void,
   getVersions(ids: string[]): Promise<promptVersionType[]>,
+  initializeResultCollection(requestId: string, content: any): Promise<any>,
+  getResultCollection(promptId: string, paramId: string): Promise<any>, 
+  createResultId(collection: string): Promise<string>,
 }
 

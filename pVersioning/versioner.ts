@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { errorResponse, parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { parameterType, promptCollectionType, promptVersionType, resultCollectionType } from './versionTypes';
 import { DBfilesystem } from './DB';
 import { DBInterface } from './dbInterface';
 
@@ -70,21 +70,27 @@ export class PVersion {
     }
   }
 
-  async createConnection(promptId: string, paramId: string): Promise<string> {
+  async initializeResultCollection(promptId: string, paramId: string): Promise<string> {
     const resultId = uuid();
     // hash new id from parameters?
     // hash from request string?
-    const requestId = `${promptId}---${paramId}`;
-    const content = {
+    const content: resultCollectionType = {
       promptId,
-      paramId,
       results: {
-        resultId,
+        [paramId]: [resultId],
       }
     };
-    db.createResult(requestId, content)
+    await db.initializeResultCollection(promptId, content)
 
     return resultId;
+  }
+
+  async createNewResult(promptId: string, paramId: string): Promise<string> {
+    const collectionExist: string | null = await db.getResultCollection(promptId, paramId);
+    
+    return collectionExist
+      ? db.createResultId(collectionExist)
+      : await this.initializeResultCollection(promptId, paramId)
   }
 
 }

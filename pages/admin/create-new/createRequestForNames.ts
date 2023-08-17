@@ -5,7 +5,7 @@ import axios from "axios";
 import { FormEvent } from "react";
 
 export const createRequestForNames = async (event: FormEvent<HTMLFormElement>, prompt: promptVersionType, paramId: string): /* centralizedAPICall */Promise<any> => {
-  const endpoint = '/api/form';
+  const endpoint = '/api/createTopic';
   const target = event.target as HTMLFormElement;
   const data = {
     topic: target.topic.value,

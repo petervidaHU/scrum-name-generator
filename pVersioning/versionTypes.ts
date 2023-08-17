@@ -1,9 +1,11 @@
+import { Tracing } from "trace_events";
+
 export type promptObjectArray = (promptVersionSelection | string)[];
 
 export interface promptVersionType {
   id: string
   promptText: string,
-  promptObject: promptObjectArray, 
+  promptObject: promptObjectArray,
   created: Date,
   description: string,
   params: string | null,
@@ -11,7 +13,7 @@ export interface promptVersionType {
 }
 
 export interface promptCollectionType {
-  id: string, 
+  id: string,
   name: string,
   description: string,
   created: Date,
@@ -26,9 +28,9 @@ export interface promptVersionSelection {
 }
 
 export interface cursorPositionType {
- textBeforeCursor: string,
- textAfterCursor: string,
- subPromptId: number,
+  textBeforeCursor: string,
+  textAfterCursor: string,
+  subPromptId: number,
 }
 
 
@@ -64,11 +66,18 @@ export interface StringTemplate {
 }
 
 export interface errorResponse {
-  errorMessage : string,
+  errorMessage: string,
   error: unknown,
 }
 
 export interface resultConnectionType {
   requestId: string,
-    resultId: string,
+  resultId: string,
+}
+
+export interface resultCollectionType {
+  promptId: string,
+  results: {
+    [paramId: string]: string[],
+  }
 }

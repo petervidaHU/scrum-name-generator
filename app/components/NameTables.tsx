@@ -30,20 +30,20 @@ export const NameTables: React.FunctionComponent<NameTablesProps> = ({
               <TableCell>Suggested Name</TableCell>
               <TableCell>Description</TableCell>
               <TableCell>
-                <span className="sr-only">Edit</span>
+                <span>Edit</span>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {list.map(({ name, tags, description }, index) => (
               <React.Fragment key={name}>
-                <TableRow className="bg-white dark:border-gray-700 dark:bg-gray-800">
-                  <TableCell className="whitespace-nowrap font-medium text-gray-900 dark:text-white">
+                <TableRow>
+                  <TableCell>
                     {name}
                   </TableCell>
                   <TableCell>{description ? description : 'No Description!'}</TableCell>
                   <TableCell className="flex">
-                    <span data-name={name} onClick={proposalHandler} className="mx-4">
+                    <span data-name={name} onClick={proposalHandler}>
                       {proposalLabel.toUpperCase()}
                     </span>
                     <Button onClick={() => descriptionWizard(name)}>Get Further Desc.</Button>
@@ -51,7 +51,7 @@ export const NameTables: React.FunctionComponent<NameTablesProps> = ({
                 </TableRow>
                 {tags && (
                   <TableRow>
-                    <TableCell className="flex mt-2" colSpan={3}>
+                    <TableCell colSpan={3}>
                       <Tags tags={tags} del={tagDeleteHandler} parent={index} />
                     </TableCell>
                   </TableRow>
