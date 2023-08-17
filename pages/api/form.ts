@@ -64,7 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     throw new Error(`Error in CREATE TOPIC ${err}`);
   }
   
-  const resultConnection = await v.createConnection(prompt.id);
+  const resultConnection = await v.createConnection(prompt.id, paramId);
   const resultText: iNameItem[] = text.split(",").map((splitted: string): iNameItem => ({ name: splitted.trim() }));
   const resultData = {
     resultText,

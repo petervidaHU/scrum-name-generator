@@ -10,12 +10,14 @@ export class DBfilesystem implements DBInterface {
   private dbPrompts: string;
   private dbParams: string;
   private dbVersions: string;
+  private dbResults: string;
 
   constructor() {
     this.db = defaultDB;
     this.dbPrompts = `${this.db}/prompts`;
     this.dbParams = `${this.db}/params`;
     this.dbVersions = `${this.db}/versions`;
+    this.dbResults = `${this.db}/results`;
   }
 
   async getList(): Promise<promptCollectionType[]> {
@@ -147,8 +149,16 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  async createResult(promptId: string, resultId: string) {
-    console.log('create result in DB: ', promptId, resultId)
+  async createResult(requestId: string, content: any) {
+    const filePath = path.join(this.dbResults, `${requestId}.json`);
+
+    try {
+      const jsonData = JSON.stringify(content, null, 2);
+      fs.writeFile(filePath, jsonData, 'utf-8');
+    } catch (error) {
+      console.error('Error createResult in DB', error);
+    }
+
     return;
   }
 

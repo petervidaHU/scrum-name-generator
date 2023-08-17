@@ -66,13 +66,23 @@ export class PVersion {
     try {
       return await db.getOneParameter(parameterId);
     } catch (error) {
-     throw new Error('error in versioner / getparameter')
+      throw new Error('error in versioner / getparameter')
     }
   }
 
-  async createConnection(promptId: string): Promise<string> {
+  async createConnection(promptId: string, paramId: string): Promise<string> {
     const resultId = uuid();
-    db.createResult(promptId, resultId)
+    // hash new id from parameters?
+    // hash from request string?
+    const requestId = `${promptId}---${paramId}`;
+    const content = {
+      promptId,
+      paramId,
+      results: {
+        resultId,
+      }
+    };
+    db.createResult(requestId, content)
 
     return resultId;
   }
