@@ -1,6 +1,5 @@
 import { EvaluatorResults, ResultObject, TrueAndFalseEvaluatorType } from "./versionTypes";
 
-
 class ResultManager {
   private resultId: string;
   protected result: EvaluatorResults | null = null;
@@ -49,7 +48,6 @@ export class ResultEvaluator_True_Or_False extends ResultManager {
       false: add ? this.trueAndFalse.false + 1 : this.trueAndFalse.false - 1,
     };
     this.saveResult(this.trueAndFalse, this.myNameIs);
-    console.log('this.trueandfalse FALSE: ', this.trueAndFalse);
   }
 
   setTrue(add = true, num: number = 1) {
@@ -58,6 +56,5 @@ export class ResultEvaluator_True_Or_False extends ResultManager {
       false: this.trueAndFalse.false,
     };
     this.saveResult(this.trueAndFalse, this.myNameIs);
-    console.log('this.trueandfalse TRUE: ', this.trueAndFalse);
   }
 }

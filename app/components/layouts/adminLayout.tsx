@@ -83,6 +83,10 @@ const pages = [{
   link: 'admin/manage-parameters',
 },
 {
+  title: 'manage-results',
+  link: 'admin/manage-results',
+},
+{
   title: 'test openai',
   link: 'admin/create-new',
 },
