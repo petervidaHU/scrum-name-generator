@@ -194,11 +194,15 @@ export class DBfilesystem implements DBInterface {
   }
 
   async saveResult(result: ResultObject) {
-    const { resultId, resultObject } = result;
+    const { resultId, resultObject, evaluatorName } = result;
     const filePath = path.join(this.dbResults, `${resultId}.json`);
+    const content = {
+      evaluatorName,
+      resultObject,
+    };
 
     try {
-      const jsonData = JSON.stringify(resultObject, null, 2);
+      const jsonData = JSON.stringify(content, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
       console.error('Error saveResult in DB', error);

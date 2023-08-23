@@ -4,29 +4,35 @@ import { EvaluatorResults, ResultObject, TrueAndFalseEvaluatorType } from "./ver
 class ResultManager {
   private resultId: string;
   protected result: EvaluatorResults | null = null;
+  protected evaluatorName: string | null;
 
   constructor(id: string) {
     this.resultId = id;
+    this.evaluatorName = null;
   }
 
-  saveResult(newResult: EvaluatorResults): void {
+  saveResult(newResult: EvaluatorResults, evaluator: string): void {
     this.result = newResult;
+    this.evaluatorName = evaluator;
+
     return;
   }
 
   getResult(): ResultObject | null {
-    if (this.result && this.resultId) {
+    if (this.result && this.resultId && this.evaluatorName) {
       return {
         resultId: this.resultId,
         resultObject: this.result,
+        evaluatorName: this.evaluatorName,
       }
     }
     return null;
   }
 }
 
-export class ResultEvaulator_True_Or_False extends ResultManager {
+export class ResultEvaluator_True_Or_False extends ResultManager {
   private trueAndFalse: TrueAndFalseEvaluatorType;
+  private myNameIs: string;
 
   constructor(id: string) {
     super(id);
@@ -34,6 +40,7 @@ export class ResultEvaulator_True_Or_False extends ResultManager {
       true: 0,
       false: 0,
     };
+    this.myNameIs = 'tORf';
   }
 
   setFalse(add = true) {
@@ -41,7 +48,7 @@ export class ResultEvaulator_True_Or_False extends ResultManager {
       true: this.trueAndFalse.true,
       false: add ? this.trueAndFalse.false + 1 : this.trueAndFalse.false - 1,
     };
-    this.saveResult(this.trueAndFalse);
+    this.saveResult(this.trueAndFalse, this.myNameIs);
     console.log('this.trueandfalse FALSE: ', this.trueAndFalse);
   }
 
@@ -50,7 +57,7 @@ export class ResultEvaulator_True_Or_False extends ResultManager {
       true: add ? this.trueAndFalse.true + num : this.trueAndFalse.true - num,
       false: this.trueAndFalse.false,
     };
-    this.saveResult(this.trueAndFalse);
+    this.saveResult(this.trueAndFalse, this.myNameIs);
     console.log('this.trueandfalse TRUE: ', this.trueAndFalse);
   }
 }

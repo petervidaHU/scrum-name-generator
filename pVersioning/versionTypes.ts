@@ -97,4 +97,5 @@ export type EvaluatorResults = TrueAndFalseEvaluatorType | PercentageEvaluatorTy
 export interface ResultObject {
   resultId: string,
   resultObject: EvaluatorResults,
+  evaluatorName: string,
 }

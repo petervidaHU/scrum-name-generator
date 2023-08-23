@@ -12,9 +12,9 @@ import { getDescription } from './getDescription';
 import { extendList } from './extendList';
 import { PromptVersionType } from "@/pVersioning/versionTypes";
 import axios from "axios";
-import { ResultEvaulator_True_Or_False } from "@/pVersioning/resultEvaulator";
+import { ResultEvaluator_True_Or_False } from "@/pVersioning/resultEvaulator";
 
-let trueOrFalse: ResultEvaulator_True_Or_False | undefined;
+let trueOrFalse: ResultEvaluator_True_Or_False | undefined;
 
 const getPromptAPI = '/api/getPrompt';
 const saveResultAPI = '/api/versionapi/saveResult';
@@ -33,7 +33,7 @@ export default function Admin() {
 
   useEffect(() => {
     if (resultId) {
-      trueOrFalse = new ResultEvaulator_True_Or_False(resultId)
+      trueOrFalse = new ResultEvaluator_True_Or_False(resultId)
     }
   }, [resultId])
 
