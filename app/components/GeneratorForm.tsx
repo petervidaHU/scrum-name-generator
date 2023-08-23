@@ -1,13 +1,13 @@
 import React, { FormEventHandler, useEffect, useState } from 'react';
 import { Button, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
 import axios from 'axios';
-import { promptVersionType } from '@/pVersioning/versionTypes';
+import { PromptVersionType } from '@/pVersioning/versionTypes';
 
 interface GeneratorFormProps {
   submitHandler: FormEventHandler<HTMLFormElement>,
   promptVersions: string[],
   versionSelector: any,
-  version: promptVersionType | null,
+  version: PromptVersionType | null,
 }
 
 const getVersionListAPI = '/api/getVersionList'
@@ -18,7 +18,7 @@ export const GeneratorForm: React.FC<GeneratorFormProps> = ({
   promptVersions,
   version,
 }) => {
-  const [versions, setVersions] = useState<promptVersionType[]>([]);
+  const [versions, setVersions] = useState<PromptVersionType[]>([]);
 
   useEffect(() => {
     const getVersions = async () => {

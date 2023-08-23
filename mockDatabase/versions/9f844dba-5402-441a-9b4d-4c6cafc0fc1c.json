@@ -1,0 +1,25 @@
+{
+  "id": "9f844dba-5402-441a-9b4d-4c6cafc0fc1c",
+  "description": "",
+  "created": "2023-08-23T21:10:35.636Z",
+  "promptObject": [
+    {
+      "collectionId": "9bad1b4b-cfa1-4dd3-9291-1a1e6331ba95",
+      "versionId": "55c2903e-05c4-4f15-802a-8af54b085103",
+      "promptText": "We are looking for {_{NUM_OF_ANSWERS}_} word related to this concept: {_{TOPIC}_} "
+    },
+    {
+      "collectionId": "dd35b20e-55e3-44da-843f-7aeefa5c0238",
+      "versionId": "85252927-7144-41d8-b9c4-1baf5c99b07c",
+      "promptText": "The words have to contain only English letters and numbers. "
+    },
+    {
+      "collectionId": "72e32730-2bbf-472c-bae2-87ef04cbf665",
+      "versionId": "66a64243-4676-43e8-bb60-7b6119be096e",
+      "promptText": "Please provide your answer like this:'word1,word2,word3' "
+    }
+  ],
+  "promptText": "We are looking for {_{NUM_OF_ANSWERS}_} word related to this concept: {_{TOPIC}_} The words have to contain only English letters and numbers. Please provide your answer like this:'word1,word2,word3' ",
+  "params": "",
+  "result": []
+}

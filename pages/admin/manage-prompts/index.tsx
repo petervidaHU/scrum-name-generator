@@ -1,7 +1,7 @@
 import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Paper, Box, FormControl, InputLabel } from '@mui/material';
 import React, { FormEventHandler, useState, useEffect } from 'react'
 import axios from 'axios';
-import { parameterType, promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
+import { ParameterType, PromptCollectionType, PromptVersionType } from '@/pVersioning/versionTypes';
 import PromptEditor from '@/app/components/PromptEditor';
 import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
 import PromptFullList from '@/app/components/prompt-manager/PromptFullList';
@@ -15,13 +15,13 @@ const getPrompt = '/api/getPrompt'
 const savePrompt = '/api/savePrompt'
 
 const ManagePrompts = () => {
-  const [prompt, setPrompt] = useState<promptCollectionType | null>(null);
-  const [list, setList] = useState<promptCollectionType[]>([]);
-  const [versionList, setVersionList] = useState<promptVersionType[]>([]);
-  const [parameters, setParameters] = useState<parameterType[]>([]);
+  const [prompt, setPrompt] = useState<PromptCollectionType | null>(null);
+  const [list, setList] = useState<PromptCollectionType[]>([]);
+  const [versionList, setVersionList] = useState<PromptVersionType[]>([]);
+  const [parameters, setParameters] = useState<ParameterType[]>([]);
   const [selectedVersion, setSelectedVersion] = useState<number>(0);
   const [selectedParameter, setSelectedParameter] = useState<string>('');
-  const [newPrompt, setNewPrompt] = useState<promptCollectionType | null>(null);
+  const [newPrompt, setNewPrompt] = useState<PromptCollectionType | null>(null);
 
   useEffect(() => {
     const getList = async () => {
@@ -70,7 +70,7 @@ const ManagePrompts = () => {
     setNewPrompt(result.data);
   }
 
-  const handleSaveNewPromptVersion = async (newPrompt: promptVersionType | undefined) => {
+  const handleSaveNewPromptVersion = async (newPrompt: PromptVersionType | undefined) => {
     if (newPrompt && prompt) {
       const result = await axios(savePrompt, {
         method: 'POST',

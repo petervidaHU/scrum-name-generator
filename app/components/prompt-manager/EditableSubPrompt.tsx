@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { IconButton, TextField, Tooltip } from '@mui/material';
 import { Delete, Edit } from '@mui/icons-material';
-import { promptVersionSelection } from '@/pVersioning/versionTypes';
+import { PromptVersionSelection } from '@/pVersioning/versionTypes';
 
 interface EditableObjectProps {
-  content: promptVersionSelection,
+  content: PromptVersionSelection,
   onDelete: (index: number) => void,
   onEdit: (index: number) => void,
   position: number,

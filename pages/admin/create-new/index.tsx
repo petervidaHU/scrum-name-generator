@@ -10,10 +10,14 @@ import { createRequestForNames } from './createRequestForNames';
 import { saveNameList } from './saveNameList';
 import { getDescription } from './getDescription';
 import { extendList } from './extendList';
-import { promptVersionType } from "@/pVersioning/versionTypes";
+import { PromptVersionType } from "@/pVersioning/versionTypes";
 import axios from "axios";
+import { ResultEvaulator_True_Or_False } from "@/pVersioning/resultEvaulator";
 
-const getPromptAPI = '/api/getPrompt'
+let trueOrFalse: ResultEvaulator_True_Or_False | undefined;
+
+const getPromptAPI = '/api/getPrompt';
+const saveResultAPI = '/api/versionapi/saveResult';
 
 export default function Admin() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -23,13 +27,22 @@ export default function Admin() {
   const [tagList, setTagList] = useState<string[]>([]);
   const [paramId, setParamId] = useState<string>('');
   const [promptVersions, setPromptVersions] = useState<string[]>([]);
-  const [selectedVersion, setSelectedVersion] = useState<promptVersionType | null>(null);
+  const [selectedVersion, setSelectedVersion] = useState<PromptVersionType | null>(null);
+  const [resultId, setResultId] = useState<string | null>(null);
+
+
+  useEffect(() => {
+    if (resultId) {
+      trueOrFalse = new ResultEvaulator_True_Or_False(resultId)
+    }
+  }, [resultId])
+
 
   // TODO: create a centralized loading/spinner handler
   // TODO: clear the errorResponse
 
   const prompt = 'cf7dcaa0-a3a7-4fdb-be18-da2beb41d3ac'
-  
+
   useEffect(() => {
     const getOnePrompt = async () => {
       const { data } = await axios(getPromptAPI, {
@@ -52,6 +65,7 @@ export default function Admin() {
     if (result) {
       console.log('result: ', result);
       setProposedList(result.resultText);
+      setResultId(result.resultId);
     } else {
       setErrorResponse(error);
     }
@@ -67,6 +81,7 @@ export default function Admin() {
       const index = +parent;
       temp[index].tags = temp[index].tags?.filter(thisTag => thisTag !== tag);
       setProposedList([...temp]);
+
     }, [proposedList]
   );
 
@@ -80,11 +95,17 @@ export default function Admin() {
     if (proposedNameIndex !== -1) {
       const [movedItem] = newProposedList.splice(proposedNameIndex, 1);
       newRejectedList.push(movedItem);
+      if (trueOrFalse) {
+        trueOrFalse.setFalse(true)
+      }
     } else {
       const rejectedNameIndex = rejectedList.findIndex((n) => n.name === name);
       if (rejectedNameIndex !== -1) {
         const [movedItem] = newRejectedList.splice(rejectedNameIndex, 1);
         newProposedList.push(movedItem);
+        if (trueOrFalse) {
+          trueOrFalse.setFalse(false)
+        }
       }
     }
     setProposedList(newProposedList);
@@ -127,6 +148,20 @@ export default function Admin() {
     setLoading(false);
   }
 
+  const handleAccept = (n: number) => {
+    if (trueOrFalse) {
+      trueOrFalse.setTrue(true, n)
+      const versionResult = trueOrFalse.getResult();
+
+      axios(saveResultAPI, {
+        method: 'Post',
+        data: {
+          versionResult,
+        }
+      });
+    }
+  }
+
   return (
     <AdminLayout>
       <div>
@@ -157,6 +192,17 @@ export default function Admin() {
             />)}
 
           <Button
+            sx={{ margin: '10px' }}
+            onClick={() => handleAccept(proposedList.length)}
+            variant="contained"
+            color="primary"
+            disabled={loading}
+          >
+            Accept
+          </Button>
+
+          <Button
+            sx={{ margin: '10px' }}
             onClick={extendListHandler}
             disabled={loading}
             variant="contained"
@@ -168,9 +214,11 @@ export default function Admin() {
           </Button>
 
           <Button
+            sx={{ margin: '10px' }}
             onClick={getTags}
             variant="contained"
             color="primary"
+            disabled={loading}
           >
             Get Tags
           </Button>
@@ -184,9 +232,11 @@ export default function Admin() {
           }
           <div className="my-6">
             <Button
+              sx={{ margin: '10px' }}
               onClick={saveList}
               variant="contained"
               color="primary"
+              disabled={loading}
             >
               save list
             </Button>

@@ -1,10 +1,10 @@
 import { post } from "@/app/helpers/fetchOptions";
 import { centralizedAPICall, iNameItem } from "@/app/types/nameTypes";
-import { promptVersionType } from "@/pVersioning/versionTypes";
+import { PromptVersionType } from "@/pVersioning/versionTypes";
 import axios from "axios";
 import { FormEvent } from "react";
 
-export const createRequestForNames = async (event: FormEvent<HTMLFormElement>, prompt: promptVersionType, paramId: string): /* centralizedAPICall */Promise<any> => {
+export const createRequestForNames = async (event: FormEvent<HTMLFormElement>, prompt: PromptVersionType, paramId: string): /* centralizedAPICall */Promise<any> => {
   const endpoint = '/api/createTopic';
   const target = event.target as HTMLFormElement;
   const data = {

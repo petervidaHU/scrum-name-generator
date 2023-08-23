@@ -1,11 +1,11 @@
 import { v4 as uuid } from 'uuid';
-import { models, promptVersionSelection, promptVersionType, resultConnectionType } from './versionTypes';
+import { models, PromptVersionSelection, PromptVersionType, ResultConnectionType } from './versionTypes';
 
 export const createNewPromptVersion = (
-  content: (string | promptVersionSelection)[],
+  content: (string | PromptVersionSelection)[],
   desc: string = 'empty description',
   selectedParameter: string | null,
-): promptVersionType => ({
+): PromptVersionType => ({
   id: uuid(),
   description: desc,
   created: new Date(),
@@ -70,7 +70,7 @@ export const mergeVariablesIntoPrompt = (
   return filledTemplate;
 }
 
-export const createResult = (reqId: string): resultConnectionType => {
+export const createResult = (reqId: string): ResultConnectionType => {
   const id = uuid();
   return {
     requestId: reqId,

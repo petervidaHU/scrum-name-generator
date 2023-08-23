@@ -4,12 +4,12 @@ import { generalPrinciples, exploreNewTopic, formatArray, PCCheck, formatYNRease
 import { openAIClient } from '../../app/openAIClient';
 import { createResult, mergeVariablesIntoPrompt } from '@/pVersioning/promptVersionerUtils';
 import { PVersion } from '@/pVersioning/versioner';
-import { parameterPropertiesType, parameterType, promptVersionType } from '@/pVersioning/versionTypes';
+import { ParameterPropertiesType, ParameterType, PromptVersionType } from '@/pVersioning/versionTypes';
 
 const v = new PVersion;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { topic, desc, prompt, paramId }: { topic: string, desc: string, prompt: promptVersionType, paramId: string } = req.body;
+  const { topic, desc, prompt, paramId }: { topic: string, desc: string, prompt: PromptVersionType, paramId: string } = req.body;
   const openai = openAIClient();
 
   console.log('in create topic API::::', topic);
@@ -17,7 +17,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   
   if (!topic) return res.status(400).json('topic not found');
   if (paramId === '') return res.status(400).json('parameters of prompt not found');
-  let p: parameterType;
+  let p: ParameterType;
   try {
     p = await v.getParameter(paramId)
   } catch {
@@ -34,6 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
     // console.log('checking', swearingPreCheck);
     if (!swearingPreCheck.data.choices[0].text) throw new Error('No response, we are alone');
+    console.log('swearingPreCheck.data.choices[0].text', swearingPreCheck.data.choices[0].text);
     textSwear = JSON.parse(swearingPreCheck.data.choices[0].text);
     
   } catch (err) {

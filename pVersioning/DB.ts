@@ -1,9 +1,18 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { ParameterType, PromptCollectionType, PromptVersionType, ResultObject } from './versionTypes';
 import { DBInterface } from './dbInterface';
 
 const defaultDB = 'mockDatabase';
+
+const wFile = async (path: string, content: unknown) => {
+  fs.writeFile(path, JSON.stringify(content, null, 2), 'utf-8');
+}
+
+const rFile = async (filePath: string) => {
+  // const res = await fs.readFile(filePath, 'utf-8');
+  return JSON.parse(await fs.readFile(filePath, 'utf-8'));
+}
 
 export class DBfilesystem implements DBInterface {
   private db: string;
@@ -22,7 +31,7 @@ export class DBfilesystem implements DBInterface {
     this.dbResultCollections = `${this.db}/result-collections`;
   }
 
-  async getList(): Promise<promptCollectionType[]> {
+  async getList(): Promise<PromptCollectionType[]> {
     try {
       const files = await fs.readdir(this.dbPrompts);
 
@@ -37,7 +46,7 @@ export class DBfilesystem implements DBInterface {
         }
 
         return accumulator;
-      }, Promise.resolve([] as promptCollectionType[]));
+      }, Promise.resolve([] as PromptCollectionType[]));
 
       return list;
     } catch (err) {
@@ -59,7 +68,7 @@ export class DBfilesystem implements DBInterface {
 
   }
 
-  initializePrompt(promptCollectionObject: promptCollectionType): void {
+  initializePrompt(promptCollectionObject: PromptCollectionType): void {
     const id = promptCollectionObject.id;
     const filePath = path.join(this.dbPrompts, `${id}.json`);
 
@@ -71,7 +80,7 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  async savePromptVersion(collectionId: string, version: promptVersionType): Promise<any> {
+  async savePromptVersion(collectionId: string, version: PromptVersionType): Promise<any> {
     // connect new version id to collection   
     const filePathCollection = path.join(this.dbPrompts, `${collectionId}.json`);
 
@@ -99,8 +108,8 @@ export class DBfilesystem implements DBInterface {
     return collectionId;
   }
 
-  async getVersions(ids: string[]): Promise<promptVersionType[]> {
-    let list: promptVersionType[] = [];
+  async getVersions(ids: string[]): Promise<PromptVersionType[]> {
+    let list: PromptVersionType[] = [];
     try {
       list = await Promise.all(ids.map(async file => {
         const filePath = path.join(this.dbVersions, `${file}.json`);
@@ -114,7 +123,7 @@ export class DBfilesystem implements DBInterface {
   }
 
   async getParametersList() {
-    let list: parameterType[] = [];
+    let list: ParameterType[] = [];
     try {
       const files = await fs.readdir(this.dbParams);
       list = await Promise.all(files.map(async file => {
@@ -128,8 +137,8 @@ export class DBfilesystem implements DBInterface {
     return list;
   }
 
-  async saveOneParameter(newParameter: parameterType) {
-    const id = newParameter.id;
+  async saveOneParameter(newParameter: ParameterType) {
+    const { id } = newParameter;
     const filePath = path.join(this.dbParams, `${id}.json`);
 
     try {
@@ -140,7 +149,7 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  async getOneParameter(id: string): Promise<parameterType> {
+  async getOneParameter(id: string): Promise<ParameterType> {
     const filePath = path.join(this.dbParams, `${id}.json`);
 
     try {
@@ -152,54 +161,69 @@ export class DBfilesystem implements DBInterface {
   }
 
   async initializeResultCollection(requestId: string, content: any) {
-    const filePath = path.join(this.dbResults, `${requestId}.json`);
-    
+    const filePath = path.join(this.dbResultCollections, `${requestId}.json`);
+
     try {
       const jsonData = JSON.stringify(content, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
       console.error('Error createResult in DB', error);
     }
-    
+
     return;
   }
-  async createResult(requestId: string, content: any) {
-    const filePath = path.join(this.dbResults, `${requestId}.json`);
-    
+  async createResult(collectionId: string, paramId: string, resultId: string): Promise<string> {
+    const filePathCollection = path.join(this.dbResultCollections, `${collectionId}.json`);
+
     try {
-      const jsonData = JSON.stringify(content, null, 2);
+      const existingContent = await fs.readFile(filePathCollection, 'utf-8');
+      const content = JSON.parse(existingContent);
+
+      if (paramId in content.results) {
+        content.results[paramId].push(resultId);
+      } else {
+        content.results[paramId] = [resultId];
+      }
+
+      await fs.writeFile(filePathCollection, JSON.stringify(content, null, 2));
+    } catch (error) {
+      console.error('Error in createResult in DB - updating new version of result collection:', error);
+    }
+
+    return 'result created';
+  }
+
+  async saveResult(result: ResultObject) {
+    const { resultId, resultObject } = result;
+    const filePath = path.join(this.dbResults, `${resultId}.json`);
+
+    try {
+      const jsonData = JSON.stringify(resultObject, null, 2);
       fs.writeFile(filePath, jsonData, 'utf-8');
     } catch (error) {
-      console.error('Error createResult in DB', error);
+      console.error('Error saveResult in DB', error);
     }
-    
-    return;
   }
-  
-  async getResultCollection(promptId: string, paramId: string): Promise<string | null> {
+
+  async getResultCollection(promptId: string): Promise<boolean> {
     const filePath = path.join(this.dbResultCollections, `${promptId}.json`);
     try {
       const collectionFound = await fs.readFile(filePath, 'utf-8');
       console.log('collectionFound::', collectionFound);
-      return JSON.parse(collectionFound);
+      return true;
     } catch (error) {
-      return null;
+      return false;
     }
   }
 
-  async createResultId(collection: string): Promise<string> {
-
-    return 'newresultid';
-  }
-
-  async updateVersion(versionId: string, updatedData: Partial<promptVersionType>): Promise<void> {
+  async updateVersion(versionId: string, updatedData: Partial<PromptVersionType>): Promise<void> {
     const filePath = path.join(this.dbVersions, `${versionId}.json`);
 
     try {
       const existingContent = await fs.readFile(filePath, 'utf-8');
-      const content: promptVersionType = JSON.parse(existingContent);
+      const content: PromptVersionType = JSON.parse(existingContent);
 
-      const updatedContent: promptVersionType = {
+      const updatedContent: PromptVersionType = {
         ...content,
         ...updatedData,
       };

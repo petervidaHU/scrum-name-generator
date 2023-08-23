@@ -9,10 +9,10 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { parameterType } from '@/pVersioning/versionTypes';
+import { ParameterType } from '@/pVersioning/versionTypes';
 
 interface PromptListProps {
-  params: parameterType[];
+  params: ParameterType[];
 }
 const ParameterList: React.FC<PromptListProps> = ({ params }) => {
   return (

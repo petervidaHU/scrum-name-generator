@@ -1,6 +1,6 @@
 import { Box, Button, TextField, Typography, Modal, Select, MenuItem, SelectChangeEvent, InputLabel, FormControl } from '@mui/material';
 import React, { useState, useEffect } from 'react';
-import { promptVersionSelection, promptVersionType, cursorPositionType, promptObjectArray, promptCollectionType, parameterType } from '@/pVersioning/versionTypes';
+import { PromptVersionSelection, PromptVersionType, CursorPositionType, PromptObjectArray, PromptCollectionType, ParameterType } from '@/pVersioning/versionTypes';
 import { createNewPromptVersion } from '@/pVersioning/promptVersionerUtils';
 import { EditableSpan } from './prompt-manager/EditableSpan';
 import EditableObject from './prompt-manager/EditableSubPrompt';
@@ -10,9 +10,9 @@ import SelectPrompt from './prompt-manager/SelectPrompt';
 import axios from 'axios';
 
 interface promptEditorProps {
-  starterPrompt: promptObjectArray,
-  list: promptCollectionType[],
-  save: (k: promptVersionType) => Promise<void>,
+  starterPrompt: PromptObjectArray,
+  list: PromptCollectionType[],
+  save: (k: PromptVersionType) => Promise<void>,
 }
 
 const editorBox = {
@@ -35,11 +35,11 @@ const temporaryNewItem = {
 const getParametersListAPI = '/api/getParameters'
 
 const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }) => {
-  const [content, setContent] = useState<promptObjectArray>([]);
-  const [cursorPosition, setCursorPosition] = useState<cursorPositionType>(initCursorPos);
+  const [content, setContent] = useState<PromptObjectArray>([]);
+  const [cursorPosition, setCursorPosition] = useState<CursorPositionType>(initCursorPos);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
   const [selectedSubPromptIndex, setSelectedSubpromptIndex] = useState<number | null>(null);
-  const [parameters, setParameters] = useState<parameterType[]>([]);
+  const [parameters, setParameters] = useState<ParameterType[]>([]);
   const [selectedParameter, setSelectedParameter] = useState<string>('');
 
   useEffect(() => {
@@ -68,8 +68,8 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       save(newVersion);
   }
 
-  const setContentSimplify = (content: promptObjectArray): void => {
-    const simplyfiedContent: promptObjectArray = content.reduce((acc: promptObjectArray, item) => {
+  const setContentSimplify = (content: PromptObjectArray): void => {
+    const simplyfiedContent: PromptObjectArray = content.reduce((acc: PromptObjectArray, item) => {
       if (typeof item === 'string') {
         const lastItem = acc[acc.length - 1];
         if (typeof lastItem === 'string') {
@@ -172,7 +172,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     setContent(newContent);
   }
 
-  const replaceSubPrompt = (newSelection: promptVersionSelection) => {
+  const replaceSubPrompt = (newSelection: PromptVersionSelection) => {
     if (selectedSubPromptIndex !== null) {
       const newContent = [...content];
       newContent.splice(selectedSubPromptIndex, 1, newSelection);
@@ -262,7 +262,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       >
         <SelectPrompt
           list={list}
-          initialPrompt={content[selectedSubPromptIndex || 0] as promptVersionSelection}
+          initialPrompt={content[selectedSubPromptIndex || 0] as PromptVersionSelection}
           onClose={handleCloseModal}
           onSave={(a) => replaceSubPrompt(a)}
         />

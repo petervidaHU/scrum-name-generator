@@ -1,5 +1,5 @@
 import { v4 as uuid } from 'uuid';
-import { parameterType, promptCollectionType, promptVersionType, resultCollectionType } from './versionTypes';
+import { ParameterType, PromptCollectionType, PromptVersionType, ResultCollectionType, ResultObject } from './versionTypes';
 import { DBfilesystem } from './DB';
 import { DBInterface } from './dbInterface';
 
@@ -11,18 +11,18 @@ export class PVersion {
     this.db = db;
   }
 
-  async getList(): Promise<promptCollectionType[]> {
+  async getList(): Promise<PromptCollectionType[]> {
     const result = await this.db.getList();
     return result;
   }
 
 
-  async getVersions(versionIds: string[]): Promise<promptVersionType[]> {
+  async getVersions(versionIds: string[]): Promise<PromptVersionType[]> {
     const result = await this.db.getVersions(versionIds);
     return result;
   }
 
-  async getOnePromptCollection(id: string): Promise<promptCollectionType | {}> {
+  async getOnePromptCollection(id: string): Promise<PromptCollectionType | {}> {
     const result = await this.db.getOnePromptCollection(id);
     return result;
   }
@@ -42,16 +42,16 @@ export class PVersion {
     return id;
   }
 
-  async savePromptVersion(collectionId: string, newPrompt: promptVersionType) {
+  async savePromptVersion(collectionId: string, newPrompt: PromptVersionType) {
     const result = await this.db.savePromptVersion(collectionId, newPrompt)
     return result;
   }
 
-  async getParametersList(): Promise<parameterType[]> {
+  async getParametersList(): Promise<ParameterType[]> {
     return await db.getParametersList();
   }
 
-  async saveOneParameter(newParameter: parameterType) {
+  async saveOneParameter(newParameter: ParameterType) {
     try {
       return await db.saveOneParameter(newParameter);
     } catch (error) {
@@ -62,7 +62,7 @@ export class PVersion {
     }
   }
 
-  async getParameter(parameterId: string): Promise<parameterType> {
+  async getParameter(parameterId: string): Promise<ParameterType> {
     try {
       return await db.getOneParameter(parameterId);
     } catch (error) {
@@ -70,11 +70,11 @@ export class PVersion {
     }
   }
 
-  async initializeResultCollection(promptId: string, paramId: string): Promise<string> {
-    const resultId = uuid();
+  async initializeResultCollection(promptId: string, paramId: string, resultId: string): Promise<string> {
+
     // hash new id from parameters?
     // hash from request string?
-    const content: resultCollectionType = {
+    const content: ResultCollectionType = {
       promptId,
       results: {
         [paramId]: [resultId],
@@ -86,11 +86,18 @@ export class PVersion {
   }
 
   async createNewResult(promptId: string, paramId: string): Promise<string> {
-    const collectionExist: string | null = await db.getResultCollection(promptId, paramId);
-    
-    return collectionExist
-      ? db.createResultId(collectionExist)
-      : await this.initializeResultCollection(promptId, paramId)
+    const collectionExist: boolean = await db.getResultCollection(promptId);
+    const resultId = uuid();
+
+    if (collectionExist) {
+      db.createResult(promptId, paramId, resultId)
+    } else {
+      await this.initializeResultCollection(promptId, paramId, resultId)
+    }
+    return resultId;
   }
 
+  async saveResult(resultObject: ResultObject) {
+    db.saveResult(resultObject);
+  }
 }

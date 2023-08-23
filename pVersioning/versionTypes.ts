@@ -1,33 +1,31 @@
-import { Tracing } from "trace_events";
+export type PromptObjectArray = (PromptVersionSelection | string)[];
 
-export type promptObjectArray = (promptVersionSelection | string)[];
-
-export interface promptVersionType {
+export interface PromptVersionType {
   id: string
   promptText: string,
-  promptObject: promptObjectArray,
+  promptObject: PromptObjectArray,
   created: Date,
   description: string,
   params: string | null,
   result: any[],
 }
 
-export interface promptCollectionType {
+export interface PromptCollectionType {
   id: string,
   name: string,
   description: string,
   created: Date,
-  versions: promptVersionType[],
+  versions: PromptVersionType[],
   defaultParametersId: string,
 }
 
-export interface promptVersionSelection {
+export interface PromptVersionSelection {
   collectionId: string,
   versionId: string,
   promptText: string,
 }
 
-export interface cursorPositionType {
+export interface CursorPositionType {
   textBeforeCursor: string,
   textAfterCursor: string,
   subPromptId: number,
@@ -36,7 +34,7 @@ export interface cursorPositionType {
 
 // parameters
 
-export interface parameterPropertiesType {
+export interface ParameterPropertiesType {
   temperature: number,
   max_tokens: number,
   top_p: number,
@@ -46,12 +44,12 @@ export interface parameterPropertiesType {
   stop: string[]
 }
 
-export interface parameterType {
+export interface ParameterType {
   id: string
   name: string,
   description: string,
   created: Date,
-  parameters: parameterPropertiesType,
+  parameters: ParameterPropertiesType,
 }
 
 export enum models {
@@ -70,14 +68,33 @@ export interface errorResponse {
   error: unknown,
 }
 
-export interface resultConnectionType {
+export interface ResultConnectionType {
   requestId: string,
   resultId: string,
 }
 
-export interface resultCollectionType {
+export interface ResultCollectionType {
   promptId: string,
   results: {
     [paramId: string]: string[],
   }
+}
+
+// result types
+
+export interface TrueAndFalseEvaluatorType {
+  true: number,
+  false: number,
+}
+
+export interface PercentageEvaluatorType {
+  true: number,
+  false: number,
+}
+
+export type EvaluatorResults = TrueAndFalseEvaluatorType | PercentageEvaluatorType;
+
+export interface ResultObject {
+  resultId: string,
+  resultObject: EvaluatorResults,
 }

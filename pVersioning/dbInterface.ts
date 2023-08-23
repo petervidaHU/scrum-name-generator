@@ -1,17 +1,64 @@
-import { errorResponse, parameterType, promptCollectionType, promptVersionType } from './versionTypes';
+import { errorResponse, ParameterType, PromptCollectionType, PromptVersionType, ResultObject } from './versionTypes';
 
 export interface DBInterface {
-  getList(): Promise<promptCollectionType[]>,
-  getOnePromptCollection(id: string): Promise<promptCollectionType | {}>,
-  initializePrompt(p: promptCollectionType): void,
-  savePromptVersion(collectionId: string, p: promptVersionType): Promise<any>,
-  getParametersList(): Promise<parameterType[]>,
-  saveOneParameter(newParameter: parameterType): void,
-  getOneParameter(parameterId: string): Promise<parameterType>,
-  createResult(promptId: string, resultId: string): void,
-  getVersions(ids: string[]): Promise<promptVersionType[]>,
-  initializeResultCollection(requestId: string, content: any): Promise<any>,
-  getResultCollection(promptId: string, paramId: string): Promise<any>, 
-  createResultId(collection: string): Promise<string>,
+  getList()
+    : Promise<PromptCollectionType[]>,
+
+  getOnePromptCollection(
+    id: string,
+  )
+    : Promise<PromptCollectionType | {}>,
+
+  initializePrompt(
+    p: PromptCollectionType,
+  )
+    : void,
+
+  savePromptVersion(
+    collectionId: string,
+    p: PromptVersionType,
+  )
+    : Promise<any>,
+
+  getParametersList()
+    : Promise<ParameterType[]>,
+
+  saveOneParameter(
+    newParameter: ParameterType,
+  )
+    : void,
+
+  getOneParameter(
+    parameterId: string,
+  )
+    : Promise<ParameterType>,
+
+  createResult(
+    collectionId: string,
+    paramId: string,
+    resultId: string,
+  )
+    : Promise<string>,
+
+  getVersions(
+    ids: string[],
+  )
+    : Promise<PromptVersionType[]>,
+
+  initializeResultCollection(
+    requestId: string,
+    content: any,
+  )
+    : Promise<any>,
+
+  getResultCollection(
+    promptId: string,
+  )
+    : Promise<boolean>,
+
+  saveResult(
+    resultObject: ResultObject
+  )
+    : void,
 }
 

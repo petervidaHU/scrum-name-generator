@@ -4,7 +4,8 @@
   "description": "main collection of create new name suggestion of a given topic",
   "created": "2023-08-16T10:15:37.758Z",
   "versions": [
-    "6d8362d6-8cc8-4c21-9402-33de73ecab7c"
+    "6d8362d6-8cc8-4c21-9402-33de73ecab7c",
+    "9f844dba-5402-441a-9b4d-4c6cafc0fc1c"
   ],
   "defaultParametersId": "5a7a3023-d26d-4a2c-b763-57ec1ced9893"
 }

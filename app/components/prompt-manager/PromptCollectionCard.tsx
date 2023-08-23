@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { promptCollectionType, promptVersionType } from '@/pVersioning/versionTypes';
+import { PromptCollectionType, PromptVersionType } from '@/pVersioning/versionTypes';
 
 interface PromptCollectionCardProps {
-  prompt: promptCollectionType,
-  versions: promptVersionType[],
+  prompt: PromptCollectionType,
+  versions: PromptVersionType[],
   selectVersion: (k: number) => void,
 }
 

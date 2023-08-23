@@ -1,7 +1,7 @@
 import AdminLayout from '@/app/components/layouts/adminLayout';
 import ParameterList from '@/app/components/prompt-manager/ParameterList';
 import { createNewParameter } from '@/pVersioning/promptVersionerUtils';
-import { models, parameterType } from '@/pVersioning/versionTypes';
+import { models, ParameterType } from '@/pVersioning/versionTypes';
 import { Box, Button, FormControl, FormLabel, InputLabel, MenuItem, Paper, Select, Slider, TextField, Typography } from '@mui/material'
 import axios from 'axios';
 import React, { useState, useEffect } from 'react'
@@ -15,7 +15,7 @@ const Index = () => {
   const [presencePenaltyValue, setPresencePenaltyValue] = useState<number>(0)
   const [modelValue, setModelValue] = useState<models>(models.gpt35)
   const [temperatureValue, setTemperatureValue] = useState<number>(0)
-  const [list, setList] = useState<parameterType[]>([]);
+  const [list, setList] = useState<ParameterType[]>([]);
 
   useEffect(() => {
     const getList = async () => {
@@ -30,7 +30,7 @@ const Index = () => {
     const { nameOfParam, description, maxtokens, stopSeq } = e.currentTarget;
     console.log('submit:', nameOfParam.value, description.value, maxtokens.value, temperatureValue, modelValue, toppValue, stopSeq)
 
-    const newParameter: parameterType = createNewParameter({
+    const newParameter: ParameterType = createNewParameter({
       nameOfParam: nameOfParam.value,
       description: description.value,
       maxtokens: maxtokens.value,

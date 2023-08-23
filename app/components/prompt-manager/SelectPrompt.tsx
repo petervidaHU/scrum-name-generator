@@ -1,22 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Select, MenuItem, Typography, SelectChangeEvent, FormControl, Button, InputLabel, Box } from '@mui/material';
-import { promptCollectionType, promptVersionSelection, promptVersionType } from '@/pVersioning/versionTypes';
+import { PromptCollectionType, PromptVersionSelection, PromptVersionType } from '@/pVersioning/versionTypes';
 
 const getPrompt = '/api/getPrompt'
 const getVersionListAPI = '/api/getVersionList'
 
 interface SelectPromptProps {
-  list: promptCollectionType[],
-  initialPrompt: promptVersionSelection | null,
+  list: PromptCollectionType[],
+  initialPrompt: PromptVersionSelection | null,
   onClose: () => void,
-  onSave: (a: promptVersionSelection) => void,
+  onSave: (a: PromptVersionSelection) => void,
 }
 
 const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onSave, list }) => {
-  const [selectedPrompt, setSelectedPrompt] = useState<promptCollectionType | null>(null);
+  const [selectedPrompt, setSelectedPrompt] = useState<PromptCollectionType | null>(null);
   const [selectedVersionId, setSelectedVersionId] = useState<string>(initialPrompt?.versionId || '');
-  const [versions, setVersions] = useState<promptVersionType[]>([]);
+  const [versions, setVersions] = useState<PromptVersionType[]>([]);
 
   useEffect(() => {
     const getVersions = async () => {

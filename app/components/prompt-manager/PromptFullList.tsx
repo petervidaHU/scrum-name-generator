@@ -1,9 +1,9 @@
 import React from 'react';
 import { Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { promptCollectionType } from '@/pVersioning/versionTypes';
+import { PromptCollectionType } from '@/pVersioning/versionTypes';
 
 interface PromptCollectionCardProps {
-  list: promptCollectionType[];
+  list: PromptCollectionType[];
 }
 
 const PromptFullList: React.FC<PromptCollectionCardProps> = ({ list  }) => {
