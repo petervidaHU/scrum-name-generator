@@ -13,6 +13,7 @@ import { extendList } from './extendList';
 import { PromptVersionType } from "@/pVersioning/versionTypes";
 import axios from "axios";
 import { ResultEvaluator_True_Or_False } from "@/pVersioning/resultEvaulator";
+import { APINames } from "@/app/types/apiNames";
 
 let trueOrFalse: ResultEvaluator_True_Or_False | undefined;
 
@@ -153,7 +154,7 @@ export default function Admin() {
       trueOrFalse.setTrue(true, n)
       const versionResult = trueOrFalse.getResult();
 
-      axios(saveResultAPI, {
+      axios(APINames.results, {
         method: 'Post',
         data: {
           versionResult,

@@ -62,7 +62,11 @@ export class PVersion {
     }
   }
 
-  async getParameter(parameterId: string): Promise<ParameterType> {
+  async getOneParameter(parameterId: string | Array<string>): Promise<ParameterType | null> {
+    if (Array.isArray(parameterId)) {
+      console.log('array of ids not supported yet in versioner, getOneParameter ');
+      return null;
+      }
     try {
       return await db.getOneParameter(parameterId);
     } catch (error) {
@@ -86,10 +90,10 @@ export class PVersion {
   }
 
   async createNewResult(promptId: string, paramId: string): Promise<string> {
-    const collectionExist: boolean = await db.getResultCollection(promptId);
+    const collectionExist: ResultCollectionType | null = await db.getResultCollection(promptId);
     const resultId = uuid();
 
-    if (collectionExist) {
+    if (collectionExist?.promptId) {
       db.createResult(promptId, paramId, resultId)
     } else {
       await this.initializeResultCollection(promptId, paramId, resultId)
@@ -99,5 +103,29 @@ export class PVersion {
 
   async saveResult(resultObject: ResultObject) {
     db.saveResult(resultObject);
+  }
+
+  async getResultCollectionList(): Promise<ResultObject[]> {
+    return await db.getResultCollectionList();
+  }
+
+  async getOneResultCollection(id: string | Array<string>): Promise<ResultCollectionType | null> {
+    if (Array.isArray(id)) {
+      console.log('array of ids not supported yet in versioner, getOneResultCollection ');
+      return null;
+      }
+    return await db.getResultCollection(id);
+  }
+
+  async getOneResult(id: string | Array<string>): Promise<ResultObject | null> {
+    if (Array.isArray(id)) {
+      console.log('array of ids not supported yet in versioner, getOneResult ');
+      return null;
+      }
+    return await db.getOneResult(id);
+  }
+
+  async getResultList(): Promise<ResultObject[]> {
+    return await db.getResultList();
   }
 }

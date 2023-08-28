@@ -1,4 +1,4 @@
-import { errorResponse, ParameterType, PromptCollectionType, PromptVersionType, ResultObject } from './versionTypes';
+import { errorResponse, ParameterType, PromptCollectionType, PromptVersionType, ResultCollectionType, ResultObject } from './versionTypes';
 
 export interface DBInterface {
   getList()
@@ -54,11 +54,20 @@ export interface DBInterface {
   getResultCollection(
     promptId: string,
   )
-    : Promise<boolean>,
+    : Promise<ResultCollectionType | null>,
 
   saveResult(
     resultObject: ResultObject
   )
     : void,
+
+  getResultCollectionList()
+    : Promise<ResultObject[]>,
+
+  getResultList()
+    : Promise<ResultObject[]>,
+
+  getOneResult(id: string)
+    : Promise<ResultObject | null>,
 }
 

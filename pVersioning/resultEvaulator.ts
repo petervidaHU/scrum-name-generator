@@ -1,5 +1,7 @@
 import { EvaluatorResults, ResultObject, TrueAndFalseEvaluatorType } from "./versionTypes";
 
+// const db: DBInterface = new DBfilesystem();
+
 class ResultManager {
   private resultId: string;
   protected result: EvaluatorResults | null = null;
@@ -10,7 +12,7 @@ class ResultManager {
     this.evaluatorName = null;
   }
 
-  saveResult(newResult: EvaluatorResults, evaluator: string): void {
+  collectResult(newResult: EvaluatorResults, evaluator: string): void {
     this.result = newResult;
     this.evaluatorName = evaluator;
 
@@ -27,7 +29,7 @@ class ResultManager {
     }
     return null;
   }
-}
+ }
 
 export class ResultEvaluator_True_Or_False extends ResultManager {
   private trueAndFalse: TrueAndFalseEvaluatorType;
@@ -39,7 +41,7 @@ export class ResultEvaluator_True_Or_False extends ResultManager {
       true: 0,
       false: 0,
     };
-    this.myNameIs = 'tORf';
+    this.myNameIs = 'trueOrFalse';
   }
 
   setFalse(add = true) {
@@ -47,7 +49,7 @@ export class ResultEvaluator_True_Or_False extends ResultManager {
       true: this.trueAndFalse.true,
       false: add ? this.trueAndFalse.false + 1 : this.trueAndFalse.false - 1,
     };
-    this.saveResult(this.trueAndFalse, this.myNameIs);
+    this.collectResult(this.trueAndFalse, this.myNameIs);
   }
 
   setTrue(add = true, num: number = 1) {
@@ -55,6 +57,6 @@ export class ResultEvaluator_True_Or_False extends ResultManager {
       true: add ? this.trueAndFalse.true + num : this.trueAndFalse.true - num,
       false: this.trueAndFalse.false,
     };
-    this.saveResult(this.trueAndFalse, this.myNameIs);
+    this.collectResult(this.trueAndFalse, this.myNameIs);
   }
 }

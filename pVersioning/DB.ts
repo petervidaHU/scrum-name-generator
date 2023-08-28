@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { ParameterType, PromptCollectionType, PromptVersionType, ResultObject } from './versionTypes';
+import { ParameterType, PromptCollectionType, PromptVersionType, ResultCollectionType, ResultObject } from './versionTypes';
 import { DBInterface } from './dbInterface';
 
 const defaultDB = 'mockDatabase';
@@ -209,15 +209,31 @@ export class DBfilesystem implements DBInterface {
     }
   }
 
-  async getResultCollection(promptId: string): Promise<boolean> {
+  async getResultCollection(promptId: string): Promise<ResultCollectionType | null> {
     const filePath = path.join(this.dbResultCollections, `${promptId}.json`);
     try {
       const collectionFound = await fs.readFile(filePath, 'utf-8');
+      const collection: ResultCollectionType = JSON.parse(collectionFound);
       console.log('collectionFound::', collectionFound);
-      return true;
+      return collection;
     } catch (error) {
-      return false;
+      return null;
     }
+  }
+
+  async getResultCollectionList(): Promise<ResultObject[]> {
+    let list: ResultObject[] = [];
+    try {
+      const files = await fs.readdir(this.dbResultCollections);
+      list = await Promise.all(files.map(async file => {
+        const filePath = path.join(this.dbResultCollections, file);
+        const content = await fs.readFile(filePath, 'utf-8')
+        return JSON.parse(content);
+      }));
+    } catch (err) {
+      console.error('Error getResultCollectionList in DB', err);
+    }
+    return list;
   }
 
   async updateVersion(versionId: string, updatedData: Partial<PromptVersionType>): Promise<void> {
@@ -237,6 +253,32 @@ export class DBfilesystem implements DBInterface {
       console.error('Error updating prompt version:', error);
       throw error;
     }
+  }
+
+  async getOneResult(id: string): Promise<ResultObject | null> {
+    const filePath = path.join(this.dbResults, `${id}.json`);
+
+    try {
+      const fileContent = await fs.readFile(filePath, 'utf-8');
+      return JSON.parse(fileContent);
+    } catch (error) {
+      throw new Error('Error in getOneResult in DB')
+    }
+  }
+
+  async getResultList(): Promise<ResultObject[]> {
+    let list: ResultObject[] = [];
+    try {
+      const files = await fs.readdir(this.dbResults);
+      list = await Promise.all(files.map(async file => {
+        const filePath = path.join(this.dbResults, file);
+        const content = await fs.readFile(filePath, 'utf-8')
+        return JSON.parse(content);
+      }));
+    } catch (err) {
+      console.error('Error getResultList in DB', err);
+    }
+    return list;
   }
 
 }

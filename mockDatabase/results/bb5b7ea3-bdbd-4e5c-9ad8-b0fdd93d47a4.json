@@ -1,5 +1,5 @@
 {
-  "evaluatorName": "tORf",
+  "evaluatorName": "trueOrFalse",
   "resultObject": {
     "true": 2,
     "false": 2

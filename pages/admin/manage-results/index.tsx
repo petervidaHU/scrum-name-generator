@@ -1,23 +1,43 @@
 import AdminLayout from '@/app/components/layouts/adminLayout';
+import { APINames } from '@/types/apiNames';
+import { ResultCollectionType } from '@/pVersioning/versionTypes';
 import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 
-const getResultsListAPI = '/api/versionapi/getResults'; // Replace with your API endpoint
+const collectResultData = async (input: any) => Object
+  .entries(input.results)
+  .reduce(async (accPromise, [key, value]) => {
+    const acc = await accPromise;
 
-interface ResultData {
-  // Define your result data structure here
-  [key: string]: any;
-}
+    const param = await axios.get<any>(`${APINames.parameters}?idtoget=${key}`);
+    const resultArray = await Promise.all(
+      (value as Array<string>)
+        .map(async (resultId: string) => {
+          const { data } = await axios.get<any>(`${APINames.results}?idtoget=${resultId}`);
+          return {
+            resultId,
+            data,
+          };
+        }
+        ));
+
+    acc.push({
+      ...param.data,
+      results: resultArray,
+    });
+
+    return acc;
+  }, Promise.resolve([] as any[]))
 
 const ManageResults: React.FC = () => {
-  const [selectedResult, setSelectedResult] = useState<string | null>(null);
-  const [resultData, setResultData] = useState<ResultData | null>(null);
-  const [resultsList, setResultsList] = useState<string[]>([]);
+  const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
+  const [resultData, setResultData] = useState<any | null>(null);
+  const [resultsList, setResultsList] = useState<Array<ResultCollectionType>>([]);
 
   useEffect(() => {
     const getResultsList = async () => {
-      const { data } = await axios.get<string[]>(getResultsListAPI);
+      const { data } = await axios.get<Array<ResultCollectionType>>(APINames.resultCollections);
       setResultsList(data);
     };
     getResultsList();
@@ -25,27 +45,42 @@ const ManageResults: React.FC = () => {
 
   const handleResultChange = async (event: React.ChangeEvent<{ value: unknown }>) => {
     const selectedResultId = event.target.value as string;
-    setSelectedResult(selectedResultId);
-
-    // Fetch and set result data based on selectedResultId
-    const response = await axios.get<ResultData>(`/api/getResultData?id=${selectedResultId}`); // Replace with your API endpoint
-    setResultData(response.data);
+    setSelectedCollection(selectedResultId);
+    const { data } = await axios.get<any>(`${APINames.resultCollections}?id=${selectedResultId}`);
+    const consumedData = await collectResultData(data[0]);
+    setResultData(consumedData);
   };
+
+  console.log('resultData', resultData);
+  console.log('resultList', resultsList);
 
   return (
     <AdminLayout>
-      <Typography variant='h1'>Manage Results</Typography>
+      <Typography
+        variant='h1'
+      >
+        Manage Results
+      </Typography>
       <Box sx={{ margin: 3 }}>
         <FormControl fullWidth margin="normal">
-          <InputLabel htmlFor="result-select">Select Result</InputLabel>
+          <InputLabel
+            htmlFor="result-select"
+          >
+            Select Result collection (prompt, basically)
+          </InputLabel>
           <Select
             id="result-select"
-            value={selectedResult || ''}
+            value={selectedCollection || ''}
             onChange={handleResultChange}
             label="Select Result"
           >
-            {resultsList.map((resultId) => (
-              <MenuItem key={resultId} value={resultId}>{resultId}</MenuItem>
+            {resultsList.map((result) => (
+              <MenuItem
+                key={result.promptId}
+                value={result.promptId}
+              >
+                {result.promptId}
+              </MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -58,18 +93,48 @@ const ManageResults: React.FC = () => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Property</TableCell>
-                  <TableCell>Value</TableCell>
+                  <TableCell>id</TableCell>
+                  <TableCell>name</TableCell>
+                  <TableCell>description</TableCell>
+                  <TableCell>created</TableCell>
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {Object.entries(resultData).map(([property, value]) => (
-                  <TableRow key={property}>
-                    <TableCell>{property}</TableCell>
-                    <TableCell>{value}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
+              
+              {resultData.map(({ id, created, description, name, parameters, results }) => (
+                <React.Fragment key={id}>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>{id}</TableCell>
+                      <TableCell>{name}</TableCell>
+                      <TableCell>{description}</TableCell>
+                      <TableCell>{created}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>
+                        <Typography variant='body1'>Parameter</Typography>
+                      </TableCell>
+                    </TableRow>
+                    {Object.entries(parameters).map(([key, value]) => (
+                      <TableRow key={key}>
+                        <TableCell>{key}</TableCell>
+                        <TableCell>{value as string}</TableCell>
+                      </TableRow>
+                    ))}
+                    {results.map(({resultId, data}: {resultId: string, data: any}) => (
+                      <TableRow key={resultId}>
+                        <TableCell>{resultId}</TableCell>
+                        {Object.entries(data).map(([key, value]) => (
+                      <TableRow key={key}>
+                        <TableCell>{JSON.stringify(key)}</TableCell>
+                        <TableCell>{JSON.stringify(value)}</TableCell>
+                      </TableRow>
+                    ))}
+                      </TableRow>
+                    ))}
+
+                  </TableBody>
+                </React.Fragment>
+              ))}
             </Table>
           </TableContainer>
         </Paper>

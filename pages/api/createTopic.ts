@@ -19,7 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (paramId === '') return res.status(400).json('parameters of prompt not found');
   let p: ParameterType;
   try {
-    p = await v.getParameter(paramId)
+    p = await v.getOneParameter(paramId)
   } catch {
     return res.status(400).json('parameters of prompt could not fetched');
   }
