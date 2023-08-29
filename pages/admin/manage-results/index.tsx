@@ -69,6 +69,8 @@ const ManageResults: React.FC = () => {
           <li>Comparing more result of one prompt</li>
           <li>Comparing results of different prompts</li>
           <li>Comparing results of different prompts with different parameters</li>
+          <li>Checking other elements of response from API</li>
+          <li>Check reason of stop</li>
         </ul>
         <br />
         <strong>
@@ -88,7 +90,7 @@ const ManageResults: React.FC = () => {
           more visualisations:
         </strong>
         <ul>
-          <li>Plotly or any other library?</li>
+          <li>Plotly or any other data vis. library?</li>
           <li>Built-in visualisations for the different types of the evaluators</li>
           <li>More...</li>
         </ul>

@@ -99,7 +99,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       while (!variableName) {
         variableName = window.prompt('Please enter variable name')  ;
       }
-      myTempNewItem = `{_{${variableName}}_}`;
+      myTempNewItem = `{_{${variableName.toUpperCase()}}_}`;
     }
 
     const { textBeforeCursor, textAfterCursor, subPromptId } = cursorPosition;
@@ -245,10 +245,10 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
 
       <YellowCard title="insert subprompts">
         <ul>
-          <li>click on the text where you want to insert a subprompt</li>
           <li>insert subprompt by TAG or version like: latest stable, tested, </li>
           <li>insert subprompt by range of minor versions, if subversioning is implemented, like ~1.3.2 or ^1.3.4</li>
           <li>search subprompt by id, name, author, tag, comment</li>
+          <li>conditionaly insert variable or subprompt according to any given variables?</li>
         </ul>
         </YellowCard>
 

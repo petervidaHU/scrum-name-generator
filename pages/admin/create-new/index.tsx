@@ -14,6 +14,7 @@ import { PromptVersionType } from "@/pVersioning/versionTypes";
 import axios from "axios";
 import { ResultEvaluator_True_Or_False } from "@/pVersioning/resultEvaulator";
 import { APINames } from "@/app/types/apiNames";
+import YellowCard from "@/app/components/YellowCard";
 
 let trueOrFalse: ResultEvaluator_True_Or_False | undefined;
 
@@ -168,6 +169,11 @@ export default function Admin() {
       <div>
         <Loader loading={loading} />
         <PageTitle title="Name Generator" />
+        <YellowCard title="Name Generator">
+          <ul>
+            <li>Input for variables for the prompts</li>
+          </ul>
+        </YellowCard>
         <GeneratorForm
           submitHandler={handleSubmit}
           promptVersions={promptVersions || []}

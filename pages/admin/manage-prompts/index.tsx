@@ -118,6 +118,13 @@ const ManagePrompts = () => {
       </YellowCard>
 
       <Typography variant='h1'>manage prompts</Typography>
+      <YellowCard title="Create new prompt">
+        <ul>
+          <li>Differenciate between collection and subprompts?</li>
+          <li>Set project or any other way for context to prompt collections?</li>
+        </ul>
+      </YellowCard>
+
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>NEW prompt collection initializing:</Typography>
         <Box>
@@ -197,7 +204,7 @@ const ManagePrompts = () => {
         <YellowCard title="Editor">
           <ul>
             <li>enhanced editor</li>
-            <li>add variables</li>
+            <li>enhanced variables (type, range, validations etc)</li>
             <li>conditionals in text like single/plural forms of words, depending on variables</li>
             <li>add auto space if necessary</li>
             <li>add auto punctuation if necessary</li>
@@ -215,6 +222,15 @@ const ManagePrompts = () => {
 
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>List of existing containers</Typography>
+        <YellowCard title="List of existing containers">
+          <ul>
+            <li>sublist of used variables</li>
+            <li>search by name, id, author, tag, used in etc</li>
+            <li>filter by tag, author, used in etc</li>
+            <li>sort by name, id, author, tag, used in etc</li>
+          </ul>
+        </YellowCard>
+
         <PromptFullList list={list} />
 
 
