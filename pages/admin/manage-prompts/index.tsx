@@ -6,6 +6,7 @@ import PromptEditor from '@/app/components/PromptEditor';
 import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
 import PromptFullList from '@/app/components/prompt-manager/PromptFullList';
 import AdminLayout from '@/app/components/layouts/adminLayout';
+import YellowCard from '@/app/components/YellowCard';
 
 const createNewPromptAPI = '/api/newPrompt'
 const getPromptListAPI = '/api/getList'
@@ -105,6 +106,10 @@ const ManagePrompts = () => {
 
   return (
     <AdminLayout>
+      <YellowCard title="Manage Prompts">
+        this is the prompt managing page
+        </YellowCard>
+
       <Typography variant='h1'>manage prompts</Typography>
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>NEW prompt collection initializing:</Typography>

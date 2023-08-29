@@ -66,7 +66,7 @@ const ManageResults: React.FC = () => {
           <InputLabel
             htmlFor="result-select"
           >
-            Select Result collection (prompt, basically)
+            Select Result collection (promp version, basically)
           </InputLabel>
           <Select
             id="result-select"
@@ -99,7 +99,7 @@ const ManageResults: React.FC = () => {
                   <TableCell>created</TableCell>
                 </TableRow>
               </TableHead>
-              
+
               {resultData.map(({ id, created, description, name, parameters, results }) => (
                 <React.Fragment key={id}>
                   <TableBody>
