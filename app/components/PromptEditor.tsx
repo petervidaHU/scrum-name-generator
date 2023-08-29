@@ -92,17 +92,29 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     setContentSimplify(newContent);
   };
 
-  const injectSubprompt = () => {
+  const injector = (isVariable = false) => {
+    let variableName: string | null = '';
+    let myTempNewItem: any = temporaryNewItem;
+    if (isVariable) {
+      while (!variableName) {
+        variableName = window.prompt('Please enter variable name')  ;
+      }
+      myTempNewItem = `{_{${variableName}}_}`;
+    }
+
     const { textBeforeCursor, textAfterCursor, subPromptId } = cursorPosition;
     const newContent = [...content];
 
     if (textBeforeCursor.length === 0 || textAfterCursor.length === 0) {
       const pos = textBeforeCursor.length === 0 ? subPromptId : subPromptId + 1;
-      newContent.splice(pos, 0, temporaryNewItem);
+      newContent.splice(pos, 0, myTempNewItem);
     } else {
-      newContent.splice(subPromptId, 1, textBeforeCursor, temporaryNewItem, textAfterCursor);
+      console.log('splice::::', subPromptId, textBeforeCursor, myTempNewItem, textAfterCursor )
+      newContent.splice((subPromptId + 1), 1, textBeforeCursor, myTempNewItem, textAfterCursor);
     }
-    handleEditSubprompt(subPromptId);
+    if (!isVariable) {
+      handleEditSubprompt(subPromptId + 1);
+    }
     setContentSimplify(newContent);
   }
 
@@ -203,9 +215,17 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
         sx={{ marginRight: '10px' }}
         variant="contained"
         color="secondary"
-        onClick={injectSubprompt}
+        onClick={() => injector()}
       >
         inject subPrompt
+      </Button>
+      <Button
+        sx={{ marginRight: '10px' }}
+        variant="contained"
+        color="secondary"
+        onClick={() => injector(true)}
+      >
+        inject variable
       </Button>
       <Button
         sx={{ marginRight: '10px' }}
@@ -222,6 +242,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       >
         Reset editor
       </Button>
+
       <YellowCard title="insert subprompts">
         <ul>
           <li>click on the text where you want to insert a subprompt</li>
