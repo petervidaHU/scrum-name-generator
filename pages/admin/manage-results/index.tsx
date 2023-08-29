@@ -4,6 +4,8 @@ import { ResultCollectionType } from '@/pVersioning/versionTypes';
 import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import YellowCard from '@/app/components/YellowCard';
+import { ResultEvaluator_True_Or_False } from '@/pVersioning/resultEvaulator';
 
 const collectResultData = async (input: any) => Object
   .entries(input.results)
@@ -61,6 +63,37 @@ const ManageResults: React.FC = () => {
       >
         Manage Results
       </Typography>
+      <YellowCard title="Manage Results">
+        <ul>
+          <li>Here should be plenty of magic</li>
+          <li>Comparing more result of one prompt</li>
+          <li>Comparing results of different prompts</li>
+          <li>Comparing results of different prompts with different parameters</li>
+        </ul>
+        <br />
+        <strong>
+          more result ResultEvaulators:
+        </strong>
+        <ul>
+          <li>True or False</li>
+          <li>Percentage</li>
+          <li>Positive false, positive true, negative false, negative true</li>
+          <li>Predefined value collectors</li>
+          <li>Ratings</li>
+          <li>More...</li>
+          <li>User defined evaluators</li>
+        </ul>
+        <br />
+        <strong>
+          more visualisations:
+        </strong>
+        <ul>
+          <li>Plotly or any other library?</li>
+          <li>Built-in visualisations for the different types of the evaluators</li>
+          <li>More...</li>
+        </ul>
+      </YellowCard>
+
       <Box sx={{ margin: 3 }}>
         <FormControl fullWidth margin="normal">
           <InputLabel
@@ -120,15 +153,15 @@ const ManageResults: React.FC = () => {
                         <TableCell>{value as string}</TableCell>
                       </TableRow>
                     ))}
-                    {results.map(({resultId, data}: {resultId: string, data: any}) => (
+                    {results.map(({ resultId, data }: { resultId: string, data: any }) => (
                       <TableRow key={resultId}>
                         <TableCell>{resultId}</TableCell>
                         {Object.entries(data).map(([key, value]) => (
-                      <TableRow key={key}>
-                        <TableCell>{JSON.stringify(key)}</TableCell>
-                        <TableCell>{JSON.stringify(value)}</TableCell>
-                      </TableRow>
-                    ))}
+                          <TableRow key={key}>
+                            <TableCell>{JSON.stringify(key)}</TableCell>
+                            <TableCell>{JSON.stringify(value)}</TableCell>
+                          </TableRow>
+                        ))}
                       </TableRow>
                     ))}
 

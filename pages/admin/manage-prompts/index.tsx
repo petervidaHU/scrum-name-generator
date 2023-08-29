@@ -107,8 +107,15 @@ const ManagePrompts = () => {
   return (
     <AdminLayout>
       <YellowCard title="Manage Prompts">
-        this is the prompt managing page
-        </YellowCard>
+        <ul>
+          <li>Tags like stable, untested, used in: etc</li>
+          <li>comments on version</li>
+          <li>Author of version</li>
+          <li>Readable version number</li>
+          <li>subversions? like 1.3.2</li>
+          <li>search by author, tag, used in, id, name, etc...</li>
+        </ul>
+      </YellowCard>
 
       <Typography variant='h1'>manage prompts</Typography>
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
@@ -187,7 +194,18 @@ const ManagePrompts = () => {
             />
           )}
         </form>
-
+        <YellowCard title="Editor">
+          <ul>
+            <li>enhanced editor</li>
+            <li>add variables</li>
+            <li>conditionals in text like single/plural forms of words, depending on variables</li>
+            <li>add auto space if necessary</li>
+            <li>add auto punctuation if necessary</li>
+            <li>Grammarly implementation to correct grammar errors</li>
+            <li>drag and drop?</li>
+            <li>counting approx. input tokens</li>
+          </ul>
+        </YellowCard>
         <PromptEditor
           list={list}
           save={handleSaveNewPromptVersion}

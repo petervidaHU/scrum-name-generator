@@ -1,3 +1,4 @@
+import YellowCard from '@/app/components/YellowCard';
 import AdminLayout from '@/app/components/layouts/adminLayout';
 import ParameterList from '@/app/components/prompt-manager/ParameterList';
 import { createNewParameter } from '@/pVersioning/promptVersionerUtils';
@@ -70,7 +71,17 @@ const Index = () => {
       <Typography variant='h1'>manage parameters</Typography>
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
         <Typography variant='h4'>NEW parameters:</Typography>
-
+        <YellowCard title="Manage Parameters">
+          <ul>
+            <li>Tags like stable, untested, used in: etc</li>
+            <li>comments on version</li>
+            <li>Author of version</li>
+            <li>Variables or checking variables of the connected prompt</li>
+            <li>Conditional values according to variables (see before)</li>
+            <li>Sibling versions (or minor version in subvrsioning) if only 1 value been changed like model, temperature</li>
+            <li>search by author, tag, used in, id, name, etc...</li>
+          </ul>
+        </YellowCard>
         <form onSubmit={handleSubmit}>
           <TextField
             id="nameOfParam"
@@ -175,7 +186,7 @@ const Index = () => {
       </Paper>
 
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
-        <Typography variant='h4'>parameters list : - to be done</Typography>
+        <Typography variant='h4'>parameters list:</Typography>
         <ParameterList params={list} />
       </Paper>
     </AdminLayout>

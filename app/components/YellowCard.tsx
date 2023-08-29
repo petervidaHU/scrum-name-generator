@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react';
-import { Card, CardContent, Typography, IconButton } from '@mui/material';
+import { Card, CardContent, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/rootReducer';
 

@@ -159,17 +159,19 @@ function ResponsiveAppBar({ children }: { children: React.ReactNode }) {
               ))}
             </Box>
 
-          <FormGroup>
-            <FormControlLabel control={
-              <Switch
-                checked={commentsOn}
-                color='warning'
-                onChange={handleToggleComments}
-                inputProps={{ 'aria-label': 'controlled' }}
-                defaultChecked
-              />
-            } label="Show future improvements comments" />
-          </FormGroup>
+            <FormGroup>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={commentsOn}
+                    color='warning'
+                    onChange={handleToggleComments}
+                    inputProps={{ 'aria-label': 'controlled' }}
+                    defaultChecked
+                  />
+                }
+                label="Future improvements" />
+            </FormGroup>
 
           </Toolbar>
         </Container>
