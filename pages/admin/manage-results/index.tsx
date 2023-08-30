@@ -1,11 +1,12 @@
 import AdminLayout from '@/app/components/layouts/adminLayout';
 import { APINames } from '@/types/apiNames';
-import { ResultCollectionType } from '@/pVersioning/versionTypes';
-import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody } from '@mui/material';
+import { ResultCollectionType, ResultObject } from '@/pVersioning/versionTypes';
+import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Typography, TableContainer, Table, TableHead, TableRow, TableCell, TableBody, SelectChangeEvent } from '@mui/material';
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import YellowCard from '@/app/components/YellowCard';
 import { ResultEvaluator_True_Or_False } from '@/pVersioning/resultEvaulator';
+import renderChart from '@/pVersioning/charting';
 
 const collectResultData = async (input: any) => Object
   .entries(input.results)
@@ -45,7 +46,7 @@ const ManageResults: React.FC = () => {
     getResultsList();
   }, []);
 
-  const handleResultChange = async (event: React.ChangeEvent<{ value: unknown }>) => {
+  const handleResultChange = async (event: any) => {
     const selectedResultId = event.target.value as string;
     setSelectedCollection(selectedResultId);
     const { data } = await axios.get<any>(`${APINames.resultCollections}?id=${selectedResultId}`);
@@ -135,46 +136,77 @@ const ManageResults: React.FC = () => {
                 </TableRow>
               </TableHead>
 
-              {resultData.map(({ id, created, description, name, parameters, results }) => (
-                <React.Fragment key={id}>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>{id}</TableCell>
-                      <TableCell>{name}</TableCell>
-                      <TableCell>{description}</TableCell>
-                      <TableCell>{created}</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>
-                        <Typography variant='body1'>Parameter</Typography>
-                      </TableCell>
-                    </TableRow>
-                    {Object.entries(parameters).map(([key, value]) => (
-                      <TableRow key={key}>
-                        <TableCell>{key}</TableCell>
-                        <TableCell>{value as string}</TableCell>
+              {resultData.map((
+                { id, created, description, name, parameters, results }:
+                  { id: string, created: any, description: string, name: string, parameters: any, results: any }
+              ) => {
+                const cummulated = results.reduce((acc: any, { data }: { data: any }) => {
+                  const { resultObject } = data;
+                  acc.true += resultObject.true;
+                  acc.false += resultObject.false;
+                  return acc;
+                }, { true: 0, false: 0 });
+                return (
+                  <React.Fragment key={id}>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>{id}</TableCell>
+                        <TableCell>{name}</TableCell>
+                        <TableCell>{description}</TableCell>
+                        <TableCell>{created}</TableCell>
                       </TableRow>
-                    ))}
-                    {results.map(({ resultId, data }: { resultId: string, data: any }) => (
-                      <TableRow key={resultId}>
-                        <TableCell>{resultId}</TableCell>
-                        {Object.entries(data).map(([key, value]) => (
-                          <TableRow key={key}>
-                            <TableCell>{JSON.stringify(key)}</TableCell>
-                            <TableCell>{JSON.stringify(value)}</TableCell>
+                      <TableRow>
+                        <TableCell>
+                          <Typography variant='body1'>Parameter</Typography>
+                        </TableCell>
+                      </TableRow>
+                      {Object.entries(parameters).map(([key, value]) => (
+                        <TableRow key={key}>
+                          <TableCell>{key}</TableCell>
+                          <TableCell>{value as string}</TableCell>
+                        </TableRow>
+                      ))}
+                      {results.map(({ resultId, data }: { resultId: string, data: any }) => {
+                        console.log('data::', data)
+                        return (
+                          <TableRow key={resultId}>
+                            <TableCell>{resultId}</TableCell>
+                            <TableRow>
+                              <TableCell>evaulator name:</TableCell>
+                              <TableCell>{data.evaluatorName}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>data: True / False</TableCell>
+                              <TableCell>{data.resultObject.true}</TableCell>
+                              <TableCell>{data.resultObject.false}</TableCell>
+                            </TableRow>
+                            <TableRow>
+                              <TableCell>
+                                <Typography variant='body1'>Result chart</Typography>
+                                {renderChart['pie'](data.resultObject.true, data.resultObject.false)}
+                              </TableCell>
+                            </TableRow>
                           </TableRow>
-                        ))}
+                        )
+                      })
+                      }
+                      < TableRow >
+                        <TableCell>
+                          <Typography variant='body1'>Cummulated result chart</Typography>
+                          {renderChart['pie'](cummulated.true, cummulated.false)}
+                        </TableCell>
                       </TableRow>
-                    ))}
 
-                  </TableBody>
-                </React.Fragment>
-              ))}
+                    </TableBody>
+                  </React.Fragment>
+                )
+              })}
             </Table>
           </TableContainer>
         </Paper>
-      )}
-    </AdminLayout>
+      )
+      }
+    </AdminLayout >
   );
 };
 

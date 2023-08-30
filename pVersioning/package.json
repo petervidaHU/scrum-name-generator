@@ -11,6 +11,11 @@
   "dependencies": {
     "@types/uuid": "^9.0.2",
     "fs": "^0.0.1-security",
+    "plotly.js": "^2.26.0",
+    "react-plotly.js": "^2.6.0",
     "uuid": "^9.0.0"
+  },
+  "devDependencies": {
+    "@types/react-plotly.js": "^2.6.0"
   }
 }
