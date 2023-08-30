@@ -5,17 +5,16 @@ import { Box, FormControl, InputLabel, MenuItem, Paper, Select, Typography, Tabl
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import YellowCard from '@/app/components/YellowCard';
-import { ResultEvaluator_True_Or_False } from '@/pVersioning/resultEvaulator';
-import renderChart from '@/pVersioning/charting';
+import { PieChart } from '@/pVersioning/charting';
 
 const collectResultData = async (input: any) => Object
-  .entries(input.results)
-  .reduce(async (accPromise, [key, value]) => {
-    const acc = await accPromise;
-
-    const param = await axios.get<any>(`${APINames.parameters}?idtoget=${key}`);
-    const resultArray = await Promise.all(
-      (value as Array<string>)
+.entries(input.results)
+.reduce(async (accPromise, [key, value]) => {
+  const acc = await accPromise;
+  
+  const param = await axios.get<any>(`${APINames.parameters}?idtoget=${key}`);
+  const resultArray = await Promise.all(
+    (value as Array<string>)
         .map(async (resultId: string) => {
           const { data } = await axios.get<any>(`${APINames.results}?idtoget=${resultId}`);
           return {
@@ -25,7 +24,7 @@ const collectResultData = async (input: any) => Object
         }
         ));
 
-    acc.push({
+        acc.push({
       ...param.data,
       results: resultArray,
     });
@@ -33,22 +32,22 @@ const collectResultData = async (input: any) => Object
     return acc;
   }, Promise.resolve([] as any[]))
 
-const ManageResults: React.FC = () => {
-  const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
-  const [resultData, setResultData] = useState<any | null>(null);
-  const [resultsList, setResultsList] = useState<Array<ResultCollectionType>>([]);
-
-  useEffect(() => {
-    const getResultsList = async () => {
-      const { data } = await axios.get<Array<ResultCollectionType>>(APINames.resultCollections);
-      setResultsList(data);
-    };
-    getResultsList();
-  }, []);
-
-  const handleResultChange = async (event: any) => {
-    const selectedResultId = event.target.value as string;
-    setSelectedCollection(selectedResultId);
+  const ManageResults: React.FC = () => {
+    const [selectedCollection, setSelectedCollection] = useState<string | null>(null);
+    const [resultData, setResultData] = useState<any | null>(null);
+    const [resultsList, setResultsList] = useState<Array<ResultCollectionType>>([]);
+    
+    useEffect(() => {
+      const getResultsList = async () => {
+        const { data } = await axios.get<Array<ResultCollectionType>>(APINames.resultCollections);
+        setResultsList(data);
+      };
+      getResultsList();
+    }, []);
+    
+    const handleResultChange = async (event: any) => {
+      const selectedResultId = event.target.value as string;
+      setSelectedCollection(selectedResultId);
     const { data } = await axios.get<any>(`${APINames.resultCollections}?id=${selectedResultId}`);
     const consumedData = await collectResultData(data[0]);
     setResultData(consumedData);
@@ -140,12 +139,8 @@ const ManageResults: React.FC = () => {
                 { id, created, description, name, parameters, results }:
                   { id: string, created: any, description: string, name: string, parameters: any, results: any }
               ) => {
-                const cummulated = results.reduce((acc: any, { data }: { data: any }) => {
-                  const { resultObject } = data;
-                  acc.true += resultObject.true;
-                  acc.false += resultObject.false;
-                  return acc;
-                }, { true: 0, false: 0 });
+                const charter = new PieChart();
+                const cummulated = charter.getCummulativeResult(results);
                 return (
                   <React.Fragment key={id}>
                     <TableBody>
@@ -167,7 +162,6 @@ const ManageResults: React.FC = () => {
                         </TableRow>
                       ))}
                       {results.map(({ resultId, data }: { resultId: string, data: any }) => {
-                        console.log('data::', data)
                         return (
                           <TableRow key={resultId}>
                             <TableCell>{resultId}</TableCell>
@@ -183,7 +177,7 @@ const ManageResults: React.FC = () => {
                             <TableRow>
                               <TableCell>
                                 <Typography variant='body1'>Result chart</Typography>
-                                {renderChart['pie'](data.resultObject.true, data.resultObject.false)}
+                                {charter.getChart(data.resultObject)}
                               </TableCell>
                             </TableRow>
                           </TableRow>
@@ -193,7 +187,7 @@ const ManageResults: React.FC = () => {
                       < TableRow >
                         <TableCell>
                           <Typography variant='body1'>Cummulated result chart</Typography>
-                          {renderChart['pie'](cummulated.true, cummulated.false)}
+                          {charter.getChart(cummulated)}
                         </TableCell>
                       </TableRow>
 

@@ -1,14 +1,17 @@
 import React from 'react';
 import Plot from 'react-plotly.js';
 
-type ChartType = 'pie'; // Add more chart types as needed
+interface ChartRendererClass {
+  getChart: (data: any) => JSX.Element,
+  getCummulativeResult<T>(data: T): T,
+}
 
-type ChartRenderer = {
-  [key in ChartType]: (trueData: number, falseData: number) => JSX.Element;
-};
+export class PieChart implements ChartRendererClass {
+  constructor() { }
 
-const renderChart: ChartRenderer = {
-  pie: (trueData, falseData) => {
+  getChart(data: any) {
+    const trueData = data.true;
+    const falseData = data.false;
     const pieData = [
       {
         values: [trueData, falseData],
@@ -21,6 +24,14 @@ const renderChart: ChartRenderer = {
       width: 500,
     };
     return <Plot data={pieData} layout={pieLayout} />;
-  },
-};
-export default renderChart;
+  }
+
+  getCummulativeResult(data: any) {
+    return data.reduce((acc: any, { data }: { data: any }) => {
+      const { resultObject } = data;
+      acc.true += resultObject.true;
+      acc.false += resultObject.false;
+      return acc;
+    }, { true: 0, false: 0 });
+  }
+}

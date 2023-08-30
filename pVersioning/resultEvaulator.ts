@@ -59,4 +59,6 @@ export class ResultEvaluator_True_Or_False extends ResultManager {
     };
     this.collectResult(this.trueAndFalse, this.myNameIs);
   }
+
+ 
 }
