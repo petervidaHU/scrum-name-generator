@@ -9,10 +9,10 @@ declare module '@mui/material/styles' {
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#007bff',
+      main: '#33c',
     },
     secondary: {
-      main: '#ff9100',
+      main: '#ff0',
     },
   },
   typography: {

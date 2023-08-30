@@ -5,7 +5,7 @@ interface CommentsOnState {
 }
 
 const initialState: CommentsOnState = {
-  value: true,
+  value: false,
 };
 
 const commentsOnSlice = createSlice({

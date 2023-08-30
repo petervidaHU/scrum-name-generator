@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import Link from 'next/link';
-import { FormControlLabel, FormGroup, Switch, ToggleButton } from '@mui/material';
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/redux/rootReducer';
 import { toggleCommentsOn } from '@/app/features/comments/commentsOnSlice';
@@ -159,19 +159,21 @@ function ResponsiveAppBar({ children }: { children: React.ReactNode }) {
               ))}
             </Box>
 
-            <FormGroup>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={commentsOn}
-                    color='warning'
-                    onChange={handleToggleComments}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                    defaultChecked
-                  />
-                }
-                label="Future improvements" />
-            </FormGroup>
+            <Tooltip title="Show notes for future improvements">
+              <FormGroup>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={commentsOn}
+                      color='secondary'
+                      onChange={handleToggleComments}
+                      inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  }
+                  label="Future improvements"
+                />
+              </FormGroup>
+            </Tooltip>
 
           </Toolbar>
         </Container>

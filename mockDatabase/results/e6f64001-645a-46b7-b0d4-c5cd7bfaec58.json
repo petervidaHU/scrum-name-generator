@@ -1,0 +1,7 @@
+{
+  "evaluatorName": "trueOrFalse",
+  "resultObject": {
+    "true": 3,
+    "false": 1
+  }
+}

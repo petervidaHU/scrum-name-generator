@@ -12,7 +12,7 @@ const YellowCard: React.FC<{ title: string, children: ReactNode }> = ({ title, c
 
   return (
     <Card style={{
-      backgroundColor: 'yellow',
+      backgroundColor: '#ffff80',
       padding: '16px',
       borderRadius: '8px',
       boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
