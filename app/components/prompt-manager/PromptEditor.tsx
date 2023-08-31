@@ -65,8 +65,8 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     event.preventDefault();
     const { desc } = event.currentTarget;
 
-      const newVersion = createNewPromptVersion(content, desc.value, selectedParameter);
-      save(newVersion);
+    const newVersion = createNewPromptVersion(content, desc.value, selectedParameter);
+    save(newVersion);
   }
 
   const setContentSimplify = (content: PromptObjectArray): void => {
@@ -97,7 +97,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     let myTempNewItem: any = temporaryNewItem;
     if (isVariable) {
       while (!variableName) {
-        variableName = window.prompt('Please enter variable name')  ;
+        variableName = window.prompt('Please enter variable name');
       }
       myTempNewItem = `{_{${variableName.toUpperCase()}}_}`;
     }
@@ -109,8 +109,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       const pos = textBeforeCursor.length === 0 ? subPromptId : subPromptId + 1;
       newContent.splice(pos, 0, myTempNewItem);
     } else {
-      console.log('splice::::', subPromptId, textBeforeCursor, myTempNewItem, textAfterCursor )
-      newContent.splice((subPromptId + 1), 1, textBeforeCursor, myTempNewItem, textAfterCursor);
+      newContent.splice(subPromptId, 1, textBeforeCursor, myTempNewItem, textAfterCursor);
     }
     if (!isVariable) {
       handleEditSubprompt(subPromptId + 1);
@@ -120,11 +119,10 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
 
   const setPosition = (e: any) => {
     const target = e.target;
-    const selection = window.getSelection();
 
-    if (target instanceof HTMLSpanElement && selection) {
-      const cursorPosition = selection.anchorOffset;
-      const spanText = target.textContent || '';
+    if (target instanceof HTMLInputElement) {
+      const cursorPosition = target.selectionStart || 0;
+      const spanText = target.value || '';
       const subPromptId = +target.id;
       const textBeforeCursor = spanText.slice(0, cursorPosition);
       const textAfterCursor = spanText.slice(cursorPosition);
@@ -193,6 +191,8 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     }
   }
 
+  console.log('content in editor:', content);
+
   return (
     <>
       <Typography variant='h5'>
@@ -241,6 +241,12 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
         Reset editor
       </Button>
 
+      <Box>
+        <Typography variant='h6'>
+          Length of the prompt: {content.length}
+        </Typography>
+      </Box>
+
       <YellowCard title="insert subprompts">
         <ul>
           <li>insert subprompt by TAG or version like: latest stable, tested, </li>
@@ -248,7 +254,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
           <li>search subprompt by id, name, author, tag, comment</li>
           <li>conditionaly insert variable or subprompt according to any given variables?</li>
         </ul>
-        </YellowCard>
+      </YellowCard>
 
       <form onSubmit={handleNewVersion}>
         <TextField

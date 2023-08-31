@@ -71,8 +71,6 @@ const SelectPrompt: React.FC<SelectPromptProps> = ({ initialPrompt, onClose, onS
     const selectedPromptId = event.target.value;
     setSelectedPrompt(list.find(p => p.id === selectedPromptId) || null)
   }
-  console.log('versions:', versions)
-  console.log('selected versions:', selectedVersionId)
 
   return (
     <div>

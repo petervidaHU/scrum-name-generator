@@ -28,6 +28,7 @@ export const EditableInput: React.FC<EditableInputProps> = ({ text, onChange, po
 
   return (
     <input
+      id={`${position}`}
       ref={inputRef}
       type="text"
       value={editableContent}
@@ -40,7 +41,7 @@ export const EditableInput: React.FC<EditableInputProps> = ({ text, onChange, po
         backgroundColor: 'transparent',
         outline: 'none',
         cursor: 'pointer',
-        width: `${inputWidth}px`, 
+        width: `${inputWidth}px`,
       }}
     />
   );
