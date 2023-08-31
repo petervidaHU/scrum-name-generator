@@ -191,6 +191,15 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     }
   }
 
+  const promptLength = content.reduce((acc, item) => {
+    if (typeof item === 'string') {
+      return acc + item.length;
+    }
+    return acc + item.promptText.length;
+  }
+    , 0);
+
+
   console.log('content in editor:', content);
 
   return (
@@ -242,8 +251,8 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       </Button>
 
       <Box>
-        <Typography variant='h6'>
-          Length of the prompt: {content.length}
+        <Typography variant='h6'   sx={{ marginTop: '10px' }}>
+          Length of the prompt: {promptLength}
         </Typography>
       </Box>
 
