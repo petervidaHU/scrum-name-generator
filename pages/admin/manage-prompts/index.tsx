@@ -2,7 +2,7 @@ import { Button, TextField, Select, SelectChangeEvent, MenuItem, Typography, Pap
 import React, { FormEventHandler, useState, useEffect } from 'react'
 import axios from 'axios';
 import { ParameterType, PromptCollectionType, PromptVersionType } from '@/pVersioning/versionTypes';
-import PromptEditor from '@/app/components/PromptEditor';
+import PromptEditor from '@/app/components/prompt-manager/PromptEditor';
 import PromptCollectionCard from '@/app/components/prompt-manager/PromptCollectionCard';
 import PromptFullList from '@/app/components/prompt-manager/PromptFullList';
 import AdminLayout from '@/app/components/layouts/adminLayout';
@@ -193,31 +193,33 @@ const ManagePrompts = () => {
               ))}
             </Select>
           </FormControl>
-          {prompt && (
+        </form>
+        {prompt && (
+          <>
             <PromptCollectionCard
               prompt={prompt}
               versions={versionList}
               selectVersion={(a) => { setSelectedVersion(+a) }}
             />
-          )}
-        </form>
-        <YellowCard title="Editor">
-          <ul>
-            <li>enhanced editor</li>
-            <li>enhanced variables (type, range, validations etc)</li>
-            <li>conditionals in text like single/plural forms of words, depending on variables</li>
-            <li>add auto space if necessary</li>
-            <li>add auto punctuation if necessary</li>
-            <li>Grammarly implementation to correct grammar errors</li>
-            <li>drag and drop?</li>
-            <li>counting approx. input tokens</li>
-          </ul>
-        </YellowCard>
-        <PromptEditor
-          list={list}
-          save={handleSaveNewPromptVersion}
-          starterPrompt={versionList[selectedVersion]?.promptObject || []}
-        />
+            <YellowCard title="Editor">
+              <ul>
+                <li>enhanced editor</li>
+                <li>enhanced variables (type, range, validations etc)</li>
+                <li>conditionals in text like single/plural forms of words, depending on variables</li>
+                <li>add auto space if necessary</li>
+                <li>add auto punctuation if necessary</li>
+                <li>Grammarly implementation to correct grammar errors</li>
+                <li>drag and drop?</li>
+                <li>counting approx. input tokens</li>
+              </ul>
+            </YellowCard>
+            <PromptEditor
+              list={list}
+              save={handleSaveNewPromptVersion}
+              starterPrompt={versionList[selectedVersion]?.promptObject || []}
+            />
+          </>
+        )}
       </Paper>
 
       <Paper elevation={3} sx={{ margin: 3, padding: 3 }}>
@@ -232,7 +234,6 @@ const ManagePrompts = () => {
         </YellowCard>
 
         <PromptFullList list={list} />
-
 
       </Paper>
     </AdminLayout>

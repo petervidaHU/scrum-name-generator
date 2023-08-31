@@ -2,13 +2,13 @@ import { Box, Button, TextField, Typography, Modal, Select, MenuItem, SelectChan
 import React, { useState, useEffect } from 'react';
 import { PromptVersionSelection, PromptVersionType, CursorPositionType, PromptObjectArray, PromptCollectionType, ParameterType } from '@/pVersioning/versionTypes';
 import { createNewPromptVersion } from '@/pVersioning/promptVersionerUtils';
-import { EditableSpan } from './prompt-manager/EditableSpan';
-import EditableObject from './prompt-manager/EditableSubPrompt';
-import AddObjectButton from './prompt-manager/AddSubprompt';
-import CustomModal from './prompt-manager/CustomModal';
-import SelectPrompt from './prompt-manager/SelectPrompt';
+import { EditableInput } from './EditableInput';
+import EditableObject from './EditableSubPrompt';
+import AddObjectButton from './AddSubprompt';
+import CustomModal from './CustomModal';
+import SelectPrompt from './SelectPrompt';
 import axios from 'axios';
-import YellowCard from './YellowCard';
+import YellowCard from '../YellowCard';
 
 interface promptEditorProps {
   starterPrompt: PromptObjectArray,
@@ -149,7 +149,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
   }
 
   const addText = (
-    <EditableSpan
+    <EditableInput
       key={`strater`}
       text='add some text'
       onChange={(newText) => handleContentChange(0, newText)}
@@ -159,10 +159,10 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
   const visualMayhem = content.map((fragment, index) => {
     if (typeof fragment === 'string') {
       return (
-        <EditableSpan
+        <EditableInput
           key={`${index}--${fragment}`}
           text={fragment}
-          onChange={(newText) => handleContentChange(index, newText)}
+          onChange={(newText: string) => handleContentChange(index, newText)}
           position={index}
         />
       );
@@ -192,8 +192,6 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       setContent(newContent);
     }
   }
-
-  console.log('------------editor content---------: ', content)
 
   return (
     <>
