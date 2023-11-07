@@ -9,6 +9,8 @@ import CustomModal from './CustomModal';
 import SelectPrompt from './SelectPrompt';
 import axios from 'axios';
 import YellowCard from '../YellowCard';
+import { InitVariable } from './InitVariable';
+import styled from '@emotion/styled';
 
 interface promptEditorProps {
   starterPrompt: PromptObjectArray,
@@ -22,9 +24,7 @@ const editorBox = {
 }
 
 const initCursorPos = {
-  textBeforeCursor: '',
-  textAfterCursor: '',
-  subPromptId: 0,
+  isInput: false,
 }
 
 const temporaryNewItem = {
@@ -42,6 +42,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
   const [selectedSubPromptIndex, setSelectedSubpromptIndex] = useState<number | null>(null);
   const [parameters, setParameters] = useState<ParameterType[]>([]);
   const [selectedParameter, setSelectedParameter] = useState<string>('');
+  const [isVariable, setIsVariable] = useState<boolean>(false);
 
   useEffect(() => {
     if (starterPrompt) {
@@ -58,6 +59,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
   }, [])
 
   const handleCloseModal = () => {
+    setIsVariable(false);
     setIsModalOpen(false);
   };
 
@@ -92,45 +94,45 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
     setContentSimplify(newContent);
   };
 
-  const injector = (isVariable = false) => {
-    let variableName: string | null = '';
-    let myTempNewItem: any = temporaryNewItem;
-    if (isVariable) {
-      while (!variableName) {
-        variableName = window.prompt('Please enter variable name');
-      }
-      myTempNewItem = `{_{${variableName.toUpperCase()}}_}`;
-    }
-
+  const injector = (newPrompt: PromptVersionSelection) => {
     const { textBeforeCursor, textAfterCursor, subPromptId } = cursorPosition;
     const newContent = [...content];
 
+    if (textBeforeCursor === undefined
+      || textAfterCursor === undefined
+      || subPromptId === undefined) throw new Error('something went wrong with cursorPosition');
+
     if (textBeforeCursor.length === 0 || textAfterCursor.length === 0) {
       const pos = textBeforeCursor.length === 0 ? subPromptId : subPromptId + 1;
-      newContent.splice(pos, 0, myTempNewItem);
+      newContent.splice(pos, 0, newPrompt);
     } else {
-      newContent.splice(subPromptId, 1, textBeforeCursor, myTempNewItem, textAfterCursor);
+      newContent.splice(subPromptId, 1, textBeforeCursor, newPrompt, textAfterCursor);
     }
-    if (!isVariable) {
-      handleEditSubprompt(subPromptId + 1);
-    }
+
     setContentSimplify(newContent);
   }
 
   const setPosition = (e: any) => {
-    const target = e.target;
+    const { target } = e;
+    console.log('target:', target);
+    const isInput = target instanceof HTMLInputElement;
 
-    if (target instanceof HTMLInputElement) {
-      const cursorPosition = target.selectionStart || 0;
-      const spanText = target.value || '';
+    if (isInput || target instanceof HTMLSpanElement) {
+      const cursorPosition = isInput ? target.selectionStart || 0 : 0;
+      const spanText = isInput ? target.value || '' : '';
       const subPromptId = +target.id;
-      const textBeforeCursor = spanText.slice(0, cursorPosition);
-      const textAfterCursor = spanText.slice(cursorPosition);
+      const textBeforeCursor = isInput ? spanText.slice(0, cursorPosition) : '';
+      const textAfterCursor = isInput ? spanText.slice(cursorPosition) : '';
 
       setCursorPosition({
+        isInput: true,
         textBeforeCursor,
         textAfterCursor,
         subPromptId,
+      })
+    } else {
+      setCursorPosition({
+        isInput: false,
       })
     }
   };
@@ -154,53 +156,68 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       position={0}
     />)
 
-  const visualMayhem = content.map((fragment, index) => {
-    if (typeof fragment === 'string') {
-      return (
+  const visualMayhem = content.map((fragment, index) => (
+    <>
+      {typeof fragment === 'string' ? (
         <EditableInput
           key={`${index}--${fragment}`}
           text={fragment}
           onChange={(newText: string) => handleContentChange(index, newText)}
           position={index}
         />
-      );
-    }
-    return (
-      <EditableObject
-        position={index}
-        key={`${index}--${fragment}`}
-        content={fragment}
-        onEdit={() => handleEditSubprompt(index)}
-        onDelete={() => handleDeleteSubPrompt(index)}
-      />
-    );
-  });
-
-  const addNewSubprompt = (n: number) => {
-    const newContent = [...content];
-    newContent.splice(n, 0, temporaryNewItem);
-    handleEditSubprompt(n);
-    setContent(newContent);
-  }
-
-  const replaceSubPrompt = (newSelection: PromptVersionSelection) => {
-    if (selectedSubPromptIndex !== null) {
-      const newContent = [...content];
-      newContent.splice(selectedSubPromptIndex, 1, newSelection);
-      setContent(newContent);
-    }
-  }
+      ) : (
+        <>
+          {index === 0 && (
+            <input
+              key={`input-${index}`}
+              id={`${index}`}
+              onChange={(e) => { setPosition(e) }}
+            />
+          )}
+          <EditableObject
+            position={index}
+            key={`${index}--${fragment}`}
+            content={fragment}
+            onEdit={() => handleEditSubprompt(index)}
+            onDelete={() => handleDeleteSubPrompt(index)}
+          />
+          {(typeof content[index + 1] !== 'string') && (
+            <PlaceholderInput
+              key={`input-${index}`}
+              id={`${index + 1}`}
+              onChange={(e) => { setPosition(e) }}
+            >
+              +
+            </PlaceholderInput>
+          )}
+          {index === content.length - 1 && (
+            <input
+              key={`input-${index}`}
+              id={`${index + 1}`}
+              onChange={(e) => { setPosition(e) }}
+            />
+          )}
+        </>
+      )}
+    </>
+  ));
 
   const promptLength = content.reduce((acc, item) => {
     if (typeof item === 'string') {
       return acc + item.length;
     }
     return acc + item.promptText.length;
+  }, 0);
+
+  const handleVariableInjection = () => {
+    setIsVariable(true)
+    setIsModalOpen(true);
   }
-    , 0);
 
+  console.log('content in editor:', cursorPosition);
 
-  console.log('content in editor:', content);
+  function variableInjector(a: string): void {
+  }
 
   return (
     <>
@@ -212,25 +229,26 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
         sx={editorBox}
         onClick={(e) => { setPosition(e) }}
       >
-        <AddObjectButton onClick={() => addNewSubprompt(0)} />
         {visualMayhem.length > 0 && visualMayhem}
         {visualMayhem.length === 0 && addText}
-        <AddObjectButton onClick={() => addNewSubprompt(content.length)} />
+
       </Box>
 
       <Button
+        disabled={!cursorPosition.isInput}
         sx={{ marginRight: '10px' }}
         variant="contained"
         color="secondary"
-        onClick={() => injector()}
+        onClick={() => setIsModalOpen(true)}
       >
         inject subPrompt
       </Button>
       <Button
+        disabled={!cursorPosition.isInput}
         sx={{ marginRight: '10px' }}
         variant="contained"
         color="secondary"
-        onClick={() => injector(true)}
+        onClick={() => handleVariableInjection()}
       >
         inject variable
       </Button>
@@ -251,7 +269,7 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
       </Button>
 
       <Box>
-        <Typography variant='h6'   sx={{ marginTop: '10px' }}>
+        <Typography variant='h6' sx={{ marginTop: '10px' }}>
           Length of the prompt: {promptLength}
         </Typography>
       </Box>
@@ -303,15 +321,32 @@ const PromptEditor: React.FC<promptEditorProps> = ({ save, list, starterPrompt }
         open={isModalOpen}
         onClose={handleCloseModal}
       >
-        <SelectPrompt
-          list={list}
-          initialPrompt={content[selectedSubPromptIndex || 0] as PromptVersionSelection}
-          onClose={handleCloseModal}
-          onSave={(a) => replaceSubPrompt(a)}
-        />
+        {isVariable && (
+          <InitVariable
+            onClose={handleCloseModal}
+            onSave={(a) => variableInjector(a)}
+          />
+
+        )}
+        {!isVariable && (
+          <SelectPrompt
+            list={list}
+            initialPrompt={content[selectedSubPromptIndex || 0] as PromptVersionSelection}
+            onClose={handleCloseModal}
+            onSave={(a) => injector(a)}
+          />
+        )}
       </CustomModal>
     </>
   );
 };
 
 export default PromptEditor;
+
+
+const PlaceholderInput = styled.span`
+  background-color: pink;
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+`;

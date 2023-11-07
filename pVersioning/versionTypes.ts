@@ -26,9 +26,10 @@ export interface PromptVersionSelection {
 }
 
 export interface CursorPositionType {
-  textBeforeCursor: string,
-  textAfterCursor: string,
-  subPromptId: number,
+  isInput: boolean,
+  textBeforeCursor?: string,
+  textAfterCursor?: string,
+  subPromptId?: number,
 }
 
 
